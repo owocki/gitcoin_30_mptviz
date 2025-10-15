@@ -506,12 +506,12 @@ export class Renderer {
       if (isPlaying) {
         // When playing, follow physics and rest on surface
         const z = this.fieldKernel.potential(ball.x, ball.y, this.config.attractors) * surface.zScale;
-        mesh.position.set(ball.x, ball.y, z + ballConfig.radius * 1.5);
+        mesh.position.set(ball.x, -ball.y, z + ballConfig.radius * 1.5);
 
         // Update trail
         if (ballConfig.trail.enable && this.trailBuffers[i]) {
           const trailBuffer = this.trailBuffers[i];
-          trailBuffer.push(new THREE.Vector3(ball.x, ball.y, z));
+          trailBuffer.push(new THREE.Vector3(ball.x, -ball.y, z));
 
           if (trailBuffer.length > ballConfig.trail.length) {
             trailBuffer.shift();
@@ -532,7 +532,7 @@ export class Renderer {
       } else {
         // When not playing, hover above the field at initial positions
         const hoverHeight = 0.8;
-        mesh.position.set(ball.x, ball.y, hoverHeight);
+        mesh.position.set(ball.x, -ball.y, hoverHeight);
 
         // Clear trails when not playing
         if (ballConfig.trail.enable && this.trailBuffers[i]) {
@@ -550,7 +550,7 @@ export class Renderer {
     for (let i = 0; i < balls.length && i < this.ballMeshes.length; i++) {
       const ball = balls[i];
       const mesh = this.ballMeshes[i];
-      mesh.position.set(ball.x, ball.y, height);
+      mesh.position.set(ball.x, -ball.y, height);
     }
   }
 
