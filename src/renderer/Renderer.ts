@@ -14,6 +14,7 @@ export class Renderer {
 
   private surfaceMesh: THREE.Mesh | null = null;
   private gridHelper: THREE.GridHelper | null = null;
+  private axesHelper: THREE.AxesHelper | null = null;
   private ballMeshes: THREE.Mesh[] = [];
   private trailLines: THREE.Line[] = [];
   private trailBuffers: THREE.Vector3[][] = [];
@@ -80,6 +81,7 @@ export class Renderer {
     // Initialize scene
     this.initSurface();
     this.initGrid();
+    this.initAxes();
   }
 
   private updateCameraPosition(): void {
@@ -165,12 +167,14 @@ export class Renderer {
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     geometry.computeVertexNormals();
 
-    // Create material
+    // Create material with wireframe
     const material = new THREE.MeshStandardMaterial({
       vertexColors: true,
       roughness: 0.7,
       metalness: 0.2,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      wireframe: true,
+      wireframeLinewidth: 1
     });
 
     // Create mesh
@@ -198,6 +202,23 @@ export class Renderer {
     this.gridHelper.rotation.x = Math.PI / 2;
     this.gridHelper.position.z = -0.01;
     this.scene.add(this.gridHelper);
+  }
+
+  private initAxes(): void {
+    if (this.axesHelper) {
+      this.scene.remove(this.axesHelper);
+    }
+
+    const { extent } = this.config.surface;
+    const size = Math.max(
+      extent.xMax - extent.xMin,
+      extent.yMax - extent.yMin
+    );
+
+    // Create axes helper
+    // Red = X axis, Green = Y axis, Blue = Z axis
+    this.axesHelper = new THREE.AxesHelper(size * 0.6);
+    this.scene.add(this.axesHelper);
   }
 
   initBalls(count: number): void {
@@ -314,6 +335,7 @@ export class Renderer {
     this.updateCameraPosition();
     this.initSurface();
     this.initGrid();
+    this.initAxes();
   }
 
   render(): void {
