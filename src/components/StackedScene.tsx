@@ -122,6 +122,22 @@ export const StackedScene: React.FC = () => {
     return [];
   });
 
+  const [showMeshTitles, setShowMeshTitles] = useState(() => {
+    const hash = window.location.hash.slice(1);
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+    const params = new URLSearchParams(hashParams);
+    const titlesParam = params.get('meshTitles');
+    return titlesParam === '1' || titlesParam === null; // Default to true if not specified
+  });
+
+  const [showAxisTitles, setShowAxisTitles] = useState(() => {
+    const hash = window.location.hash.slice(1);
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+    const params = new URLSearchParams(hashParams);
+    const axisParam = params.get('axisTitles');
+    return axisParam === '1' || axisParam === null; // Default to true if not specified
+  });
+
   const [stackTitle, setStackTitle] = useState(() => {
     const hash = window.location.hash.slice(1);
     const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
@@ -288,6 +304,8 @@ export const StackedScene: React.FC = () => {
       hasScene: !!sceneRef.current,
       configsLength: configs.length,
       showLabelsLength: showLabels.length,
+      showMeshTitles,
+      showAxisTitles,
       zSpacing
     });
 
@@ -416,24 +434,26 @@ export const StackedScene: React.FC = () => {
         axesHelper.position.set(0, 0, zOffset);
         scene.add(axesHelper);
 
-        // Create text labels
-        const labelOffset = size * 0.6;
-        const zLabelOffset = size * 0.3;
-        const labels = [
-          { text: config.labels.x, position: new THREE.Vector3(labelOffset, 0, zOffset), color: '#000000' },
-          { text: config.labels.y, position: new THREE.Vector3(0, labelOffset, zOffset), color: '#000000' },
-          { text: config.labels.z, position: new THREE.Vector3(0, 0, zOffset + zLabelOffset), color: '#000000' }
-        ];
+        // Create text labels if enabled
+        if (showAxisTitles) {
+          const labelOffset = size * 0.6;
+          const zLabelOffset = size * 0.3;
+          const labels = [
+            { text: config.labels.x, position: new THREE.Vector3(labelOffset, 0, zOffset), color: '#000000' },
+            { text: config.labels.y, position: new THREE.Vector3(0, labelOffset, zOffset), color: '#000000' },
+            { text: config.labels.z, position: new THREE.Vector3(0, 0, zOffset + zLabelOffset), color: '#000000' }
+          ];
 
-        labels.forEach(({ text, position, color }) => {
-          const sprite = makeTextSprite(text, {
-            fontsize: 64,
-            backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
-            textColor: color
+          labels.forEach(({ text, position, color }) => {
+            const sprite = makeTextSprite(text, {
+              fontsize: 64,
+              backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+              textColor: color
+            });
+            sprite.position.copy(position);
+            scene.add(sprite);
           });
-          sprite.position.copy(position);
-          scene.add(sprite);
-        });
+        }
       }
 
       // Add attractor labels if enabled for this layer
@@ -455,6 +475,25 @@ export const StackedScene: React.FC = () => {
             scene.add(sprite);
           }
         });
+      }
+
+      // Add mesh title label if enabled
+      if (showMeshTitles && config.labels.title) {
+        const titleSprite = makeTextSprite(config.labels.title, {
+          fontsize: 80,
+          backgroundColor: { r: 0, g: 0, b: 0, a: 0.8 },
+          textColor: '#ffffff',
+          padding: 12
+        });
+
+        // Position the title to the right side of the mesh
+        const xPos = extent.xMax + 0.5;
+        const yPos = 0;
+        const zPos = zOffset;
+
+        titleSprite.position.set(xPos, yPos, zPos);
+        titleSprite.scale.set(1.2, 0.6, 1);
+        scene.add(titleSprite);
       }
 
       // Add reinforcement arrows for this layer
@@ -524,7 +563,7 @@ export const StackedScene: React.FC = () => {
     });
 
     console.log('[StackedScene] Finished rendering all configs');
-  }, [configs, zSpacing, showLabels, sceneReady]);
+  }, [configs, zSpacing, showLabels, showMeshTitles, showAxisTitles, sceneReady]);
 
   const handleUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -570,6 +609,8 @@ export const StackedScene: React.FC = () => {
     params.set('spacing', zSpacing.toString());
     params.set('labels', showLabels.map(v => v ? '1' : '0').join(','));
     params.set('title', stackTitle);
+    params.set('meshTitles', showMeshTitles ? '1' : '0');
+    params.set('axisTitles', showAxisTitles ? '1' : '0');
 
     const queryString = params.toString();
     console.log('[StackedScene] Generated query string:', queryString);
@@ -667,9 +708,43 @@ export const StackedScene: React.FC = () => {
               Showing {configs.length} stacked field{configs.length !== 1 ? 's' : ''}
             </p>
 
+            {/* Mesh title visibility toggle */}
+            <div style={styles.labelControls}>
+              <label style={styles.spacingLabel}>Mesh Titles:</label>
+              <div style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={showMeshTitles}
+                  onChange={(e) => setShowMeshTitles(e.target.checked)}
+                  style={styles.checkbox}
+                  id="mesh-titles"
+                />
+                <label htmlFor="mesh-titles" style={styles.checkboxLabel}>
+                  Show mesh titles next to each layer
+                </label>
+              </div>
+            </div>
+
+            {/* Axis title visibility toggle */}
+            <div style={styles.labelControls}>
+              <label style={styles.spacingLabel}>Axis Titles:</label>
+              <div style={styles.checkboxRow}>
+                <input
+                  type="checkbox"
+                  checked={showAxisTitles}
+                  onChange={(e) => setShowAxisTitles(e.target.checked)}
+                  style={styles.checkbox}
+                  id="axis-titles"
+                />
+                <label htmlFor="axis-titles" style={styles.checkboxLabel}>
+                  Show axis labels (x, y, z)
+                </label>
+              </div>
+            </div>
+
             {/* Label visibility toggles */}
             <div style={styles.labelControls}>
-              <label style={styles.spacingLabel}>Show Labels:</label>
+              <label style={styles.spacingLabel}>Attractor Labels:</label>
               {configs.map((config, index) => {
                 const fullConfig = { ...DEFAULT_CONFIG, ...config };
                 return (
