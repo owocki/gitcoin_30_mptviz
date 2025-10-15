@@ -1,4 +1,4 @@
-import { Attractor, PhysicsConfig, Vec2, Extent } from '../types/config';
+import { Attractor, PhysicsConfig, Vec2, Extent, Reinforcement } from '../types/config';
 import { SeededRandom } from '../config/ConfigManager';
 
 export interface Ball {
@@ -13,6 +13,7 @@ export class PhysicsEngine {
   private balls: Ball[] = [];
   private positions: Float32Array;
   private useWorker: boolean;
+  private currentModifiedAttractors: Attractor[] = [];
 
   constructor(useWorker: boolean = true) {
     this.useWorker = useWorker;
@@ -42,6 +43,11 @@ export class PhysicsEngine {
         for (let i = 0; i < this.balls.length; i++) {
           this.balls[i].x = this.positions[i * 2];
           this.balls[i].y = this.positions[i * 2 + 1];
+        }
+
+        // Store modified attractors if provided
+        if (e.data.modifiedAttractors) {
+          this.currentModifiedAttractors = e.data.modifiedAttractors;
         }
       }
     };
@@ -107,23 +113,32 @@ export class PhysicsEngine {
     }
   }
 
-  step(attractors: Attractor[], config: PhysicsConfig): void {
+  step(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = []): void {
     if (this.worker) {
       this.worker.postMessage({
         type: 'step',
         attractors,
-        config
+        config,
+        reinforcements
       });
     } else {
-      this.stepLocal(attractors, config);
+      this.stepLocal(attractors, config, reinforcements);
     }
   }
 
-  private stepLocal(attractors: Attractor[], config: PhysicsConfig): void {
+  private stepLocal(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = []): void {
     const { dt, damping, maxSpeed, noise, stickiness } = config;
 
+    console.log(`[PhysicsEngine] Step called with ${reinforcements.length} reinforcements, ${this.balls.length} balls`);
+
+    // Apply dynamic strength modifications based on reinforcements
+    const modifiedAttractors = this.applyReinforcementDynamics(attractors, reinforcements);
+
+    // Store modified attractors for rendering
+    this.currentModifiedAttractors = modifiedAttractors;
+
     for (const ball of this.balls) {
-      const grad = this.gradientV(ball.x, ball.y, attractors);
+      const grad = this.gradientV(ball.x, ball.y, modifiedAttractors);
       const fx = -grad.x;
       const fy = -grad.y;
 
@@ -153,6 +168,58 @@ export class PhysicsEngine {
     }
   }
 
+  private applyReinforcementDynamics(attractors: Attractor[], reinforcements: Reinforcement[]): Attractor[] {
+    if (reinforcements.length === 0) {
+      return attractors;
+    }
+
+    // Create a map to track strength modifications for each attractor
+    const strengthModifications = new Map<string, number>();
+
+    // For each attractor with reinforcements, check if it has balls in it
+    for (const reinforcement of reinforcements) {
+      const sourceAttractor = attractors.find(a => a.id === reinforcement.fromId);
+      if (!sourceAttractor) continue;
+
+      // Count balls within this attractor (distance < sigma * 2 for wider capture)
+      let ballsInAttractor = 0;
+      const captureRadius = sourceAttractor.sigma * 2.0; // Wider detection zone
+
+      for (const ball of this.balls) {
+        const dx = ball.x - sourceAttractor.pos.x;
+        const dy = ball.y - sourceAttractor.pos.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Ball is "in" the attractor if within capture radius
+        if (distance < captureRadius) {
+          ballsInAttractor++;
+        }
+      }
+
+      // If there are balls in the source attractor, increase target attractor strength
+      if (ballsInAttractor > 0) {
+        const currentMod = strengthModifications.get(reinforcement.toId) || 0;
+        // Strength increase: reinforcement strength * number of balls * 0.02 for very subtle effect
+        const strengthIncrease = ballsInAttractor * reinforcement.strength * 0.02;
+        strengthModifications.set(reinforcement.toId, currentMod + strengthIncrease);
+        console.log(`Reinforcement: ${ballsInAttractor} balls in ${reinforcement.fromId} -> ${reinforcement.toId}, adding ${strengthIncrease} strength`);
+      }
+    }
+
+    // Apply modifications and return new array
+    return attractors.map(attractor => {
+      const modification = strengthModifications.get(attractor.id);
+      if (modification !== undefined && modification !== 0) {
+        // Increase the magnitude of strength (preserve sign)
+        const sign = Math.sign(attractor.strength) || 1;
+        const newStrength = attractor.strength + (sign * Math.abs(modification));
+        console.log(`Applied to ${attractor.id}: ${attractor.strength} -> ${newStrength}`);
+        return { ...attractor, strength: newStrength };
+      }
+      return attractor;
+    });
+  }
+
   private gradientV(x: number, y: number, attractors: Attractor[]): Vec2 {
     let gx = 0;
     let gy = 0;
@@ -180,6 +247,10 @@ export class PhysicsEngine {
 
   getPositions(): Float32Array {
     return this.positions;
+  }
+
+  getModifiedAttractors(): Attractor[] {
+    return this.currentModifiedAttractors;
   }
 
   reset(

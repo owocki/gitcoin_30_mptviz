@@ -35,7 +35,20 @@ export const DEFAULT_CONFIG: SceneConfig = {
       label: 'Attractor 3'
     }
   ],
-  reinforcements: [],
+  reinforcements: [
+    {
+      id: 'r1',
+      fromId: 'a1',
+      toId: 'a2',
+      strength: 1
+    },
+    {
+      id: 'r2',
+      fromId: 'a2',
+      toId: 'a3',
+      strength: 1
+    }
+  ],
   balls: {
     count: 50,
     spawn: 'random',

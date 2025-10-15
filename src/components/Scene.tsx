@@ -114,12 +114,20 @@ export const Scene: React.FC = () => {
     const physicsLoop = () => {
       if (!physicsRef.current || !rendererRef.current) return;
 
-      // Step physics
-      physicsRef.current.step(config.attractors, config.balls.physics);
+      // Step physics with reinforcements
+      physicsRef.current.step(config.attractors, config.balls.physics, config.reinforcements || []);
+
+      // Get modified attractors from physics (with dynamic strength from reinforcements)
+      const modifiedAttractors = physicsRef.current.getModifiedAttractors();
+
+      // Update surface with dynamic attractors if they exist
+      if (modifiedAttractors.length > 0) {
+        rendererRef.current.updateSurfaceDynamic(modifiedAttractors);
+      }
 
       // Update renderer with physics (balls follow surface)
       const balls = physicsRef.current.getBalls();
-      rendererRef.current.updateBalls(balls, true);
+      rendererRef.current.updateBalls(balls, true, modifiedAttractors.length > 0 ? modifiedAttractors : undefined);
 
       animationId = requestAnimationFrame(physicsLoop);
     };
@@ -131,7 +139,7 @@ export const Scene: React.FC = () => {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [isPlaying, config.attractors, config.balls.physics]);
+  }, [isPlaying, config.attractors, config.balls.physics, config.reinforcements]);
 
   const handlePlayPause = () => {
     if (!isPlaying) {
@@ -218,8 +226,8 @@ export const Scene: React.FC = () => {
 
       const canvas = rendererRef.current.getCanvas();
       const onFrame = () => {
-        // Step physics with falling animation
-        physicsRef.current!.step(config.attractors, config.balls.physics);
+        // Step physics with falling animation and reinforcements
+        physicsRef.current!.step(config.attractors, config.balls.physics, config.reinforcements || []);
         const balls = physicsRef.current!.getBalls();
         rendererRef.current!.updateBalls(balls, true);
         rendererRef.current!.render();

@@ -496,8 +496,9 @@ export class Renderer {
     }
   }
 
-  updateBalls(balls: Ball[], isPlaying: boolean = false): void {
+  updateBalls(balls: Ball[], isPlaying: boolean = false, dynamicAttractors?: Attractor[]): void {
     const { surface, balls: ballConfig } = this.config;
+    const attractorsToUse = dynamicAttractors || this.config.attractors;
 
     for (let i = 0; i < balls.length && i < this.ballMeshes.length; i++) {
       const ball = balls[i];
@@ -505,7 +506,7 @@ export class Renderer {
 
       if (isPlaying) {
         // When playing, follow physics and rest on surface
-        const z = this.fieldKernel.potential(ball.x, ball.y, this.config.attractors) * surface.zScale;
+        const z = this.fieldKernel.potential(ball.x, ball.y, attractorsToUse) * surface.zScale;
         mesh.position.set(ball.x, -ball.y, z + ballConfig.radius * 1.5);
 
         // Update trail
@@ -568,6 +569,74 @@ export class Renderer {
     this.initSurface();
     this.initAttractorLabels();
     this.initReinforcements();
+  }
+
+  updateSurfaceDynamic(attractors: Attractor[]): void {
+    // Fast update of surface geometry for dynamic attractor changes during play
+    if (!this.surfaceMesh) return;
+
+    const { surface } = this.config;
+    const { resolution, extent, zScale } = surface;
+
+    // Sample the field with modified attractors
+    const field = this.fieldKernel.sampleField(attractors, resolution, extent);
+
+    const geometry = this.surfaceMesh.geometry;
+    const positions = geometry.attributes.position.array as Float32Array;
+    const colors = new Float32Array(positions.length);
+
+    // Update heights and colors
+    for (let iy = 0; iy < resolution; iy++) {
+      for (let ix = 0; ix < resolution; ix++) {
+        const idx = iy * resolution + ix;
+        const v = field[iy][ix];
+
+        // Set Z coordinate (height)
+        positions[idx * 3 + 2] = v * zScale;
+
+        // Calculate position in world space
+        const x = extent.xMin + (ix / (resolution - 1)) * (extent.xMax - extent.xMin);
+        const y = extent.yMin + (iy / (resolution - 1)) * (extent.yMax - extent.yMin);
+
+        // Blend attractor colors based on their influence at this point
+        let totalInfluence = 0;
+        let blendedR = 0, blendedG = 0, blendedB = 0;
+
+        attractors.forEach(attractor => {
+          const dx = x - attractor.pos.x;
+          const dy = y - attractor.pos.y;
+          const r2 = dx * dx + dy * dy;
+          const sigma2 = attractor.sigma * attractor.sigma;
+
+          // Calculate influence using gaussian
+          const influence = Math.abs(attractor.strength) * Math.exp(-r2 / (2 * sigma2));
+          totalInfluence += influence;
+
+          // Parse attractor color
+          const attractorColor = new THREE.Color(attractor.color);
+          blendedR += attractorColor.r * influence;
+          blendedG += attractorColor.g * influence;
+          blendedB += attractorColor.b * influence;
+        });
+
+        // Normalize by total influence
+        if (totalInfluence > 0) {
+          colors[idx * 3] = blendedR / totalInfluence;
+          colors[idx * 3 + 1] = blendedG / totalInfluence;
+          colors[idx * 3 + 2] = blendedB / totalInfluence;
+        } else {
+          // Fallback color if no influence
+          colors[idx * 3] = 0.2;
+          colors[idx * 3 + 1] = 0.2;
+          colors[idx * 3 + 2] = 0.2;
+        }
+      }
+    }
+
+    // Update geometry
+    geometry.attributes.position.needsUpdate = true;
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.computeVertexNormals();
   }
 
   updateConfig(config: SceneConfig): void {
