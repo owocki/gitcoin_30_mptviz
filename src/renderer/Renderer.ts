@@ -297,16 +297,21 @@ export class Renderer {
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d')!;
-    canvas.width = 512;
-    canvas.height = 256;
 
-    // Set font
+    // Set font first to measure text accurately
     context.font = `Bold ${fontsize}px Arial`;
 
-    // Measure text to create tight background
+    // Measure text to determine canvas size
     const metrics = context.measureText(message);
     const textWidth = metrics.width;
     const textHeight = fontsize * 1.2; // Approximate height
+
+    // Set canvas size dynamically based on text width (with 30% extra space)
+    canvas.width = Math.max(512, textWidth * 1.3 + padding * 2);
+    canvas.height = 256;
+
+    // Re-set font after changing canvas size (canvas resize clears context)
+    context.font = `Bold ${fontsize}px Arial`;
 
     // Draw background rectangle around text with padding
     context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
