@@ -3,11 +3,12 @@ import { Scene } from './components/Scene';
 import { Controls } from './components/Controls';
 import { StackedScene } from './components/StackedScene';
 import { useStore } from './store/useStore';
-import { getConfigFromURL, copyShareableURL } from './utils/urlParams';
+import { getConfigFromURL, copyShareableURL, copyPreviewImageURL } from './utils/urlParams';
 
 function App() {
   const { config, setConfig } = useStore();
   const [copySuccess, setCopySuccess] = useState(false);
+  const [copyPreviewSuccess, setCopyPreviewSuccess] = useState(false);
   const [currentPage, setCurrentPage] = useState<'single' | 'stacked'>('single');
 
   // Handle hash-based routing
@@ -56,6 +57,16 @@ function App() {
     }
   };
 
+  const handleCopyPreviewURL = async () => {
+    try {
+      await copyPreviewImageURL(config);
+      setCopyPreviewSuccess(true);
+      setTimeout(() => setCopyPreviewSuccess(false), 2000);
+    } catch (error) {
+      console.error('Failed to copy preview URL:', error);
+    }
+  };
+
   // Render stacked view
   if (currentPage === 'stacked') {
     return <StackedScene />;
@@ -69,6 +80,7 @@ function App() {
           <button onClick={handleShare} style={styles.button}>
             {copySuccess ? 'Copied!' : 'Copy Shareable Link'}
           </button>
+
           <button
             onClick={() => window.location.hash = 'stacked'}
             style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}

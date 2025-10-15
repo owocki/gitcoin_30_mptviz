@@ -100,3 +100,14 @@ export function getConfigFromURLString(urlString: string): Partial<SceneConfig> 
     return null;
   }
 }
+
+/**
+ * Copy preview image URL to clipboard
+ */
+export function copyPreviewImageURL(config: SceneConfig): Promise<void> {
+  const encoded = encodeConfigToURL(config);
+  const url = new URL(window.location.origin + '/api/preview');
+  url.searchParams.set('cfg', encoded);
+
+  return navigator.clipboard.writeText(url.toString());
+}

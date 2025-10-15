@@ -4,10 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "node server.js",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.prod.js"
   },
   "dependencies": {
+    "@types/express": "^5.0.3",
+    "express": "^5.1.0",
+    "puppeteer": "^24.24.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.161.0",
