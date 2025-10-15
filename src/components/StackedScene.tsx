@@ -72,7 +72,9 @@ export const StackedScene: React.FC = () => {
   // Initialize state from URL - LAZY INITIALIZATION (only runs once, survives Strict Mode)
   const [configs, setConfigs] = useState<Partial<SceneConfig>[]>(() => {
     console.log('[StackedScene] Initializing configs from URL');
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.slice(1); // Remove '#'
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : ''; // Remove 'stacked?'
+    const params = new URLSearchParams(hashParams);
     const urlsParam = params.get('urls');
 
     if (!urlsParam) {
@@ -96,13 +98,17 @@ export const StackedScene: React.FC = () => {
   });
 
   const [zSpacing, setZSpacing] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.slice(1);
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+    const params = new URLSearchParams(hashParams);
     const spacingParam = params.get('spacing');
     return spacingParam ? parseFloat(spacingParam) : 0.5;
   });
 
   const [showLabels, setShowLabels] = useState<boolean[]>(() => {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.slice(1);
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+    const params = new URLSearchParams(hashParams);
     const labelsParam = params.get('labels');
     const urlsParam = params.get('urls');
 
@@ -117,7 +123,9 @@ export const StackedScene: React.FC = () => {
   });
 
   const [stackTitle, setStackTitle] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash.slice(1);
+    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+    const params = new URLSearchParams(hashParams);
     const titleParam = params.get('title');
     return titleParam || 'Stacked Incentive Fields';
   });
@@ -139,7 +147,9 @@ export const StackedScene: React.FC = () => {
   // Populate URL textarea after 0.5s on page load
   useEffect(() => {
     const timer = setTimeout(() => {
-      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash.slice(1);
+      const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
+      const params = new URLSearchParams(hashParams);
       const urlsParam = params.get('urls');
 
       if (urlsParam) {
@@ -498,7 +508,7 @@ export const StackedScene: React.FC = () => {
     const queryString = params.toString();
     console.log('[StackedScene] Generated query string:', queryString);
 
-    const shareUrl = `${window.location.origin}/stacked?${queryString}`;
+    const shareUrl = `${window.location.origin}/#stacked?${queryString}`;
     console.log('[StackedScene] Final share URL:', shareUrl);
 
     // Copy to clipboard
@@ -554,7 +564,7 @@ export const StackedScene: React.FC = () => {
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <button
-          onClick={() => window.location.href = '/'}
+          onClick={() => window.location.hash = ''}
           style={{ ...styles.button, backgroundColor: '#6c757d', marginBottom: '20px' }}
         >
           ← Back to Single View

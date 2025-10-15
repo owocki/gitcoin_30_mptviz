@@ -13,12 +13,11 @@ function App() {
   // Handle hash-based routing
   useEffect(() => {
     const updatePage = () => {
-      const path = window.location.pathname;
       const hash = window.location.hash.slice(1); // Remove the '#'
-      console.log('[App] Path:', path, 'Hash:', hash);
+      console.log('[App] Hash:', hash);
 
-      // Route to stacked view if path is /stacked or hash is 'stacked'
-      if (path === '/stacked' || hash === 'stacked' || hash.startsWith('stacked?')) {
+      // Route to stacked view if hash is 'stacked'
+      if (hash === 'stacked' || hash.startsWith('stacked?')) {
         console.log('[App] Routing to stacked view');
         setCurrentPage('stacked');
       } else {
@@ -71,7 +70,7 @@ function App() {
             {copySuccess ? 'Copied!' : 'Copy Shareable Link'}
           </button>
           <button
-            onClick={() => window.location.href = '/stacked'}
+            onClick={() => window.location.hash = 'stacked'}
             style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}
           >
             Stack Multiple Fields
