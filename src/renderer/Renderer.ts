@@ -1,0 +1,291 @@
+import * as THREE from 'three';
+import { SceneConfig, Attractor } from '../types/config';
+import { FieldKernel } from '../physics/FieldKernel';
+import { Ball } from '../physics/PhysicsEngine';
+import { sampleColormap, ColormapType } from './colormaps';
+
+export class Renderer {
+  private scene: THREE.Scene;
+  private camera: THREE.PerspectiveCamera;
+  private renderer: THREE.WebGLRenderer;
+  private fieldKernel: FieldKernel;
+
+  private surfaceMesh: THREE.Mesh | null = null;
+  private gridHelper: THREE.GridHelper | null = null;
+  private ballMeshes: THREE.Mesh[] = [];
+  private trailLines: THREE.Line[] = [];
+  private trailBuffers: THREE.Vector3[][] = [];
+
+  private config: SceneConfig;
+  private animationId: number | null = null;
+  private isPlaying: boolean = false;
+
+  constructor(canvas: HTMLCanvasElement, config: SceneConfig) {
+    this.config = config;
+    this.fieldKernel = new FieldKernel('gaussian');
+
+    // Setup renderer
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      preserveDrawingBuffer: true // For export
+    });
+    this.renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setClearColor(new THREE.Color(config.render.background), 1);
+
+    // Setup scene
+    this.scene = new THREE.Scene();
+
+    // Setup camera
+    this.camera = new THREE.PerspectiveCamera(
+      50,
+      canvas.clientWidth / canvas.clientHeight,
+      0.1,
+      100
+    );
+    this.updateCameraPosition();
+
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    this.scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(5, 10, 7);
+    this.scene.add(dirLight);
+
+    // Initialize scene
+    this.initSurface();
+    this.initGrid();
+  }
+
+  private updateCameraPosition(): void {
+    const { azimuth, elevation, distance } = this.config.camera;
+    const azRad = (azimuth * Math.PI) / 180;
+    const elRad = (elevation * Math.PI) / 180;
+
+    this.camera.position.set(
+      distance * Math.cos(elRad) * Math.cos(azRad),
+      distance * Math.sin(elRad),
+      distance * Math.cos(elRad) * Math.sin(azRad)
+    );
+    this.camera.lookAt(0, 0, 0);
+  }
+
+  private initSurface(): void {
+    const { surface, attractors, render } = this.config;
+    const { resolution, extent, zScale } = surface;
+
+    // Sample the field
+    const field = this.fieldKernel.sampleField(attractors, resolution, extent);
+    const { min, max } = this.fieldKernel.getFieldRange(field);
+
+    // Create geometry
+    const geometry = new THREE.PlaneGeometry(
+      extent.xMax - extent.xMin,
+      extent.yMax - extent.yMin,
+      resolution - 1,
+      resolution - 1
+    );
+
+    const positions = geometry.attributes.position.array as Float32Array;
+    const colors = new Float32Array(positions.length);
+
+    // Update heights and colors
+    for (let iy = 0; iy < resolution; iy++) {
+      for (let ix = 0; ix < resolution; ix++) {
+        const idx = iy * resolution + ix;
+        const v = field[iy][ix];
+
+        // Set Z coordinate (height)
+        positions[idx * 3 + 2] = v * zScale;
+
+        // Set color based on normalized potential
+        const t = max > min ? (v - min) / (max - min) : 0;
+        const color = sampleColormap(render.colormap as ColormapType, t);
+        colors[idx * 3] = color.r;
+        colors[idx * 3 + 1] = color.g;
+        colors[idx * 3 + 2] = color.b;
+      }
+    }
+
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.computeVertexNormals();
+
+    // Create material
+    const material = new THREE.MeshStandardMaterial({
+      vertexColors: true,
+      roughness: 0.7,
+      metalness: 0.2,
+      side: THREE.DoubleSide
+    });
+
+    // Create mesh
+    if (this.surfaceMesh) {
+      this.scene.remove(this.surfaceMesh);
+    }
+    this.surfaceMesh = new THREE.Mesh(geometry, material);
+    this.scene.add(this.surfaceMesh);
+  }
+
+  private initGrid(): void {
+    if (this.gridHelper) {
+      this.scene.remove(this.gridHelper);
+    }
+
+    if (!this.config.render.grid.show) return;
+
+    const { divisions, color } = this.config.render.grid;
+    const size = Math.max(
+      this.config.surface.extent.xMax - this.config.surface.extent.xMin,
+      this.config.surface.extent.yMax - this.config.surface.extent.yMin
+    );
+
+    this.gridHelper = new THREE.GridHelper(size, divisions, color, color);
+    this.gridHelper.rotation.x = Math.PI / 2;
+    this.gridHelper.position.z = -0.01;
+    this.scene.add(this.gridHelper);
+  }
+
+  initBalls(count: number): void {
+    // Clear existing balls
+    this.ballMeshes.forEach(mesh => this.scene.remove(mesh));
+    this.ballMeshes = [];
+
+    this.trailLines.forEach(line => this.scene.remove(line));
+    this.trailLines = [];
+    this.trailBuffers = [];
+
+    const { radius, color: ballColor, trail } = this.config.balls;
+
+    // Create ball meshes
+    const geometry = new THREE.SphereGeometry(radius, 16, 16);
+    const material = new THREE.MeshStandardMaterial({
+      color: ballColor,
+      roughness: 0.4,
+      metalness: 0.6
+    });
+
+    for (let i = 0; i < count; i++) {
+      const mesh = new THREE.Mesh(geometry, material);
+      this.scene.add(mesh);
+      this.ballMeshes.push(mesh);
+
+      if (trail.enable) {
+        this.trailBuffers.push([]);
+        const lineGeometry = new THREE.BufferGeometry();
+        const lineMaterial = new THREE.LineBasicMaterial({
+          color: ballColor,
+          opacity: trail.opacity,
+          transparent: true
+        });
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+        this.scene.add(line);
+        this.trailLines.push(line);
+      }
+    }
+  }
+
+  updateBalls(balls: Ball[]): void {
+    const { surface, balls: ballConfig } = this.config;
+
+    for (let i = 0; i < balls.length && i < this.ballMeshes.length; i++) {
+      const ball = balls[i];
+      const mesh = this.ballMeshes[i];
+
+      // Sample height from field
+      const z = this.fieldKernel.potential(ball.x, ball.y, this.config.attractors) * surface.zScale;
+
+      mesh.position.set(ball.x, ball.y, z + ballConfig.radius * 1.5);
+
+      // Update trail
+      if (ballConfig.trail.enable && this.trailBuffers[i]) {
+        const trailBuffer = this.trailBuffers[i];
+        trailBuffer.push(new THREE.Vector3(ball.x, ball.y, z));
+
+        if (trailBuffer.length > ballConfig.trail.length) {
+          trailBuffer.shift();
+        }
+
+        const positions = new Float32Array(trailBuffer.length * 3);
+        trailBuffer.forEach((pos, idx) => {
+          positions[idx * 3] = pos.x;
+          positions[idx * 3 + 1] = pos.y;
+          positions[idx * 3 + 2] = pos.z;
+        });
+
+        this.trailLines[i].geometry.setAttribute(
+          'position',
+          new THREE.BufferAttribute(positions, 3)
+        );
+      }
+    }
+  }
+
+  updateSurface(attractors: Attractor[]): void {
+    const { surface, render } = this.config;
+    const { resolution, extent, zScale } = surface;
+
+    if (!this.surfaceMesh) return;
+
+    const field = this.fieldKernel.sampleField(attractors, resolution, extent);
+    const { min, max } = this.fieldKernel.getFieldRange(field);
+
+    const geometry = this.surfaceMesh.geometry;
+    const positions = geometry.attributes.position.array as Float32Array;
+    const colors = geometry.attributes.color.array as Float32Array;
+
+    for (let iy = 0; iy < resolution; iy++) {
+      for (let ix = 0; ix < resolution; ix++) {
+        const idx = iy * resolution + ix;
+        const v = field[iy][ix];
+
+        positions[idx * 3 + 2] = v * zScale;
+
+        const t = max > min ? (v - min) / (max - min) : 0;
+        const color = sampleColormap(render.colormap as ColormapType, t);
+        colors[idx * 3] = color.r;
+        colors[idx * 3 + 1] = color.g;
+        colors[idx * 3 + 2] = color.b;
+      }
+    }
+
+    geometry.attributes.position.needsUpdate = true;
+    geometry.attributes.color.needsUpdate = true;
+    geometry.computeVertexNormals();
+  }
+
+  updateConfig(config: SceneConfig): void {
+    this.config = config;
+    this.renderer.setClearColor(new THREE.Color(config.render.background), 1);
+    this.updateCameraPosition();
+    this.initSurface();
+    this.initGrid();
+  }
+
+  render(): void {
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  resize(width: number, height: number): void {
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(width, height);
+  }
+
+  getCanvas(): HTMLCanvasElement {
+    return this.renderer.domElement;
+  }
+
+  getRenderer(): THREE.WebGLRenderer {
+    return this.renderer;
+  }
+
+  destroy(): void {
+    if (this.animationId !== null) {
+      cancelAnimationFrame(this.animationId);
+    }
+    this.renderer.dispose();
+  }
+}
