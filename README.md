@@ -1,4 +1,4 @@
-# Attractor Field Visualizer
+# Multi-Polar Trap Visualizer
 
 A real-time interactive web application that visualizes gravity-like potential fields created by configurable attractors, with physics-based ball simulation and export capabilities.
 
