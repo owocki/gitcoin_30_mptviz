@@ -387,8 +387,8 @@ export class Renderer {
 
       // Create arrow group
       const arrowGroup = this.createCurvedArrow(
-        new THREE.Vector3(fromAttractor.pos.x, fromAttractor.pos.y, fromZ),
-        new THREE.Vector3(toAttractor.pos.x, toAttractor.pos.y, toZ),
+        new THREE.Vector3(fromAttractor.pos.x, -fromAttractor.pos.y, fromZ),
+        new THREE.Vector3(toAttractor.pos.x, -toAttractor.pos.y, toZ),
         fromAttractor.color,
         reinforcement.strength
       );
