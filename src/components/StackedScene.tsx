@@ -16,6 +16,7 @@ export const StackedScene: React.FC = () => {
 
   const [urlsText, setUrlsText] = useState('');
   const [configs, setConfigs] = useState<Partial<SceneConfig>[]>([]);
+  const [zSpacing, setZSpacing] = useState(0.5);
 
   // Initialize Three.js scene
   useEffect(() => {
@@ -95,7 +96,7 @@ export const StackedScene: React.FC = () => {
     };
   }, []);
 
-  // Render stacked fields when configs change
+  // Render stacked fields when configs or spacing change
   useEffect(() => {
     if (!sceneRef.current || configs.length === 0) return;
 
@@ -111,7 +112,6 @@ export const StackedScene: React.FC = () => {
     meshesToRemove.forEach((mesh) => scene.remove(mesh));
 
     const fieldKernel = new FieldKernel('gaussian');
-    const zSpacing = 0.5; // Vertical spacing between layers
 
     configs.forEach((partialConfig, index) => {
       const config = { ...DEFAULT_CONFIG, ...partialConfig };
@@ -196,7 +196,7 @@ export const StackedScene: React.FC = () => {
       const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
     });
-  }, [configs]);
+  }, [configs, zSpacing]);
 
   const handleGenerate = () => {
     // Split URLs by newlines or commas
@@ -241,9 +241,37 @@ export const StackedScene: React.FC = () => {
           Generate Stacked View
         </button>
         {configs.length > 0 && (
-          <p style={styles.info}>
-            Showing {configs.length} stacked field{configs.length !== 1 ? 's' : ''}
-          </p>
+          <>
+            <p style={styles.info}>
+              Showing {configs.length} stacked field{configs.length !== 1 ? 's' : ''}
+            </p>
+            <div style={styles.spacingControls}>
+              <label style={styles.spacingLabel}>
+                Layer Spacing: {zSpacing.toFixed(2)}
+              </label>
+              <div style={styles.buttonGroup}>
+                <button
+                  onClick={() => setZSpacing(Math.max(0, zSpacing - 0.1))}
+                  style={styles.smallButton}
+                  disabled={zSpacing <= 0}
+                >
+                  Compress
+                </button>
+                <button
+                  onClick={() => setZSpacing(zSpacing + 0.1)}
+                  style={styles.smallButton}
+                >
+                  Expand
+                </button>
+                <button
+                  onClick={() => setZSpacing(0)}
+                  style={styles.smallButton}
+                >
+                  Merge
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
       <div style={styles.canvasWrapper}>
@@ -311,6 +339,36 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     color: '#66ccff',
     fontWeight: 500,
+  },
+  spacingControls: {
+    marginTop: '15px',
+    padding: '15px',
+    backgroundColor: '#242730',
+    borderRadius: '8px',
+    border: '1px solid #3a3d45',
+  },
+  spacingLabel: {
+    display: 'block',
+    marginBottom: '10px',
+    fontSize: '14px',
+    color: '#e0e0e0',
+    fontWeight: 500,
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '8px',
+  },
+  smallButton: {
+    flex: 1,
+    padding: '8px 12px',
+    backgroundColor: '#4a7dff',
+    border: 'none',
+    borderRadius: '4px',
+    color: 'white',
+    fontSize: '13px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
   },
   canvasWrapper: {
     flex: 1,
