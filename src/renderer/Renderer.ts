@@ -156,12 +156,42 @@ export class Renderer {
         // Set Z coordinate (height)
         positions[idx * 3 + 2] = v * zScale;
 
-        // Set color based on normalized potential
-        const t = max > min ? (v - min) / (max - min) : 0;
-        const color = sampleColormap(render.colormap as ColormapType, t);
-        colors[idx * 3] = color.r;
-        colors[idx * 3 + 1] = color.g;
-        colors[idx * 3 + 2] = color.b;
+        // Calculate position in world space
+        const x = extent.xMin + (ix / (resolution - 1)) * (extent.xMax - extent.xMin);
+        const y = extent.yMin + (iy / (resolution - 1)) * (extent.yMax - extent.yMin);
+
+        // Blend attractor colors based on their influence at this point
+        let totalInfluence = 0;
+        let blendedR = 0, blendedG = 0, blendedB = 0;
+
+        attractors.forEach(attractor => {
+          const dx = x - attractor.pos.x;
+          const dy = y - attractor.pos.y;
+          const r2 = dx * dx + dy * dy;
+          const sigma2 = attractor.sigma * attractor.sigma;
+
+          // Calculate influence using gaussian
+          const influence = Math.abs(attractor.strength) * Math.exp(-r2 / (2 * sigma2));
+          totalInfluence += influence;
+
+          // Parse attractor color
+          const attractorColor = new THREE.Color(attractor.color);
+          blendedR += attractorColor.r * influence;
+          blendedG += attractorColor.g * influence;
+          blendedB += attractorColor.b * influence;
+        });
+
+        // Normalize by total influence
+        if (totalInfluence > 0) {
+          colors[idx * 3] = blendedR / totalInfluence;
+          colors[idx * 3 + 1] = blendedG / totalInfluence;
+          colors[idx * 3 + 2] = blendedB / totalInfluence;
+        } else {
+          // Fallback color if no influence
+          colors[idx * 3] = 0.2;
+          colors[idx * 3 + 1] = 0.2;
+          colors[idx * 3 + 2] = 0.2;
+        }
       }
     }
 
@@ -362,36 +392,8 @@ export class Renderer {
   }
 
   updateSurface(attractors: Attractor[]): void {
-    const { surface, render } = this.config;
-    const { resolution, extent, zScale } = surface;
-
-    if (!this.surfaceMesh) return;
-
-    const field = this.fieldKernel.sampleField(attractors, resolution, extent);
-    const { min, max } = this.fieldKernel.getFieldRange(field);
-
-    const geometry = this.surfaceMesh.geometry;
-    const positions = geometry.attributes.position.array as Float32Array;
-    const colors = geometry.attributes.color.array as Float32Array;
-
-    for (let iy = 0; iy < resolution; iy++) {
-      for (let ix = 0; ix < resolution; ix++) {
-        const idx = iy * resolution + ix;
-        const v = field[iy][ix];
-
-        positions[idx * 3 + 2] = v * zScale;
-
-        const t = max > min ? (v - min) / (max - min) : 0;
-        const color = sampleColormap(render.colormap as ColormapType, t);
-        colors[idx * 3] = color.r;
-        colors[idx * 3 + 1] = color.g;
-        colors[idx * 3 + 2] = color.b;
-      }
-    }
-
-    geometry.attributes.position.needsUpdate = true;
-    geometry.attributes.color.needsUpdate = true;
-    geometry.computeVertexNormals();
+    // Regenerate surface with new attractor colors
+    this.initSurface();
   }
 
   updateConfig(config: SceneConfig): void {

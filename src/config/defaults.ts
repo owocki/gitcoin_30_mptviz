@@ -41,10 +41,10 @@ export const DEFAULT_CONFIG: SceneConfig = {
     }
   },
   labels: {
-    title: 'Gravity Field',
-    x: 'X',
-    y: 'Y',
-    z: 'Potential'
+    title: 'Multi Polar Trap',
+    x: 'design space',
+    y: 'design space',
+    z: 'human thriving'
   },
   camera: {
     azimuth: 270,
