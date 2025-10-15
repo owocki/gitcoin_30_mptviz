@@ -60,10 +60,11 @@ export function Gallery() {
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    minHeight: '100vh',
+    height: '100vh',
     backgroundColor: '#0f1114',
     color: '#fff',
     overflow: 'auto',
+    WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
   },
   header: {
     textAlign: 'center',

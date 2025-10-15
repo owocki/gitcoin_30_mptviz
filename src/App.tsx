@@ -6,11 +6,28 @@ import { Gallery } from './components/Gallery';
 import { useStore } from './store/useStore';
 import { getConfigFromURL, copyShareableURL, copyPreviewImageURL } from './utils/urlParams';
 
+// Mobile detection utility
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    window.innerWidth <= 768;
+};
+
 function App() {
   const { config, setConfig } = useStore();
   const [copySuccess, setCopySuccess] = useState(false);
   const [copyPreviewSuccess, setCopyPreviewSuccess] = useState(false);
   const [currentPage, setCurrentPage] = useState<'gallery' | 'create' | 'stacked'>('gallery');
+  const [isMobile, setIsMobile] = useState(isMobileDevice());
+
+  // Check for mobile on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(isMobileDevice());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Handle hash-based routing
   useEffect(() => {
@@ -76,12 +93,38 @@ function App() {
     return <Gallery />;
   }
 
+  // Mobile warning component
+  const MobileWarning = () => (
+    <div style={styles.mobileWarning}>
+      <div style={styles.mobileWarningContent}>
+        <h2 style={styles.mobileWarningTitle}>Desktop Required</h2>
+        <p style={styles.mobileWarningText}>
+          This visualization tool requires a desktop browser for the best experience.
+          Please visit this page on a desktop computer.
+        </p>
+        <button
+          onClick={() => window.location.hash = ''}
+          style={styles.mobileWarningButton}
+        >
+          Back to Gallery
+        </button>
+      </div>
+    </div>
+  );
+
   // Render stacked view
   if (currentPage === 'stacked') {
+    if (isMobile) {
+      return <MobileWarning />;
+    }
     return <StackedScene />;
   }
 
   // Render create view
+  if (isMobile) {
+    return <MobileWarning />;
+  }
+
   return (
     <div style={styles.container}>
       <div style={styles.sidebar}>
@@ -145,6 +188,49 @@ const styles: Record<string, React.CSSProperties> = {
     color: 'white',
     fontSize: '14px',
     fontWeight: 500,
+    cursor: 'pointer'
+  },
+  mobileWarning: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    width: '100vw',
+    backgroundColor: '#0f1114',
+    padding: '20px'
+  },
+  mobileWarningContent: {
+    maxWidth: '500px',
+    textAlign: 'center',
+    backgroundColor: '#1a1d23',
+    padding: '40px',
+    borderRadius: '12px',
+    border: '1px solid #3a3d45'
+  },
+  mobileWarningTitle: {
+    fontSize: '28px',
+    fontWeight: 700,
+    color: '#fff',
+    marginBottom: '20px',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text'
+  },
+  mobileWarningText: {
+    fontSize: '16px',
+    color: '#a8adb7',
+    marginBottom: '30px',
+    lineHeight: '1.6'
+  },
+  mobileWarningButton: {
+    padding: '12px 32px',
+    backgroundColor: '#28a745',
+    border: 'none',
+    borderRadius: '6px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
     cursor: 'pointer'
   }
 };
