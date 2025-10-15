@@ -80,7 +80,6 @@ function App() {
           <button onClick={handleShare} style={styles.button}>
             {copySuccess ? 'Copied!' : 'Copy Shareable Link'}
           </button>
-
           <button
             onClick={() => window.location.hash = 'stacked'}
             style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}

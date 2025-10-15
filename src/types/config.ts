@@ -19,6 +19,13 @@ export interface Attractor {
   label?: string;
 }
 
+export interface Reinforcement {
+  id: string;
+  fromId: string;
+  toId: string;
+  strength: number; // Multiplier for reinforcement effect (0-2)
+}
+
 export interface SurfaceConfig {
   resolution: number;
   extent: Extent;
@@ -105,6 +112,7 @@ export interface SceneConfig {
   };
   surface: SurfaceConfig;
   attractors: Attractor[];
+  reinforcements?: Reinforcement[];
   balls: BallsConfig;
   labels: LabelsConfig;
   camera: CameraConfig;

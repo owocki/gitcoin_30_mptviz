@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SceneConfig, Attractor } from '../types/config';
+import { SceneConfig, Attractor, Reinforcement } from '../types/config';
 import { FieldKernel } from '../physics/FieldKernel';
 import { Ball } from '../physics/PhysicsEngine';
 import { sampleColormap, ColormapType } from './colormaps';
@@ -17,6 +17,7 @@ export class Renderer {
   private axesHelper: THREE.AxesHelper | null = null;
   private axisLabels: THREE.Sprite[] = [];
   private attractorLabels: THREE.Sprite[] = [];
+  private reinforcementArrows: THREE.Group[] = [];
   private ballMeshes: THREE.Mesh[] = [];
   private trailLines: THREE.Line[] = [];
   private trailBuffers: THREE.Vector3[][] = [];
@@ -85,6 +86,7 @@ export class Renderer {
     this.initGrid();
     this.initAxes();
     this.initAttractorLabels();
+    this.initReinforcements();
   }
 
   private updateCameraPosition(): void {
@@ -357,6 +359,97 @@ export class Renderer {
     });
   }
 
+  private initReinforcements(): void {
+    // Remove old reinforcement arrows
+    this.reinforcementArrows.forEach(arrow => this.scene.remove(arrow));
+    this.reinforcementArrows = [];
+
+    const reinforcements = this.config.reinforcements || [];
+
+    reinforcements.forEach(reinforcement => {
+      const fromAttractor = this.config.attractors.find(a => a.id === reinforcement.fromId);
+      const toAttractor = this.config.attractors.find(a => a.id === reinforcement.toId);
+
+      if (!fromAttractor || !toAttractor) return;
+
+      // Calculate Z positions for the attractors
+      const fromZ = this.fieldKernel.potential(fromAttractor.pos.x, fromAttractor.pos.y, this.config.attractors)
+                    * this.config.surface.zScale + 0.2;
+      const toZ = this.fieldKernel.potential(toAttractor.pos.x, toAttractor.pos.y, this.config.attractors)
+                  * this.config.surface.zScale + 0.2;
+
+      // Create arrow group
+      const arrowGroup = this.createCurvedArrow(
+        new THREE.Vector3(fromAttractor.pos.x, fromAttractor.pos.y, fromZ),
+        new THREE.Vector3(toAttractor.pos.x, toAttractor.pos.y, toZ),
+        fromAttractor.color,
+        reinforcement.strength
+      );
+
+      this.scene.add(arrowGroup);
+      this.reinforcementArrows.push(arrowGroup);
+    });
+  }
+
+  private createCurvedArrow(
+    from: THREE.Vector3,
+    to: THREE.Vector3,
+    color: string,
+    strength: number
+  ): THREE.Group {
+    const group = new THREE.Group();
+
+    // Calculate midpoint and control point for curve
+    const mid = new THREE.Vector3().lerpVectors(from, to, 0.5);
+
+    // Calculate perpendicular offset for curve
+    const direction = new THREE.Vector3().subVectors(to, from);
+    const distance = direction.length();
+    const perpendicular = new THREE.Vector3(-direction.y, direction.x, 0).normalize();
+
+    // Curve to the right (positive perpendicular direction)
+    const curvature = distance * 0.3;
+    const controlPoint = mid.clone().add(perpendicular.multiplyScalar(curvature));
+
+    // Create curved path using quadratic bezier
+    const curve = new THREE.QuadraticBezierCurve3(from, controlPoint, to);
+
+    // Create tube geometry for thicker line
+    const tubeRadius = 0.02 * strength;
+    const tubeGeometry = new THREE.TubeGeometry(curve, 50, tubeRadius, 8, false);
+    const tubeMaterial = new THREE.MeshBasicMaterial({
+      color: color,
+      opacity: 0.9,
+      transparent: true
+    });
+    const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+    group.add(tube);
+
+    // Get points for arrowhead positioning
+    const points = curve.getPoints(50);
+
+    // Create arrowhead at the end
+    const arrowTip = points[points.length - 1];
+    const beforeTip = points[points.length - 5];
+    const arrowDirection = new THREE.Vector3().subVectors(arrowTip, beforeTip).normalize();
+
+    const arrowSize = 0.15 * strength;
+    const arrowGeometry = new THREE.ConeGeometry(arrowSize * 0.5, arrowSize, 8);
+    const arrowMaterial = new THREE.MeshBasicMaterial({ color: color, opacity: 0.8, transparent: true });
+    const arrowHead = new THREE.Mesh(arrowGeometry, arrowMaterial);
+
+    // Position and orient the arrowhead
+    arrowHead.position.copy(arrowTip);
+    arrowHead.quaternion.setFromUnitVectors(
+      new THREE.Vector3(0, 1, 0),
+      arrowDirection
+    );
+
+    group.add(arrowHead);
+
+    return group;
+  }
+
   initBalls(count: number): void {
     // Clear existing balls
     this.ballMeshes.forEach(mesh => this.scene.remove(mesh));
@@ -467,6 +560,7 @@ export class Renderer {
     // Regenerate surface with new attractor colors and labels
     this.initSurface();
     this.initAttractorLabels();
+    this.initReinforcements();
   }
 
   updateConfig(config: SceneConfig): void {
@@ -477,6 +571,7 @@ export class Renderer {
     this.initGrid();
     this.initAxes();
     this.initAttractorLabels();
+    this.initReinforcements();
   }
 
   render(): void {

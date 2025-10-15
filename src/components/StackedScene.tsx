@@ -455,6 +455,71 @@ export const StackedScene: React.FC = () => {
           }
         });
       }
+
+      // Add reinforcement arrows for this layer
+      const reinforcements = config.reinforcements || [];
+      reinforcements.forEach(reinforcement => {
+        const fromAttractor = attractors.find(a => a.id === reinforcement.fromId);
+        const toAttractor = attractors.find(a => a.id === reinforcement.toId);
+
+        if (!fromAttractor || !toAttractor) return;
+
+        // Calculate Z positions for the attractors
+        const fromZ = fieldKernel.potential(fromAttractor.pos.x, fromAttractor.pos.y, attractors) * zScale + zOffset + 0.2;
+        const toZ = fieldKernel.potential(toAttractor.pos.x, toAttractor.pos.y, attractors) * zScale + zOffset + 0.2;
+
+        // Create curved arrow
+        const from = new THREE.Vector3(fromAttractor.pos.x, fromAttractor.pos.y, fromZ);
+        const to = new THREE.Vector3(toAttractor.pos.x, toAttractor.pos.y, toZ);
+
+        // Calculate midpoint and control point for curve
+        const mid = new THREE.Vector3().lerpVectors(from, to, 0.5);
+        const direction = new THREE.Vector3().subVectors(to, from);
+        const distance = direction.length();
+        const perpendicular = new THREE.Vector3(-direction.y, direction.x, 0).normalize();
+
+        // Curve to the right
+        const curvature = distance * 0.3;
+        const controlPoint = mid.clone().add(perpendicular.multiplyScalar(curvature));
+
+        // Create curved path using quadratic bezier
+        const curve = new THREE.QuadraticBezierCurve3(from, controlPoint, to);
+
+        // Create tube geometry for thicker line
+        const tubeRadius = 0.02 * reinforcement.strength;
+        const tubeGeometry = new THREE.TubeGeometry(curve, 50, tubeRadius, 8, false);
+        const tubeMaterial = new THREE.MeshBasicMaterial({
+          color: fromAttractor.color,
+          opacity: 0.9,
+          transparent: true
+        });
+        const tube = new THREE.Mesh(tubeGeometry, tubeMaterial);
+        scene.add(tube);
+
+        // Create arrowhead at the end
+        const points = curve.getPoints(50);
+        const arrowTip = points[points.length - 1];
+        const beforeTip = points[points.length - 5];
+        const arrowDirection = new THREE.Vector3().subVectors(arrowTip, beforeTip).normalize();
+
+        const arrowSize = 0.15 * reinforcement.strength;
+        const arrowGeometry = new THREE.ConeGeometry(arrowSize * 0.5, arrowSize, 8);
+        const arrowMaterial = new THREE.MeshBasicMaterial({
+          color: fromAttractor.color,
+          opacity: 0.9,
+          transparent: true
+        });
+        const arrowHead = new THREE.Mesh(arrowGeometry, arrowMaterial);
+
+        // Position and orient the arrowhead
+        arrowHead.position.copy(arrowTip);
+        arrowHead.quaternion.setFromUnitVectors(
+          new THREE.Vector3(0, 1, 0),
+          arrowDirection
+        );
+
+        scene.add(arrowHead);
+      });
     });
 
     console.log('[StackedScene] Finished rendering all configs');

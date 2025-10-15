@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useStore } from '../store/useStore';
-import { Attractor } from '../types/config';
+import { Attractor, Reinforcement } from '../types/config';
 
 export const Controls: React.FC = () => {
-  const { config, updateAttractor, addAttractor, removeAttractor, setConfig } = useStore();
+  const { config, updateAttractor, addAttractor, removeAttractor, addReinforcement, removeReinforcement, updateReinforcement, setConfig } = useStore();
+  const [newReinforcementFrom, setNewReinforcementFrom] = useState<string>('');
+  const [newReinforcementTo, setNewReinforcementTo] = useState<string>('');
 
   const handleAddAttractor = () => {
     const newId = `a${Date.now()}`;
@@ -19,6 +21,31 @@ export const Controls: React.FC = () => {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setConfig({ labels: { ...config.labels, title: e.target.value } });
+  };
+
+  const handleAddReinforcement = () => {
+    if (!newReinforcementFrom || !newReinforcementTo) {
+      alert('Please select both From and To attractors');
+      return;
+    }
+    if (newReinforcementFrom === newReinforcementTo) {
+      alert('Cannot create reinforcement to the same attractor');
+      return;
+    }
+    const newReinforcement: Reinforcement = {
+      id: `r${Date.now()}`,
+      fromId: newReinforcementFrom,
+      toId: newReinforcementTo,
+      strength: 1.0
+    };
+    addReinforcement(newReinforcement);
+    setNewReinforcementFrom('');
+    setNewReinforcementTo('');
+  };
+
+  const getAttractorLabel = (id: string) => {
+    const attractor = config.attractors.find(a => a.id === id);
+    return attractor?.label || id;
   };
 
   return (
@@ -214,6 +241,81 @@ export const Controls: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Reinforcements */}
+      <div style={styles.section}>
+        <h3 style={styles.subheader}>Reinforcements</h3>
+        <p style={styles.helpText}>Connect attractors with circular arrows to show reinforcement</p>
+
+        <div style={styles.row}>
+          <label style={styles.smallLabel}>From Attractor</label>
+          <select
+            value={newReinforcementFrom}
+            onChange={(e) => setNewReinforcementFrom(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">Select attractor...</option>
+            {config.attractors.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.label || a.id}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div style={styles.row}>
+          <label style={styles.smallLabel}>To Attractor</label>
+          <select
+            value={newReinforcementTo}
+            onChange={(e) => setNewReinforcementTo(e.target.value)}
+            style={styles.select}
+          >
+            <option value="">Select attractor...</option>
+            {config.attractors.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.label || a.id}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button onClick={handleAddReinforcement} style={styles.button}>
+          Add Reinforcement
+        </button>
+
+        {(config.reinforcements || []).map((reinforcement) => (
+          <div key={reinforcement.id} style={styles.reinforcementCard}>
+            <div style={styles.attractorHeader}>
+              <span style={styles.attractorId}>
+                {getAttractorLabel(reinforcement.fromId)} → {getAttractorLabel(reinforcement.toId)}
+              </span>
+              <button
+                onClick={() => removeReinforcement(reinforcement.id)}
+                style={styles.removeButton}
+              >
+                Remove
+              </button>
+            </div>
+
+            <div style={styles.row}>
+              <label style={styles.smallLabel}>
+                Strength ({reinforcement.strength.toFixed(2)})
+              </label>
+              <input
+                type="range"
+                value={reinforcement.strength}
+                onChange={(e) =>
+                  updateReinforcement(reinforcement.id, { strength: parseFloat(e.target.value) })
+                }
+                min="0"
+                max="2"
+                step="0.1"
+                style={styles.slider}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
@@ -326,5 +428,29 @@ const styles: Record<string, React.CSSProperties> = {
     border: '1px solid #3a3d45',
     borderRadius: '4px',
     cursor: 'pointer'
+  },
+  select: {
+    width: '100%',
+    padding: '8px 12px',
+    backgroundColor: '#2a2d35',
+    border: '1px solid #3a3d45',
+    borderRadius: '4px',
+    color: '#e0e0e0',
+    fontSize: '14px',
+    cursor: 'pointer',
+    boxSizing: 'border-box'
+  },
+  helpText: {
+    fontSize: '12px',
+    color: '#8a8d95',
+    marginTop: '-5px',
+    marginBottom: '15px'
+  },
+  reinforcementCard: {
+    backgroundColor: '#242730',
+    padding: '15px',
+    borderRadius: '8px',
+    marginTop: '10px',
+    border: '1px solid #3a3d45'
   }
 };
