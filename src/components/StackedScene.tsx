@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SceneConfig } from '../types/config';
 import { FieldKernel } from '../physics/FieldKernel';
-import { getConfigFromURLString } from '../utils/urlParams';
+import { getConfigFromURLString, decodeConfigFromURL } from '../utils/urlParams';
 import { DEFAULT_CONFIG } from '../config/defaults';
 
 // Helper function to create text sprites
@@ -55,36 +55,89 @@ export const StackedScene: React.FC = () => {
   const animationIdRef = useRef<number | null>(null);
 
   const [urlsText, setUrlsText] = useState('');
-  const [configs, setConfigs] = useState<Partial<SceneConfig>[]>([]);
-  const [zSpacing, setZSpacing] = useState(0.5);
-  const [showLabels, setShowLabels] = useState<boolean[]>([]);
+
+  // Initialize state from URL - LAZY INITIALIZATION (only runs once, survives Strict Mode)
+  const [configs, setConfigs] = useState<Partial<SceneConfig>[]>(() => {
+    console.log('[StackedScene] Initializing configs from URL');
+    const params = new URLSearchParams(window.location.search);
+    const urlsParam = params.get('urls');
+
+    if (!urlsParam) {
+      console.log('[StackedScene] No URLs in URL params');
+      return [];
+    }
+
+    const urls = urlsParam.split('|');
+    const parsedConfigs: Partial<SceneConfig>[] = [];
+
+    urls.forEach((url, index) => {
+      const config = getConfigFromURLString(url);
+      if (config) {
+        parsedConfigs.push(config);
+        console.log(`[StackedScene] Parsed config ${index} from URL`);
+      }
+    });
+
+    console.log('[StackedScene] Initialized with', parsedConfigs.length, 'configs');
+    return parsedConfigs;
+  });
+
+  const [zSpacing, setZSpacing] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const spacingParam = params.get('spacing');
+    return spacingParam ? parseFloat(spacingParam) : 0.5;
+  });
+
+  const [showLabels, setShowLabels] = useState<boolean[]>(() => {
+    const params = new URLSearchParams(window.location.search);
+    const labelsParam = params.get('labels');
+    const urlsParam = params.get('urls');
+
+    if (labelsParam) {
+      return labelsParam.split(',').map(v => v === '1');
+    } else if (urlsParam) {
+      // Default all labels to visible
+      const count = urlsParam.split('|').length;
+      return Array(count).fill(true);
+    }
+    return [];
+  });
+
+  const [stackTitle, setStackTitle] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const titleParam = params.get('title');
+    return titleParam || 'Stacked Incentive Fields';
+  });
+
   const [animationRepeat, setAnimationRepeat] = useState(1);
+  const [sceneReady, setSceneReady] = useState(false);
   const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize from URL hash on mount
+  // Debug effect to track configs changes
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
+    console.log('[StackedScene] configs state changed:', configs.length, 'configs');
+  }, [configs]);
 
-    try {
-      const params = new URLSearchParams(hash);
+  // Debug effect to track sceneReady changes
+  useEffect(() => {
+    console.log('[StackedScene] sceneReady state changed:', sceneReady);
+  }, [sceneReady]);
+
+  // Populate URL textarea after 0.5s on page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
       const urlsParam = params.get('urls');
-      const spacingParam = params.get('spacing');
-      const labelsParam = params.get('labels');
 
       if (urlsParam) {
-        setUrlsText(decodeURIComponent(urlsParam).replace(/\|/g, '\n'));
+        const urls = urlsParam.split('|');
+        const urlsString = urls.join('\n');
+        console.log('[StackedScene] Populating textarea with URLs from URL params');
+        setUrlsText(urlsString);
       }
-      if (spacingParam) {
-        setZSpacing(parseFloat(spacingParam));
-      }
-      if (labelsParam) {
-        const labelArray = labelsParam.split(',').map(v => v === '1');
-        setShowLabels(labelArray);
-      }
-    } catch (e) {
-      console.error('Failed to parse URL hash:', e);
-    }
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Auto-generate stacked view when URLs change
@@ -190,6 +243,10 @@ export const StackedScene: React.FC = () => {
     window.addEventListener('resize', handleResize);
     handleResize();
 
+    // Mark scene as ready
+    console.log('[StackedScene] Marking scene as ready');
+    setSceneReady(true);
+
     return () => {
       window.removeEventListener('resize', handleResize);
       if (animationIdRef.current) {
@@ -202,7 +259,28 @@ export const StackedScene: React.FC = () => {
 
   // Render stacked fields when configs or spacing change
   useEffect(() => {
-    if (!sceneRef.current || configs.length === 0) return;
+    console.log('[StackedScene] Render effect triggered', {
+      sceneReady,
+      hasScene: !!sceneRef.current,
+      configsLength: configs.length,
+      showLabelsLength: showLabels.length,
+      zSpacing
+    });
+
+    if (!sceneReady) {
+      console.log('[StackedScene] Scene not ready yet');
+      return;
+    }
+    if (!sceneRef.current) {
+      console.log('[StackedScene] Scene ref not set');
+      return;
+    }
+    if (configs.length === 0) {
+      console.log('[StackedScene] No configs to render');
+      return;
+    }
+
+    console.log('[StackedScene] Starting to render', configs.length, 'configs');
 
     const scene = sceneRef.current;
 
@@ -299,6 +377,7 @@ export const StackedScene: React.FC = () => {
 
       const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
+      console.log(`[StackedScene] Added mesh ${index} to scene`);
 
       // Add axes only for the bottommost incentive (index 0)
       if (index === 0) {
@@ -353,7 +432,9 @@ export const StackedScene: React.FC = () => {
         });
       }
     });
-  }, [configs, zSpacing, showLabels]);
+
+    console.log('[StackedScene] Finished rendering all configs');
+  }, [configs, zSpacing, showLabels, sceneReady]);
 
   const handleUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -379,19 +460,42 @@ export const StackedScene: React.FC = () => {
     setUrlsText(newValue);
   };
 
+  // Share link generation - Use full URLs instead of cfg strings
   const handleShareLink = () => {
+    console.log('[StackedScene] Generating share link...');
+
+    // Get all URLs from textarea
     const urls = urlsText.split(/[\n,]/).map(u => u.trim()).filter(u => u.length > 0);
-    const urlsEncoded = encodeURIComponent(urls.join('|'));
-    const labelsEncoded = showLabels.map(v => v ? '1' : '0').join(',');
+    console.log('[StackedScene] URLs from textarea:', urls);
 
-    const hash = `#urls=${urlsEncoded}&spacing=${zSpacing}&labels=${labelsEncoded}`;
-    const shareUrl = window.location.origin + window.location.pathname + hash;
+    if (urls.length === 0) {
+      console.error('[StackedScene] No URLs found');
+      alert('No URLs found to share');
+      return;
+    }
 
-    navigator.clipboard.writeText(shareUrl).then(() => {
-      alert('Share link copied to clipboard!');
-    }).catch(() => {
-      alert('Share link: ' + shareUrl);
-    });
+    // Build the URL using URLSearchParams for proper encoding
+    const params = new URLSearchParams();
+    params.set('urls', urls.join('|')); // URLSearchParams handles encoding
+    params.set('spacing', zSpacing.toString());
+    params.set('labels', showLabels.map(v => v ? '1' : '0').join(','));
+    params.set('title', stackTitle);
+
+    const queryString = params.toString();
+    console.log('[StackedScene] Generated query string:', queryString);
+
+    const shareUrl = `${window.location.origin}/stacked?${queryString}`;
+    console.log('[StackedScene] Final share URL:', shareUrl);
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl)
+      .then(() => {
+        console.log('[StackedScene] Copied to clipboard successfully');
+      })
+      .catch((err) => {
+        console.error('[StackedScene] Failed to copy to clipboard:', err);
+        alert('Share link: ' + shareUrl);
+      });
   };
 
   const toggleLabelVisibility = (index: number) => {
@@ -436,12 +540,25 @@ export const StackedScene: React.FC = () => {
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <button
-          onClick={() => window.location.hash = ''}
+          onClick={() => window.location.href = '/'}
           style={{ ...styles.button, backgroundColor: '#6c757d', marginBottom: '20px' }}
         >
           ← Back to Single View
         </button>
         <h2 style={styles.header}>Stack Incentive Fields</h2>
+
+        {/* Title input */}
+        <div style={{ marginBottom: '15px' }}>
+          <label style={styles.inputLabel}>Stack Title:</label>
+          <input
+            type="text"
+            value={stackTitle}
+            onChange={(e) => setStackTitle(e.target.value)}
+            placeholder="Enter a title for this stacked view"
+            style={styles.textInput}
+          />
+        </div>
+
         <p style={styles.description}>
           Paste URLs (one per line) to stack multiple incentive field visualizations. The view updates automatically.
         </p>
@@ -547,6 +664,11 @@ export const StackedScene: React.FC = () => {
       </div>
       <div style={styles.canvasWrapper}>
         <canvas ref={canvasRef} style={styles.canvas} />
+        {stackTitle && (
+          <div style={styles.titleOverlay}>
+            <h1 style={styles.titleText}>{stackTitle}</h1>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -579,6 +701,23 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     color: '#a0a3ab',
     lineHeight: 1.5,
+  },
+  inputLabel: {
+    display: 'block',
+    marginBottom: '6px',
+    fontSize: '13px',
+    color: '#a0a3ab',
+    fontWeight: 500,
+  },
+  textInput: {
+    width: '100%',
+    padding: '10px 12px',
+    backgroundColor: '#2a2d35',
+    border: '1px solid #3a3d45',
+    borderRadius: '4px',
+    color: '#e0e0e0',
+    fontSize: '14px',
+    boxSizing: 'border-box',
   },
   textarea: {
     width: '100%',
@@ -687,5 +826,20 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%',
     height: '100%',
     display: 'block',
+  },
+  titleOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: '20px',
+    pointerEvents: 'none',
+  },
+  titleText: {
+    margin: 0,
+    fontSize: '28px',
+    fontWeight: 700,
+    color: 'black',
+    textShadow: 'none',
   },
 };
