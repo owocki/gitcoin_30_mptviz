@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SceneConfig, Attractor } from '../types/config';
 import { FieldKernel } from '../physics/FieldKernel';
 import { Ball } from '../physics/PhysicsEngine';
@@ -9,6 +10,7 @@ export class Renderer {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private fieldKernel: FieldKernel;
+  private controls: OrbitControls;
 
   private surfaceMesh: THREE.Mesh | null = null;
   private gridHelper: THREE.GridHelper | null = null;
@@ -47,6 +49,26 @@ export class Renderer {
     );
     this.updateCameraPosition();
 
+    // Setup orbit controls
+    this.controls = new OrbitControls(this.camera, canvas);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = 0.05;
+    this.controls.screenSpacePanning = true;
+    this.controls.minDistance = 1;
+    this.controls.maxDistance = 20;
+    this.controls.maxPolarAngle = Math.PI;
+    this.controls.target.set(0, -1.2, 0);
+
+    // Mouse button configuration
+    this.controls.mouseButtons = {
+      LEFT: THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT: THREE.MOUSE.PAN
+    };
+
+    // Add Shift+drag for panning
+    this.setupShiftPanControls(canvas);
+
     // Add lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     this.scene.add(ambientLight);
@@ -70,7 +92,37 @@ export class Renderer {
       distance * Math.sin(elRad),
       distance * Math.cos(elRad) * Math.sin(azRad)
     );
-    this.camera.lookAt(0, 0, 0);
+    // Look at a point slightly below center to push plane toward bottom of screen
+    this.camera.lookAt(0, -1.2, 0);
+  }
+
+  private setupShiftPanControls(canvas: HTMLCanvasElement): void {
+    let isShiftPressed = false;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        isShiftPressed = true;
+        // When shift is pressed, switch left mouse button to pan
+        this.controls.mouseButtons.LEFT = THREE.MOUSE.PAN;
+      }
+    };
+
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        isShiftPressed = false;
+        // When shift is released, switch left mouse button back to rotate
+        this.controls.mouseButtons.LEFT = THREE.MOUSE.ROTATE;
+      }
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+
+    // Store cleanup function for later
+    (canvas as any)._cleanupShiftControls = () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+    };
   }
 
   private initSurface(): void {
@@ -265,6 +317,7 @@ export class Renderer {
   }
 
   render(): void {
+    this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
 
@@ -286,6 +339,18 @@ export class Renderer {
     if (this.animationId !== null) {
       cancelAnimationFrame(this.animationId);
     }
+
+    // Cleanup shift pan controls
+    const canvas = this.renderer.domElement;
+    if ((canvas as any)._cleanupShiftControls) {
+      (canvas as any)._cleanupShiftControls();
+    }
+
+    this.controls.dispose();
     this.renderer.dispose();
+  }
+
+  getControls(): OrbitControls {
+    return this.controls;
   }
 }

@@ -39,15 +39,18 @@ export const Scene: React.FC = () => {
 
     renderer.initBalls(config.balls.count);
 
-    // Initial render
-    renderer.render();
+    // Start a continuous render loop for controls
+    const renderLoop = () => {
+      renderer.render();
+      animationIdRef.current = requestAnimationFrame(renderLoop);
+    };
+    renderLoop();
 
     // Handle resize
     const handleResize = () => {
       if (canvasRef.current && rendererRef.current) {
         const { clientWidth, clientHeight } = canvasRef.current.parentElement!;
         rendererRef.current.resize(clientWidth, clientHeight);
-        rendererRef.current.render();
       }
     };
 
@@ -87,18 +90,19 @@ export const Scene: React.FC = () => {
     rendererRef.current.render();
   }, [config]);
 
-  // Animation loop
+  // Physics update loop (separate from render loop)
   useEffect(() => {
-    if (!isPlaying || !rendererRef.current || !physicsRef.current) {
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-        animationIdRef.current = null;
-      }
+    if (!isPlaying || !physicsRef.current || !rendererRef.current) {
       return;
     }
 
-    const animate = () => {
-      if (!rendererRef.current || !physicsRef.current) return;
+    let lastTime = performance.now();
+    const physicsLoop = () => {
+      if (!physicsRef.current || !rendererRef.current || !isPlaying) return;
+
+      const currentTime = performance.now();
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
 
       // Step physics
       physicsRef.current.step(config.attractors, config.balls.physics);
@@ -106,19 +110,11 @@ export const Scene: React.FC = () => {
       // Update renderer
       const balls = physicsRef.current.getBalls();
       rendererRef.current.updateBalls(balls);
-      rendererRef.current.render();
 
-      animationIdRef.current = requestAnimationFrame(animate);
+      requestAnimationFrame(physicsLoop);
     };
 
-    animate();
-
-    return () => {
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-        animationIdRef.current = null;
-      }
-    };
+    physicsLoop();
   }, [isPlaying, config]);
 
   const handlePlayPause = () => {
