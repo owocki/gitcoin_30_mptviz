@@ -132,6 +132,7 @@ export const StackedScene: React.FC = () => {
 
   const [animationRepeat, setAnimationRepeat] = useState(1);
   const [sceneReady, setSceneReady] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debug effect to track configs changes
@@ -580,6 +581,8 @@ export const StackedScene: React.FC = () => {
     navigator.clipboard.writeText(shareUrl)
       .then(() => {
         console.log('[StackedScene] Copied to clipboard successfully');
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
       })
       .catch((err) => {
         console.error('[StackedScene] Failed to copy to clipboard:', err);
@@ -746,7 +749,7 @@ export const StackedScene: React.FC = () => {
 
             {/* Share button */}
             <button onClick={handleShareLink} style={{ ...styles.button, marginTop: '15px' }}>
-              📋 Copy Share Link
+              {copySuccess ? '✓ Copied!' : '📋 Copy Share Link'}
             </button>
           </>
         )}

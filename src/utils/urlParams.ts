@@ -30,10 +30,22 @@ export function decodeConfigFromURL(encoded: string): Partial<SceneConfig> | nul
 }
 
 /**
- * Get config from URL search params
+ * Get config from URL search params (supports both hash-based and regular query params)
  */
 export function getConfigFromURL(): Partial<SceneConfig> | null {
-  const params = new URLSearchParams(window.location.search);
+  // Check hash first (for #create?cfg=... format)
+  const hash = window.location.hash.slice(1); // Remove '#'
+  let params: URLSearchParams;
+
+  if (hash.includes('?')) {
+    // Extract query string from hash (e.g., "create?cfg=..." -> "cfg=...")
+    const queryString = hash.split('?')[1];
+    params = new URLSearchParams(queryString);
+  } else {
+    // Fall back to regular search params
+    params = new URLSearchParams(window.location.search);
+  }
+
   const cfg = params.get('cfg');
 
   if (cfg) {
@@ -67,9 +79,8 @@ export function getConfigFromURL(): Partial<SceneConfig> | null {
  */
 export function updateURLWithConfig(config: SceneConfig): void {
   const encoded = encodeConfigToURL(config);
-  const url = new URL(window.location.href);
-  url.searchParams.set('cfg', encoded);
-  window.history.replaceState({}, '', url.toString());
+  const newUrl = `${window.location.origin}${window.location.pathname}#create?cfg=${encoded}`;
+  window.history.replaceState({}, '', newUrl);
 }
 
 /**
@@ -77,19 +88,30 @@ export function updateURLWithConfig(config: SceneConfig): void {
  */
 export function copyShareableURL(config: SceneConfig): Promise<void> {
   const encoded = encodeConfigToURL(config);
-  const url = new URL(window.location.origin + window.location.pathname);
-  url.searchParams.set('cfg', encoded);
+  const shareUrl = `${window.location.origin}/#create?cfg=${encoded}`;
 
-  return navigator.clipboard.writeText(url.toString());
+  return navigator.clipboard.writeText(shareUrl);
 }
 
 /**
- * Extract config from a full URL string
+ * Extract config from a full URL string (supports both hash-based and regular query params)
  */
 export function getConfigFromURLString(urlString: string): Partial<SceneConfig> | null {
   try {
     const url = new URL(urlString);
-    const cfg = url.searchParams.get('cfg');
+
+    // First check regular search params (old format: ?cfg=...)
+    let cfg = url.searchParams.get('cfg');
+
+    // If not found, check hash for query params (new format: #create?cfg=...)
+    if (!cfg && url.hash) {
+      const hash = url.hash.slice(1); // Remove '#'
+      if (hash.includes('?')) {
+        const queryString = hash.split('?')[1];
+        const params = new URLSearchParams(queryString);
+        cfg = params.get('cfg');
+      }
+    }
 
     if (cfg) {
       return decodeConfigFromURL(cfg);
@@ -106,8 +128,7 @@ export function getConfigFromURLString(urlString: string): Partial<SceneConfig> 
  */
 export function copyPreviewImageURL(config: SceneConfig): Promise<void> {
   const encoded = encodeConfigToURL(config);
-  const url = new URL(window.location.origin + '/api/preview');
-  url.searchParams.set('cfg', encoded);
+  const previewUrl = `${window.location.origin}/api/preview?cfg=${encoded}`;
 
-  return navigator.clipboard.writeText(url.toString());
+  return navigator.clipboard.writeText(previewUrl);
 }

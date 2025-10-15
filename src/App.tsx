@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Scene } from './components/Scene';
 import { Controls } from './components/Controls';
 import { StackedScene } from './components/StackedScene';
+import { Gallery } from './components/Gallery';
 import { useStore } from './store/useStore';
 import { getConfigFromURL, copyShareableURL, copyPreviewImageURL } from './utils/urlParams';
 
@@ -9,7 +10,7 @@ function App() {
   const { config, setConfig } = useStore();
   const [copySuccess, setCopySuccess] = useState(false);
   const [copyPreviewSuccess, setCopyPreviewSuccess] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'single' | 'stacked'>('single');
+  const [currentPage, setCurrentPage] = useState<'gallery' | 'create' | 'stacked'>('gallery');
 
   // Handle hash-based routing
   useEffect(() => {
@@ -17,13 +18,16 @@ function App() {
       const hash = window.location.hash.slice(1); // Remove the '#'
       console.log('[App] Hash:', hash);
 
-      // Route to stacked view if hash is 'stacked'
+      // Route based on hash
       if (hash === 'stacked' || hash.startsWith('stacked?')) {
         console.log('[App] Routing to stacked view');
         setCurrentPage('stacked');
+      } else if (hash === 'create' || hash.startsWith('create?') || hash.startsWith('?')) {
+        console.log('[App] Routing to create view');
+        setCurrentPage('create');
       } else {
-        console.log('[App] Routing to single view');
-        setCurrentPage('single');
+        console.log('[App] Routing to gallery view');
+        setCurrentPage('gallery');
       }
     };
 
@@ -37,9 +41,9 @@ function App() {
     };
   }, []);
 
-  // Load config from URL on mount (for single view)
+  // Load config from URL on mount (for create view)
   useEffect(() => {
-    if (currentPage === 'single') {
+    if (currentPage === 'create') {
       const urlConfig = getConfigFromURL();
       if (urlConfig) {
         setConfig(urlConfig);
@@ -67,18 +71,29 @@ function App() {
     }
   };
 
+  // Render gallery view (home page)
+  if (currentPage === 'gallery') {
+    return <Gallery />;
+  }
+
   // Render stacked view
   if (currentPage === 'stacked') {
     return <StackedScene />;
   }
 
-  // Render single view
+  // Render create view
   return (
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <div style={styles.shareButton}>
-          <button onClick={handleShare} style={styles.button}>
-            {copySuccess ? 'Copied!' : 'Copy Shareable Link'}
+          <button
+            onClick={() => window.location.hash = ''}
+            style={{ ...styles.button, backgroundColor: '#6c757d' }}
+          >
+            Back to Gallery
+          </button>
+          <button onClick={handleShare} style={{ ...styles.button, marginTop: '10px' }}>
+            {copySuccess ? '✓ Copied!' : '📋 Copy Share Link'}
           </button>
           <button
             onClick={() => window.location.hash = 'stacked'}
