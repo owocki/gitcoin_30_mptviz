@@ -351,7 +351,7 @@ export class Renderer {
           padding: 8
         });
 
-        sprite.position.set(attractor.pos.x, attractor.pos.y, z + 0.3);
+        sprite.position.set(attractor.pos.x, -attractor.pos.y, z + 0.3);
         sprite.scale.set(0.5, 0.25, 1);
         this.scene.add(sprite);
         this.attractorLabels.push(sprite);
