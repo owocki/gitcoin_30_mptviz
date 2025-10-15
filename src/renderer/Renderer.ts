@@ -15,6 +15,7 @@ export class Renderer {
   private surfaceMesh: THREE.Mesh | null = null;
   private gridHelper: THREE.GridHelper | null = null;
   private axesHelper: THREE.AxesHelper | null = null;
+  private axisLabels: THREE.Sprite[] = [];
   private ballMeshes: THREE.Mesh[] = [];
   private trailLines: THREE.Line[] = [];
   private trailBuffers: THREE.Vector3[][] = [];
@@ -209,16 +210,78 @@ export class Renderer {
       this.scene.remove(this.axesHelper);
     }
 
+    // Remove old labels
+    this.axisLabels.forEach(label => this.scene.remove(label));
+    this.axisLabels = [];
+
     const { extent } = this.config.surface;
     const size = Math.max(
       extent.xMax - extent.xMin,
       extent.yMax - extent.yMin
     );
 
-    // Create axes helper
+    // Create axes helper with larger size
     // Red = X axis, Green = Y axis, Blue = Z axis
-    this.axesHelper = new THREE.AxesHelper(size * 0.6);
+    this.axesHelper = new THREE.AxesHelper(size * 0.8);
     this.scene.add(this.axesHelper);
+
+    // Create text labels
+    const labelOffset = size * 0.9;
+    const labels = [
+      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: '#ffffff' },
+      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: '#ffffff' },
+      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, labelOffset), color: '#ffffff' }
+    ];
+
+    labels.forEach(({ text, position, color }) => {
+      const sprite = this.makeTextSprite(text, {
+        fontsize: 64,
+        backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+        textColor: color
+      });
+      sprite.position.copy(position);
+      this.scene.add(sprite);
+      this.axisLabels.push(sprite);
+    });
+  }
+
+  private makeTextSprite(
+    message: string,
+    parameters: {
+      fontsize?: number;
+      backgroundColor?: { r: number; g: number; b: number; a: number };
+      textColor?: string;
+    }
+  ): THREE.Sprite {
+    const fontsize = parameters.fontsize || 64;
+    const backgroundColor = parameters.backgroundColor || { r: 0, g: 0, b: 0, a: 0.0 };
+    const textColor = parameters.textColor || '#ffffff';
+
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d')!;
+    canvas.width = 512;
+    canvas.height = 256;
+
+    // Set font
+    context.font = `Bold ${fontsize}px Arial`;
+    context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Draw text
+    context.fillStyle = textColor;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+    // Create texture
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.needsUpdate = true;
+
+    const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(1.5, 0.75, 1);
+
+    return sprite;
   }
 
   initBalls(count: number): void {
