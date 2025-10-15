@@ -6,6 +6,46 @@ import { FieldKernel } from '../physics/FieldKernel';
 import { getConfigFromURLString } from '../utils/urlParams';
 import { DEFAULT_CONFIG } from '../config/defaults';
 
+// Helper function to create text sprites
+function makeTextSprite(
+  message: string,
+  parameters: {
+    fontsize?: number;
+    backgroundColor?: { r: number; g: number; b: number; a: number };
+    textColor?: string;
+  }
+): THREE.Sprite {
+  const fontsize = parameters.fontsize || 64;
+  const backgroundColor = parameters.backgroundColor || { r: 0, g: 0, b: 0, a: 0.0 };
+  const textColor = parameters.textColor || '#ffffff';
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d')!;
+  canvas.width = 512;
+  canvas.height = 256;
+
+  // Set font
+  context.font = `Bold ${fontsize}px Arial`;
+  context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw text
+  context.fillStyle = textColor;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.fillText(message, canvas.width / 2, canvas.height / 2);
+
+  // Create texture
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+
+  const spriteMaterial = new THREE.SpriteMaterial({ map: texture });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(1.5, 0.75, 1);
+
+  return sprite;
+}
+
 export const StackedScene: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -105,7 +145,7 @@ export const StackedScene: React.FC = () => {
     // Clear previous meshes
     const meshesToRemove: THREE.Object3D[] = [];
     scene.traverse((obj) => {
-      if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.GridHelper) {
+      if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.GridHelper || obj instanceof THREE.AxesHelper || obj instanceof THREE.Sprite) {
         meshesToRemove.push(obj);
       }
     });
@@ -195,6 +235,39 @@ export const StackedScene: React.FC = () => {
 
       const mesh = new THREE.Mesh(geometry, material);
       scene.add(mesh);
+
+      // Add axes only for the bottommost incentive (index 0)
+      if (index === 0) {
+        const size = Math.max(
+          extent.xMax - extent.xMin,
+          extent.yMax - extent.yMin
+        );
+
+        // Create axes helper with larger size
+        // Red = X axis, Green = Y axis, Blue = Z axis
+        const axesHelper = new THREE.AxesHelper(size * 0.8);
+        axesHelper.position.set(0, 0, zOffset);
+        scene.add(axesHelper);
+
+        // Create text labels
+        const labelOffset = size * 0.6;
+        const zLabelOffset = size * 0.3;
+        const labels = [
+          { text: config.labels.x, position: new THREE.Vector3(labelOffset, 0, zOffset), color: '#000000' },
+          { text: config.labels.y, position: new THREE.Vector3(0, labelOffset, zOffset), color: '#000000' },
+          { text: config.labels.z, position: new THREE.Vector3(0, 0, zOffset + zLabelOffset), color: '#000000' }
+        ];
+
+        labels.forEach(({ text, position, color }) => {
+          const sprite = makeTextSprite(text, {
+            fontsize: 64,
+            backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+            textColor: color
+          });
+          sprite.position.copy(position);
+          scene.add(sprite);
+        });
+      }
     });
   }, [configs, zSpacing]);
 
