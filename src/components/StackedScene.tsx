@@ -57,11 +57,41 @@ export const StackedScene: React.FC = () => {
   const [urlsText, setUrlsText] = useState('');
   const [configs, setConfigs] = useState<Partial<SceneConfig>[]>([]);
   const [zSpacing, setZSpacing] = useState(0.5);
+  const [showLabels, setShowLabels] = useState<boolean[]>([]);
+  const [animationRepeat, setAnimationRepeat] = useState(1);
+  const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Initialize from URL hash on mount
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (!hash) return;
+
+    try {
+      const params = new URLSearchParams(hash);
+      const urlsParam = params.get('urls');
+      const spacingParam = params.get('spacing');
+      const labelsParam = params.get('labels');
+
+      if (urlsParam) {
+        setUrlsText(decodeURIComponent(urlsParam).replace(/\|/g, '\n'));
+      }
+      if (spacingParam) {
+        setZSpacing(parseFloat(spacingParam));
+      }
+      if (labelsParam) {
+        const labelArray = labelsParam.split(',').map(v => v === '1');
+        setShowLabels(labelArray);
+      }
+    } catch (e) {
+      console.error('Failed to parse URL hash:', e);
+    }
+  }, []);
 
   // Auto-generate stacked view when URLs change
   useEffect(() => {
     if (!urlsText.trim()) {
       setConfigs([]);
+      setShowLabels([]);
       return;
     }
 
@@ -81,6 +111,15 @@ export const StackedScene: React.FC = () => {
     });
 
     setConfigs(parsedConfigs);
+
+    // Initialize label visibility for new configs
+    setShowLabels(prev => {
+      const newLabels = [...prev];
+      while (newLabels.length < parsedConfigs.length) {
+        newLabels.push(true); // Default to showing labels
+      }
+      return newLabels.slice(0, parsedConfigs.length);
+    });
   }, [urlsText]);
 
   // Initialize Three.js scene
@@ -293,8 +332,28 @@ export const StackedScene: React.FC = () => {
           scene.add(sprite);
         });
       }
+
+      // Add attractor labels if enabled for this layer
+      if (showLabels[index]) {
+        attractors.forEach(attractor => {
+          if (attractor.label && attractor.label.trim()) {
+            // Calculate height at attractor position
+            const z = fieldKernel.potential(attractor.pos.x, attractor.pos.y, attractors) * zScale;
+
+            const sprite = makeTextSprite(attractor.label, {
+              fontsize: 48,
+              backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+              textColor: attractor.color
+            });
+
+            sprite.position.set(attractor.pos.x, attractor.pos.y, z + zOffset + 0.3);
+            sprite.scale.set(1.0, 0.5, 1);
+            scene.add(sprite);
+          }
+        });
+      }
     });
-  }, [configs, zSpacing]);
+  }, [configs, zSpacing, showLabels]);
 
   const handleUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -319,6 +378,59 @@ export const StackedScene: React.FC = () => {
 
     setUrlsText(newValue);
   };
+
+  const handleShareLink = () => {
+    const urls = urlsText.split(/[\n,]/).map(u => u.trim()).filter(u => u.length > 0);
+    const urlsEncoded = encodeURIComponent(urls.join('|'));
+    const labelsEncoded = showLabels.map(v => v ? '1' : '0').join(',');
+
+    const hash = `#urls=${urlsEncoded}&spacing=${zSpacing}&labels=${labelsEncoded}`;
+    const shareUrl = window.location.origin + window.location.pathname + hash;
+
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard!');
+    }).catch(() => {
+      alert('Share link: ' + shareUrl);
+    });
+  };
+
+  const toggleLabelVisibility = (index: number) => {
+    setShowLabels(prev => {
+      const newLabels = [...prev];
+      newLabels[index] = !newLabels[index];
+      return newLabels;
+    });
+  };
+
+  const handleAnimatedSpacing = (delta: number) => {
+    if (animationIntervalRef.current) {
+      clearInterval(animationIntervalRef.current);
+      animationIntervalRef.current = null;
+    }
+
+    let count = 0;
+    animationIntervalRef.current = setInterval(() => {
+      if (count >= animationRepeat) {
+        if (animationIntervalRef.current) {
+          clearInterval(animationIntervalRef.current);
+          animationIntervalRef.current = null;
+        }
+        return;
+      }
+
+      setZSpacing(prev => Math.max(0, prev + delta));
+      count++;
+    }, 100);
+  };
+
+  // Cleanup animation interval on unmount
+  useEffect(() => {
+    return () => {
+      if (animationIntervalRef.current) {
+        clearInterval(animationIntervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div style={styles.container}>
@@ -345,6 +457,30 @@ export const StackedScene: React.FC = () => {
             <p style={styles.info}>
               Showing {configs.length} stacked field{configs.length !== 1 ? 's' : ''}
             </p>
+
+            {/* Label visibility toggles */}
+            <div style={styles.labelControls}>
+              <label style={styles.spacingLabel}>Show Labels:</label>
+              {configs.map((config, index) => {
+                const fullConfig = { ...DEFAULT_CONFIG, ...config };
+                return (
+                  <div key={index} style={styles.checkboxRow}>
+                    <input
+                      type="checkbox"
+                      checked={showLabels[index] || false}
+                      onChange={() => toggleLabelVisibility(index)}
+                      style={styles.checkbox}
+                      id={`label-${index}`}
+                    />
+                    <label htmlFor={`label-${index}`} style={styles.checkboxLabel}>
+                      Layer {index + 1}: {fullConfig.labels.title || 'Untitled'}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Spacing controls */}
             <div style={styles.spacingControls}>
               <label style={styles.spacingLabel}>
                 Layer Spacing: {zSpacing.toFixed(2)}
@@ -370,7 +506,42 @@ export const StackedScene: React.FC = () => {
                   Merge
                 </button>
               </div>
+
+              {/* Animation controls */}
+              <div style={{ marginTop: '10px' }}>
+                <label style={styles.checkboxLabel}>
+                  Repeat:
+                  <input
+                    type="number"
+                    value={animationRepeat}
+                    onChange={(e) => setAnimationRepeat(Math.max(1, parseInt(e.target.value) || 1))}
+                    min="1"
+                    max="100"
+                    style={styles.numberInput}
+                  />
+                </label>
+              </div>
+              <div style={{ ...styles.buttonGroup, marginTop: '8px' }}>
+                <button
+                  onClick={() => handleAnimatedSpacing(-0.1)}
+                  style={styles.smallButton}
+                  disabled={zSpacing <= 0}
+                >
+                  Animate ↓
+                </button>
+                <button
+                  onClick={() => handleAnimatedSpacing(0.1)}
+                  style={styles.smallButton}
+                >
+                  Animate ↑
+                </button>
+              </div>
             </div>
+
+            {/* Share button */}
+            <button onClick={handleShareLink} style={{ ...styles.button, marginTop: '15px' }}>
+              📋 Copy Share Link
+            </button>
           </>
         )}
       </div>
@@ -469,6 +640,43 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 500,
     cursor: 'pointer',
     transition: 'background-color 0.2s',
+  },
+  labelControls: {
+    marginTop: '15px',
+    padding: '15px',
+    backgroundColor: '#242730',
+    borderRadius: '8px',
+    border: '1px solid #3a3d45',
+  },
+  checkboxRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    marginTop: '8px',
+  },
+  checkbox: {
+    width: '16px',
+    height: '16px',
+    cursor: 'pointer',
+  },
+  checkboxLabel: {
+    fontSize: '13px',
+    color: '#e0e0e0',
+    cursor: 'pointer',
+    userSelect: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+  },
+  numberInput: {
+    width: '60px',
+    padding: '4px 8px',
+    backgroundColor: '#2a2d35',
+    border: '1px solid #3a3d45',
+    borderRadius: '4px',
+    color: '#e0e0e0',
+    fontSize: '13px',
+    marginLeft: '6px',
   },
   canvasWrapper: {
     flex: 1,
