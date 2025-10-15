@@ -45,7 +45,8 @@ export const StackedScene: React.FC = () => {
       0.1,
       100
     );
-    camera.position.set(5, 5, 5);
+    // Rotated 90 degrees around z-axis: (x,y) -> (-y,x)
+    camera.position.set(0, -10, 5);
     camera.lookAt(0, 0, 0);
     cameraRef.current = camera;
 
