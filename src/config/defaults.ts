@@ -65,6 +65,7 @@ export const DEFAULT_CONFIG: SceneConfig = {
   },
   render: {
     grid: { show: true, divisions: 40, color: '#00000033' },
+    showAxes: true,
     colormap: 'viridis',
     lighting: { ao: 0.5, specular: 0.2 },
     fpsCap: 60,

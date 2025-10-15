@@ -94,6 +94,43 @@ export const Controls: React.FC = () => {
         />
       </div>
 
+      {/* Display Settings */}
+      <div style={styles.section}>
+        <h3 style={styles.subheader}>Display Settings</h3>
+
+        <div style={styles.checkboxRow}>
+          <label style={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={config.render.showAxes}
+              onChange={(e) =>
+                setConfig({
+                  render: { ...config.render, showAxes: e.target.checked }
+                })
+              }
+              style={styles.checkbox}
+            />
+            Show Axis Lines
+          </label>
+        </div>
+
+        <div style={styles.checkboxRow}>
+          <label style={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={config.render.grid.show}
+              onChange={(e) =>
+                setConfig({
+                  render: { ...config.render, grid: { ...config.render.grid, show: e.target.checked } }
+                })
+              }
+              style={styles.checkbox}
+            />
+            Show Grid
+          </label>
+        </div>
+      </div>
+
       {/* Mesh Configuration */}
       <div style={styles.section}>
         <h3 style={styles.subheader}>Mesh Settings</h3>
@@ -452,5 +489,21 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '8px',
     marginTop: '10px',
     border: '1px solid #3a3d45'
+  },
+  checkboxRow: {
+    marginBottom: '12px'
+  },
+  checkboxLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '14px',
+    cursor: 'pointer',
+    userSelect: 'none'
+  },
+  checkbox: {
+    marginRight: '10px',
+    cursor: 'pointer',
+    width: '18px',
+    height: '18px'
   }
 };

@@ -249,6 +249,8 @@ export class Renderer {
     this.axisLabels.forEach(label => this.scene.remove(label));
     this.axisLabels = [];
 
+    if (!this.config.render.showAxes) return;
+
     const { extent } = this.config.surface;
     const size = Math.max(
       extent.xMax - extent.xMin,

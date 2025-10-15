@@ -85,6 +85,7 @@ export interface LightingConfig {
 
 export interface RenderConfig {
   grid: GridConfig;
+  showAxes: boolean;
   colormap: 'viridis' | 'magma' | 'heat' | 'custom';
   lighting: LightingConfig;
   fpsCap: number;
