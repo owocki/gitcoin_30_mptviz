@@ -285,11 +285,13 @@ export class Renderer {
       fontsize?: number;
       backgroundColor?: { r: number; g: number; b: number; a: number };
       textColor?: string;
+      padding?: number;
     }
   ): THREE.Sprite {
     const fontsize = parameters.fontsize || 64;
     const backgroundColor = parameters.backgroundColor || { r: 0, g: 0, b: 0, a: 0.0 };
     const textColor = parameters.textColor || '#ffffff';
+    const padding = parameters.padding !== undefined ? parameters.padding : 20;
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d')!;
@@ -298,8 +300,19 @@ export class Renderer {
 
     // Set font
     context.font = `Bold ${fontsize}px Arial`;
+
+    // Measure text to create tight background
+    const metrics = context.measureText(message);
+    const textWidth = metrics.width;
+    const textHeight = fontsize * 1.2; // Approximate height
+
+    // Draw background rectangle around text with padding
     context.fillStyle = `rgba(${backgroundColor.r},${backgroundColor.g},${backgroundColor.b},${backgroundColor.a})`;
-    context.fillRect(0, 0, canvas.width, canvas.height);
+    const rectX = canvas.width / 2 - textWidth / 2 - padding;
+    const rectY = canvas.height / 2 - textHeight / 2 - padding;
+    const rectWidth = textWidth + padding * 2;
+    const rectHeight = textHeight + padding * 2;
+    context.fillRect(rectX, rectY, rectWidth, rectHeight);
 
     // Draw text
     context.fillStyle = textColor;
@@ -330,13 +343,14 @@ export class Renderer {
                   * this.config.surface.zScale;
 
         const sprite = this.makeTextSprite(attractor.label, {
-          fontsize: 48,
-          backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
-          textColor: attractor.color
+          fontsize: 72,
+          backgroundColor: { r: 0, g: 0, b: 0, a: 1.0 },
+          textColor: attractor.color,
+          padding: 8
         });
 
         sprite.position.set(attractor.pos.x, attractor.pos.y, z + 0.3);
-        sprite.scale.set(1.0, 0.5, 1);
+        sprite.scale.set(0.5, 0.25, 1);
         this.scene.add(sprite);
         this.attractorLabels.push(sprite);
       }
