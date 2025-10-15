@@ -43,6 +43,9 @@ export const Scene: React.FC = () => {
     const balls = physics.getBalls();
     renderer.updateBalls(balls, false);
 
+    // Hide balls initially - only show when Play is pressed
+    renderer.showBalls(false);
+
     // Start a continuous render loop for controls
     const renderLoop = () => {
       renderer.render();
@@ -93,6 +96,9 @@ export const Scene: React.FC = () => {
       // Update ball positions (hovering when not playing)
       const balls = physicsRef.current.getBalls();
       rendererRef.current.updateBalls(balls, isPlaying);
+
+      // Only show balls if currently playing
+      rendererRef.current.showBalls(isPlaying);
     }
 
     rendererRef.current.render();
@@ -143,6 +149,9 @@ export const Scene: React.FC = () => {
         // Position balls at z=1 for the drop
         const balls = physicsRef.current.getBalls();
         rendererRef.current.positionBallsAtHeight(balls, 1);
+
+        // Show balls when starting to play
+        rendererRef.current.showBalls(true);
       }
       setPlaying(true);
     } else {
@@ -170,6 +179,9 @@ export const Scene: React.FC = () => {
       // Position balls hovering at z=0.8
       const balls = physicsRef.current.getBalls();
       rendererRef.current.updateBalls(balls, false);
+
+      // Hide balls after reset
+      rendererRef.current.showBalls(false);
     }
   };
 

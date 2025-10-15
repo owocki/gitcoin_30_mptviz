@@ -440,6 +440,15 @@ export class Renderer {
     }
   }
 
+  showBalls(visible: boolean): void {
+    this.ballMeshes.forEach(mesh => {
+      mesh.visible = visible;
+    });
+    this.trailLines.forEach(line => {
+      line.visible = visible;
+    });
+  }
+
   updateSurface(attractors: Attractor[]): void {
     // Regenerate surface with new attractor colors and labels
     this.initSurface();
