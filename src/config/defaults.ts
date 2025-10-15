@@ -4,7 +4,7 @@ export const DEFAULT_CONFIG: SceneConfig = {
   title: 'Attractor Field',
   surface: {
     resolution: 256,
-    extent: { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 },
+    extent: { xMin: -2.5, xMax: 2.5, yMin: -2.5, yMax: 2.5 },
     easing: 'none',
     zScale: 1.0
   },
@@ -52,11 +52,11 @@ export const DEFAULT_CONFIG: SceneConfig = {
     autoOrbit: false
   },
   render: {
-    grid: { show: true, divisions: 40, color: '#ffffff33' },
+    grid: { show: true, divisions: 40, color: '#00000033' },
     colormap: 'viridis',
     lighting: { ao: 0.5, specular: 0.2 },
     fpsCap: 60,
-    background: '#101418'
+    background: '#ffffff'
   },
   export: {
     type: 'gif',

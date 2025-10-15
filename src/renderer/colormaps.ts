@@ -7,10 +7,10 @@ export type ColormapType = 'viridis' | 'magma' | 'heat' | 'custom';
  */
 export const COLORMAPS: Record<ColormapType, THREE.Color[]> = {
   viridis: [
-    new THREE.Color(0x440154),
-    new THREE.Color(0x31688e),
-    new THREE.Color(0x35b779),
-    new THREE.Color(0xfde724)
+    new THREE.Color(0x1a0033),
+    new THREE.Color(0x2d1e5f),
+    new THREE.Color(0x1e5a6d),
+    new THREE.Color(0x287d5c)
   ],
   magma: [
     new THREE.Color(0x000004),

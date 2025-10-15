@@ -228,9 +228,9 @@ export class Renderer {
     // Create text labels
     const labelOffset = size * 0.9;
     const labels = [
-      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: '#ffffff' },
-      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: '#ffffff' },
-      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, labelOffset), color: '#ffffff' }
+      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: '#000000' },
+      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: '#000000' },
+      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, labelOffset), color: '#000000' }
     ];
 
     labels.forEach(({ text, position, color }) => {

@@ -225,8 +225,8 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     fontSize: '28px',
     fontWeight: 700,
-    color: 'white',
-    textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+    color: 'black',
+    textShadow: 'none'
   },
   controls: {
     display: 'flex',
