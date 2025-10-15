@@ -20,7 +20,7 @@ export const DEFAULT_CONFIG: SceneConfig = {
     },
     {
       id: 'a2',
-      pos: { x: 0.5, y: -0.2 },
+      pos: { x: 0, y: -0.2 },
       strength: 3.0,
       sigma: 0.40,
       color: '#66ccff',
@@ -29,14 +29,14 @@ export const DEFAULT_CONFIG: SceneConfig = {
     {
       id: 'a3',
       pos: { x: 1, y: 1.2 },
-      strength: 5.0,
-      sigma: 0.10,
+      strength: -2.0,
+      sigma: 0.40,
       color: '#cc66ff',
       label: 'Attractor 3'
     }
   ],
   balls: {
-    count: 12,
+    count: 50,
     spawn: 'random',
     manualPositions: [],
     radius: 0.015,
