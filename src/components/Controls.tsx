@@ -21,13 +21,6 @@ export const Controls: React.FC = () => {
     setConfig({ labels: { ...config.labels, title: e.target.value } });
   };
 
-  const handleBallCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const count = parseInt(e.target.value, 10);
-    if (!isNaN(count) && count >= 0) {
-      setConfig({ balls: { ...config.balls, count } });
-    }
-  };
-
   return (
     <div style={styles.container}>
       <h2 style={styles.header}>Controls</h2>
@@ -74,17 +67,47 @@ export const Controls: React.FC = () => {
         />
       </div>
 
-      {/* Ball Count */}
+      {/* Mesh Configuration */}
       <div style={styles.section}>
-        <label style={styles.label}>Number of Balls</label>
-        <input
-          type="number"
-          value={config.balls.count}
-          onChange={handleBallCountChange}
-          min="0"
-          max="200"
-          style={styles.input}
-        />
+        <h3 style={styles.subheader}>Mesh Settings</h3>
+
+        <div style={styles.row}>
+          <label style={styles.label}>
+            Grid Density ({config.surface.resolution})
+          </label>
+          <input
+            type="range"
+            value={config.surface.resolution}
+            onChange={(e) =>
+              setConfig({
+                surface: { ...config.surface, resolution: parseInt(e.target.value, 10) }
+              })
+            }
+            min="16"
+            max="256"
+            step="16"
+            style={styles.slider}
+          />
+        </div>
+
+        <div style={styles.row}>
+          <label style={styles.label}>
+            Wire Thickness ({(config.surface.wireframeLinewidth || 1).toFixed(1)})
+          </label>
+          <input
+            type="range"
+            value={config.surface.wireframeLinewidth || 1}
+            onChange={(e) =>
+              setConfig({
+                surface: { ...config.surface, wireframeLinewidth: parseFloat(e.target.value) }
+              })
+            }
+            min="0.5"
+            max="8"
+            step="0.5"
+            style={styles.slider}
+          />
+        </div>
       </div>
 
       {/* Attractors */}

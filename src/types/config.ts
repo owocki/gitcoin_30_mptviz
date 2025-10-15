@@ -23,6 +23,7 @@ export interface SurfaceConfig {
   extent: Extent;
   easing: 'none' | 'saturate';
   zScale: number;
+  wireframeLinewidth?: number;
 }
 
 export interface TrailConfig {

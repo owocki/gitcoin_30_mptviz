@@ -169,13 +169,14 @@ export class Renderer {
     geometry.computeVertexNormals();
 
     // Create material with wireframe
+    const lineWidth = surface.wireframeLinewidth || 1;
     const material = new THREE.MeshStandardMaterial({
       vertexColors: true,
       roughness: 0.7,
       metalness: 0.2,
       side: THREE.DoubleSide,
       wireframe: true,
-      wireframeLinewidth: 1
+      wireframeLinewidth: lineWidth
     });
 
     // Create mesh
@@ -225,8 +226,8 @@ export class Renderer {
     this.axesHelper = new THREE.AxesHelper(size * 0.8);
     this.scene.add(this.axesHelper);
 
-    // Create text labels
-    const labelOffset = size * 0.9;
+    // Create text labels closer to the mesh
+    const labelOffset = size * 0.6;
     const labels = [
       { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: '#000000' },
       { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: '#000000' },

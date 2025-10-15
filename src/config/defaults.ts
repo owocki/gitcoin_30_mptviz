@@ -3,10 +3,11 @@ import { SceneConfig } from '../types/config';
 export const DEFAULT_CONFIG: SceneConfig = {
   title: 'Attractor Field',
   surface: {
-    resolution: 256,
+    resolution: 64,
     extent: { xMin: -2.5, xMax: 2.5, yMin: -2.5, yMax: 2.5 },
     easing: 'none',
-    zScale: 1.0
+    zScale: 1.0,
+    wireframeLinewidth: 2
   },
   attractors: [
     {
