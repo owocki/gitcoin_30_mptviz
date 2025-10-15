@@ -1,20 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { Scene } from './components/Scene';
 import { Controls } from './components/Controls';
+import { StackedScene } from './components/StackedScene';
 import { useStore } from './store/useStore';
 import { getConfigFromURL, copyShareableURL } from './utils/urlParams';
 
 function App() {
   const { config, setConfig } = useStore();
   const [copySuccess, setCopySuccess] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'single' | 'stacked'>('single');
 
-  // Load config from URL on mount
+  // Handle hash-based routing
   useEffect(() => {
-    const urlConfig = getConfigFromURL();
-    if (urlConfig) {
-      setConfig(urlConfig);
+    const updatePage = () => {
+      const hash = window.location.hash.slice(1);
+      if (hash === 'stacked') {
+        setCurrentPage('stacked');
+      } else {
+        setCurrentPage('single');
+      }
+    };
+
+    updatePage();
+    window.addEventListener('hashchange', updatePage);
+
+    return () => {
+      window.removeEventListener('hashchange', updatePage);
+    };
+  }, []);
+
+  // Load config from URL on mount (for single view)
+  useEffect(() => {
+    if (currentPage === 'single') {
+      const urlConfig = getConfigFromURL();
+      if (urlConfig) {
+        setConfig(urlConfig);
+      }
     }
-  }, [setConfig]);
+  }, [setConfig, currentPage]);
 
   const handleShare = async () => {
     try {
@@ -26,12 +49,24 @@ function App() {
     }
   };
 
+  // Render stacked view
+  if (currentPage === 'stacked') {
+    return <StackedScene />;
+  }
+
+  // Render single view
   return (
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <div style={styles.shareButton}>
           <button onClick={handleShare} style={styles.button}>
             {copySuccess ? 'Copied!' : 'Copy Shareable Link'}
+          </button>
+          <button
+            onClick={() => window.location.hash = 'stacked'}
+            style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}
+          >
+            Stack Multiple Fields
           </button>
         </div>
         <Controls />

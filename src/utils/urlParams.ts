@@ -82,3 +82,21 @@ export function copyShareableURL(config: SceneConfig): Promise<void> {
 
   return navigator.clipboard.writeText(url.toString());
 }
+
+/**
+ * Extract config from a full URL string
+ */
+export function getConfigFromURLString(urlString: string): Partial<SceneConfig> | null {
+  try {
+    const url = new URL(urlString);
+    const cfg = url.searchParams.get('cfg');
+
+    if (cfg) {
+      return decodeConfigFromURL(cfg);
+    }
+    return null;
+  } catch (e) {
+    console.error('Failed to parse URL:', e);
+    return null;
+  }
+}
