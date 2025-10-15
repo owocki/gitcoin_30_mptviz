@@ -59,7 +59,7 @@ export class Renderer {
     this.controls.minDistance = 1;
     this.controls.maxDistance = 20;
     this.controls.maxPolarAngle = Math.PI;
-    this.controls.target.set(0, -1.2, 0);
+    this.controls.target.set(0, -1.8, 0);
 
     // Mouse button configuration
     this.controls.mouseButtons = {
@@ -95,8 +95,8 @@ export class Renderer {
       distance * Math.sin(elRad),
       distance * Math.cos(elRad) * Math.sin(azRad)
     );
-    // Look at a point slightly below center to push plane toward bottom of screen
-    this.camera.lookAt(0, -1.2, 0);
+    // Look at a point further below center to push plane toward bottom of screen (25% more)
+    this.camera.lookAt(0, -1.8, 0);
   }
 
   private setupShiftPanControls(canvas: HTMLCanvasElement): void {

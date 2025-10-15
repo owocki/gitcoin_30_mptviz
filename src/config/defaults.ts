@@ -46,8 +46,8 @@ export const DEFAULT_CONFIG: SceneConfig = {
     z: 'Potential'
   },
   camera: {
-    azimuth: 0,
-    elevation: 75,
+    azimuth: 270,
+    elevation: 250,
     distance: 4.5,
     autoOrbit: false
   },
