@@ -491,10 +491,10 @@ export const StackedScene: React.FC = () => {
           padding: 12
         });
 
-        // Position the title to the right side of the mesh
+        // Position the title to the right side of the mesh, elevated above the layer
         const xPos = extent.xMax + 0.5;
-        const yPos = 0;
-        const zPos = zOffset;
+        const yPos = -2;
+        const zPos = zOffset; // Elevated above the layer to avoid axis label overlap
 
         titleSprite.position.set(xPos, yPos, zPos);
         titleSprite.scale.set(1.2, 0.6, 1);

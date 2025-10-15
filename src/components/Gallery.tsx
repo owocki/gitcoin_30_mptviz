@@ -17,7 +17,7 @@ export function Gallery() {
     <div style={styles.container}>
       <header style={styles.header}>
         <h1 style={styles.title}>Multi-Polar Traps (MPT) Visualizer</h1>
-        <h2 style={styles.subtitle}>a situation where individual rational actions lead to collectively worse outcomes because no single actor can afford to unilaterally cooperate.
+        <h2 style={styles.subtitle}>MPT = a situation where individual rational actions lead to collectively worse outcomes because no single actor can afford to unilaterally cooperate.
         </h2>
         <p style={styles.subtitle}>This visualizer conceptualizes a multipolar trap as incentive gradients: local self-interest pulls actors into valleys that degrade the global outcome.        </p>
         <p style={styles.subtitle}>
