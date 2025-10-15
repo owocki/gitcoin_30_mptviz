@@ -16,6 +16,7 @@ export interface Attractor {
   strength: number;
   sigma: number;
   color: string;
+  label?: string;
 }
 
 export interface SurfaceConfig {

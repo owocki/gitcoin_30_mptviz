@@ -16,6 +16,7 @@ export class Renderer {
   private gridHelper: THREE.GridHelper | null = null;
   private axesHelper: THREE.AxesHelper | null = null;
   private axisLabels: THREE.Sprite[] = [];
+  private attractorLabels: THREE.Sprite[] = [];
   private ballMeshes: THREE.Mesh[] = [];
   private trailLines: THREE.Line[] = [];
   private trailBuffers: THREE.Vector3[][] = [];
@@ -83,6 +84,7 @@ export class Renderer {
     this.initSurface();
     this.initGrid();
     this.initAxes();
+    this.initAttractorLabels();
   }
 
   private updateCameraPosition(): void {
@@ -316,6 +318,31 @@ export class Renderer {
     return sprite;
   }
 
+  private initAttractorLabels(): void {
+    // Remove old labels
+    this.attractorLabels.forEach(label => this.scene.remove(label));
+    this.attractorLabels = [];
+
+    this.config.attractors.forEach(attractor => {
+      if (attractor.label && attractor.label.trim()) {
+        // Calculate height at attractor position
+        const z = this.fieldKernel.potential(attractor.pos.x, attractor.pos.y, this.config.attractors)
+                  * this.config.surface.zScale;
+
+        const sprite = this.makeTextSprite(attractor.label, {
+          fontsize: 48,
+          backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+          textColor: attractor.color
+        });
+
+        sprite.position.set(attractor.pos.x, attractor.pos.y, z + 0.3);
+        sprite.scale.set(1.0, 0.5, 1);
+        this.scene.add(sprite);
+        this.attractorLabels.push(sprite);
+      }
+    });
+  }
+
   initBalls(count: number): void {
     // Clear existing balls
     this.ballMeshes.forEach(mesh => this.scene.remove(mesh));
@@ -355,45 +382,68 @@ export class Renderer {
     }
   }
 
-  updateBalls(balls: Ball[]): void {
+  updateBalls(balls: Ball[], isPlaying: boolean = false): void {
     const { surface, balls: ballConfig } = this.config;
 
     for (let i = 0; i < balls.length && i < this.ballMeshes.length; i++) {
       const ball = balls[i];
       const mesh = this.ballMeshes[i];
 
-      // Sample height from field
-      const z = this.fieldKernel.potential(ball.x, ball.y, this.config.attractors) * surface.zScale;
+      if (isPlaying) {
+        // When playing, follow physics and rest on surface
+        const z = this.fieldKernel.potential(ball.x, ball.y, this.config.attractors) * surface.zScale;
+        mesh.position.set(ball.x, ball.y, z + ballConfig.radius * 1.5);
 
-      mesh.position.set(ball.x, ball.y, z + ballConfig.radius * 1.5);
+        // Update trail
+        if (ballConfig.trail.enable && this.trailBuffers[i]) {
+          const trailBuffer = this.trailBuffers[i];
+          trailBuffer.push(new THREE.Vector3(ball.x, ball.y, z));
 
-      // Update trail
-      if (ballConfig.trail.enable && this.trailBuffers[i]) {
-        const trailBuffer = this.trailBuffers[i];
-        trailBuffer.push(new THREE.Vector3(ball.x, ball.y, z));
+          if (trailBuffer.length > ballConfig.trail.length) {
+            trailBuffer.shift();
+          }
 
-        if (trailBuffer.length > ballConfig.trail.length) {
-          trailBuffer.shift();
+          const positions = new Float32Array(trailBuffer.length * 3);
+          trailBuffer.forEach((pos, idx) => {
+            positions[idx * 3] = pos.x;
+            positions[idx * 3 + 1] = pos.y;
+            positions[idx * 3 + 2] = pos.z;
+          });
+
+          this.trailLines[i].geometry.setAttribute(
+            'position',
+            new THREE.BufferAttribute(positions, 3)
+          );
         }
+      } else {
+        // When not playing, hover above the field at initial positions
+        const hoverHeight = 0.8;
+        mesh.position.set(ball.x, ball.y, hoverHeight);
 
-        const positions = new Float32Array(trailBuffer.length * 3);
-        trailBuffer.forEach((pos, idx) => {
-          positions[idx * 3] = pos.x;
-          positions[idx * 3 + 1] = pos.y;
-          positions[idx * 3 + 2] = pos.z;
-        });
-
-        this.trailLines[i].geometry.setAttribute(
-          'position',
-          new THREE.BufferAttribute(positions, 3)
-        );
+        // Clear trails when not playing
+        if (ballConfig.trail.enable && this.trailBuffers[i]) {
+          this.trailBuffers[i] = [];
+          this.trailLines[i].geometry.setAttribute(
+            'position',
+            new THREE.BufferAttribute(new Float32Array(0), 3)
+          );
+        }
       }
     }
   }
 
+  positionBallsAtHeight(balls: Ball[], height: number): void {
+    for (let i = 0; i < balls.length && i < this.ballMeshes.length; i++) {
+      const ball = balls[i];
+      const mesh = this.ballMeshes[i];
+      mesh.position.set(ball.x, ball.y, height);
+    }
+  }
+
   updateSurface(attractors: Attractor[]): void {
-    // Regenerate surface with new attractor colors
+    // Regenerate surface with new attractor colors and labels
     this.initSurface();
+    this.initAttractorLabels();
   }
 
   updateConfig(config: SceneConfig): void {
@@ -403,6 +453,7 @@ export class Renderer {
     this.initSurface();
     this.initGrid();
     this.initAxes();
+    this.initAttractorLabels();
   }
 
   render(): void {

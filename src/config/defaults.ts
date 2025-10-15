@@ -15,14 +15,16 @@ export const DEFAULT_CONFIG: SceneConfig = {
       pos: { x: -0.5, y: 0.2 },
       strength: 5.0,
       sigma: 0.12,
-      color: '#ffcc33'
+      color: '#ffcc33',
+      label: 'Attractor 1'
     },
     {
       id: 'a2',
       pos: { x: 0.5, y: -0.2 },
       strength: 3.0,
       sigma: 0.10,
-      color: '#66ccff'
+      color: '#66ccff',
+      label: 'Attractor 2'
     }
   ],
   balls: {
@@ -33,18 +35,18 @@ export const DEFAULT_CONFIG: SceneConfig = {
     color: '#66ccff',
     trail: { enable: true, length: 160, opacity: 0.45 },
     physics: {
-      dt: 0.016,
-      damping: 0.92,
+      dt: 0.008,
+      damping: 0.98,
       noise: 0.0,
-      maxSpeed: 2.5,
+      maxSpeed: 1.5,
       stickiness: 0.0
     }
   },
   labels: {
     title: 'Multi Polar Trap',
-    x: 'design space',
-    y: 'design space',
-    z: 'human thriving'
+    x: '(x) design space',
+    y: '(y) design space',
+    z: '(z) good things'
   },
   camera: {
     azimuth: 270,

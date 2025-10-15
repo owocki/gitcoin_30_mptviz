@@ -39,6 +39,10 @@ export const Scene: React.FC = () => {
 
     renderer.initBalls(config.balls.count);
 
+    // Position balls hovering at initial state
+    const balls = physics.getBalls();
+    renderer.updateBalls(balls, false);
+
     // Start a continuous render loop for controls
     const renderLoop = () => {
       renderer.render();
@@ -85,10 +89,14 @@ export const Scene: React.FC = () => {
         configManagerRef.current.getRNG()
       );
       rendererRef.current.initBalls(config.balls.count);
+
+      // Update ball positions (hovering when not playing)
+      const balls = physicsRef.current.getBalls();
+      rendererRef.current.updateBalls(balls, isPlaying);
     }
 
     rendererRef.current.render();
-  }, [config]);
+  }, [config, isPlaying]);
 
   // Physics update loop (separate from render loop)
   useEffect(() => {
@@ -96,43 +104,72 @@ export const Scene: React.FC = () => {
       return;
     }
 
-    let lastTime = performance.now();
+    let animationId: number;
     const physicsLoop = () => {
-      if (!physicsRef.current || !rendererRef.current || !isPlaying) return;
-
-      const currentTime = performance.now();
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
+      if (!physicsRef.current || !rendererRef.current) return;
 
       // Step physics
       physicsRef.current.step(config.attractors, config.balls.physics);
 
-      // Update renderer
+      // Update renderer with physics (balls follow surface)
       const balls = physicsRef.current.getBalls();
-      rendererRef.current.updateBalls(balls);
+      rendererRef.current.updateBalls(balls, true);
 
-      requestAnimationFrame(physicsLoop);
+      animationId = requestAnimationFrame(physicsLoop);
     };
 
-    physicsLoop();
-  }, [isPlaying, config]);
+    animationId = requestAnimationFrame(physicsLoop);
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [isPlaying, config.attractors, config.balls.physics]);
 
   const handlePlayPause = () => {
-    setPlaying(!isPlaying);
+    if (!isPlaying) {
+      // Starting play - randomize positions and drop from z=1
+      if (physicsRef.current && rendererRef.current && configManagerRef.current) {
+        physicsRef.current.reset(
+          config.balls.count,
+          'random',
+          config.balls.manualPositions,
+          config.surface.extent,
+          configManagerRef.current.getRNG()
+        );
+        rendererRef.current.initBalls(config.balls.count);
+
+        // Position balls at z=1 for the drop
+        const balls = physicsRef.current.getBalls();
+        rendererRef.current.positionBallsAtHeight(balls, 1);
+      }
+      setPlaying(true);
+    } else {
+      // Pausing - just stop physics
+      setPlaying(false);
+    }
   };
 
   const handleReset = () => {
+    // Stop physics
+    setPlaying(false);
+
     if (physicsRef.current && rendererRef.current && configManagerRef.current) {
+      // Reset with random positions
       configManagerRef.current.resetSeed(config.seed);
       physicsRef.current.reset(
         config.balls.count,
-        config.balls.spawn,
+        'random',
         config.balls.manualPositions,
         config.surface.extent,
         configManagerRef.current.getRNG()
       );
       rendererRef.current.initBalls(config.balls.count);
-      rendererRef.current.render();
+
+      // Position balls hovering at z=0.8
+      const balls = physicsRef.current.getBalls();
+      rendererRef.current.updateBalls(balls, false);
     }
   };
 
@@ -178,6 +215,22 @@ export const Scene: React.FC = () => {
         </div>
       </div>
       <div style={styles.controls}>
+        <div style={styles.controlGroup}>
+          <label style={styles.controlLabel}>No. of Balls</label>
+          <input
+            type="number"
+            value={config.balls.count}
+            onChange={(e) => {
+              const count = parseInt(e.target.value, 10);
+              if (!isNaN(count) && count >= 0) {
+                useStore.getState().setConfig({ balls: { ...config.balls, count } });
+              }
+            }}
+            min="0"
+            max="100"
+            style={styles.numberInput}
+          />
+        </div>
         <button onClick={handlePlayPause} style={styles.button}>
           {isPlaying ? 'Pause' : 'Play'}
         </button>
@@ -186,9 +239,6 @@ export const Scene: React.FC = () => {
         </button>
         <button onClick={handleExportPNG} style={styles.button} disabled={exportProgress !== null}>
           Export PNG
-        </button>
-        <button onClick={handleExportWebM} style={styles.button} disabled={exportProgress !== null}>
-          {exportProgress !== null ? `Exporting ${Math.round(exportProgress * 100)}%` : 'Export WebM'}
         </button>
       </div>
     </div>
@@ -233,7 +283,28 @@ const styles: Record<string, React.CSSProperties> = {
     gap: '10px',
     padding: '15px',
     backgroundColor: '#1a1d23',
-    borderTop: '1px solid #3a3d45'
+    borderTop: '1px solid #3a3d45',
+    alignItems: 'center'
+  },
+  controlGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px',
+    minWidth: '120px'
+  },
+  controlLabel: {
+    fontSize: '12px',
+    color: '#a0a3ab',
+    fontWeight: 500
+  },
+  numberInput: {
+    padding: '8px 12px',
+    backgroundColor: '#2a2d35',
+    border: '1px solid #3a3d45',
+    borderRadius: '4px',
+    color: '#e0e0e0',
+    fontSize: '14px',
+    width: '100%'
   },
   button: {
     padding: '12px 24px',
@@ -244,7 +315,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '16px',
     fontWeight: 600,
     cursor: 'pointer',
-    transition: 'background-color 0.2s',
-    flex: 1
+    transition: 'background-color 0.2s'
   }
 };

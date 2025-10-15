@@ -200,6 +200,17 @@ export const Controls: React.FC = () => {
                 style={styles.colorInput}
               />
             </div>
+
+            <div style={styles.row}>
+              <label style={styles.smallLabel}>Label</label>
+              <input
+                type="text"
+                value={attractor.label || ''}
+                onChange={(e) => updateAttractor(attractor.id, { label: e.target.value })}
+                placeholder="Optional label"
+                style={styles.smallInput}
+              />
+            </div>
           </div>
         ))}
       </div>

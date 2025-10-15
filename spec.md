@@ -51,7 +51,7 @@ A browser app that renders a deformable surface with gravity wells created by co
     }
   ],
   "balls": {
-    "count": 12,             
+    "count": 40,             
     "spawn": "random|grid|manual",
     "manualPositions": [],   
     "radius": 0.015,
