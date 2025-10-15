@@ -192,29 +192,53 @@ export const Scene: React.FC = () => {
   };
 
   const handleExportWebM = async () => {
-    if (!rendererRef.current || !physicsRef.current) return;
+    if (!rendererRef.current || !physicsRef.current || !configManagerRef.current) return;
 
     setExportProgress(0);
     const wasPlaying = isPlaying;
     setPlaying(false);
 
     try {
+      // Reset physics for fresh export - balls start at z=1
+      physicsRef.current.reset(
+        config.balls.count,
+        'random',
+        config.balls.manualPositions,
+        config.surface.extent,
+        configManagerRef.current.getRNG()
+      );
+      rendererRef.current.initBalls(config.balls.count);
+
+      // Position balls at z=1 for the drop
+      const balls = physicsRef.current.getBalls();
+      rendererRef.current.positionBallsAtHeight(balls, 1);
+
+      // Show balls during export
+      rendererRef.current.showBalls(true);
+
       const canvas = rendererRef.current.getCanvas();
       const onFrame = () => {
+        // Step physics with falling animation
         physicsRef.current!.step(config.attractors, config.balls.physics);
         const balls = physicsRef.current!.getBalls();
-        rendererRef.current!.updateBalls(balls);
+        rendererRef.current!.updateBalls(balls, true);
         rendererRef.current!.render();
       };
 
       await Exporter.exportWebM(canvas, onFrame, config.export, setExportProgress);
-      alert('Export completed!');
     } catch (error) {
       console.error('Export failed:', error);
       alert('Export failed: ' + (error as Error).message);
     } finally {
       setExportProgress(null);
-      setPlaying(wasPlaying);
+
+      // Restore previous state
+      if (wasPlaying) {
+        setPlaying(true);
+      } else {
+        // Hide balls if we weren't playing
+        rendererRef.current?.showBalls(false);
+      }
     }
   };
 
@@ -251,6 +275,9 @@ export const Scene: React.FC = () => {
         </button>
         <button onClick={handleExportPNG} style={styles.button} disabled={exportProgress !== null}>
           Export PNG
+        </button>
+        <button onClick={handleExportWebM} style={styles.button} disabled={exportProgress !== null}>
+          {exportProgress !== null ? `Exporting ${Math.round(exportProgress * 100)}%` : 'Export Movie'}
         </button>
       </div>
     </div>
