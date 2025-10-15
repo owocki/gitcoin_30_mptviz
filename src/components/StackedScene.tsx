@@ -58,6 +58,31 @@ export const StackedScene: React.FC = () => {
   const [configs, setConfigs] = useState<Partial<SceneConfig>[]>([]);
   const [zSpacing, setZSpacing] = useState(0.5);
 
+  // Auto-generate stacked view when URLs change
+  useEffect(() => {
+    if (!urlsText.trim()) {
+      setConfigs([]);
+      return;
+    }
+
+    // Split URLs by newlines or commas
+    const urls = urlsText
+      .split(/[\n,]/)
+      .map(url => url.trim())
+      .filter(url => url.length > 0);
+
+    const parsedConfigs: Partial<SceneConfig>[] = [];
+
+    urls.forEach((url) => {
+      const config = getConfigFromURLString(url);
+      if (config) {
+        parsedConfigs.push(config);
+      }
+    });
+
+    setConfigs(parsedConfigs);
+  }, [urlsText]);
+
   // Initialize Three.js scene
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -271,23 +296,28 @@ export const StackedScene: React.FC = () => {
     });
   }, [configs, zSpacing]);
 
-  const handleGenerate = () => {
-    // Split URLs by newlines or commas
-    const urls = urlsText
-      .split(/[\n,]/)
-      .map(url => url.trim())
-      .filter(url => url.length > 0);
+  const handleUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.target.value;
 
-    const parsedConfigs: Partial<SceneConfig>[] = [];
+    // Check if a URL was just pasted/typed and doesn't end with newline
+    if (newValue.length > urlsText.length) {
+      const addedText = newValue.slice(urlsText.length);
 
-    urls.forEach((url) => {
-      const config = getConfigFromURLString(url);
-      if (config) {
-        parsedConfigs.push(config);
+      // If user pasted/typed text containing http and it doesn't end with newline, add one
+      if (addedText.includes('http') && !newValue.endsWith('\n') && !newValue.endsWith(',')) {
+        // Check if the last line looks like a complete URL
+        const lines = newValue.split('\n');
+        const lastLine = lines[lines.length - 1].trim();
+
+        // Simple heuristic: if it contains http and has a reasonable length, add newline
+        if (lastLine.startsWith('http') && lastLine.length > 20) {
+          setUrlsText(newValue + '\n');
+          return;
+        }
       }
-    });
+    }
 
-    setConfigs(parsedConfigs);
+    setUrlsText(newValue);
   };
 
   return (
@@ -301,18 +331,15 @@ export const StackedScene: React.FC = () => {
         </button>
         <h2 style={styles.header}>Stack Incentive Fields</h2>
         <p style={styles.description}>
-          Paste URLs (one per line) to stack multiple incentive field visualizations:
+          Paste URLs (one per line) to stack multiple incentive field visualizations. The view updates automatically.
         </p>
         <textarea
           value={urlsText}
-          onChange={(e) => setUrlsText(e.target.value)}
+          onChange={handleUrlsChange}
           placeholder="http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=..."
           style={styles.textarea}
           rows={10}
         />
-        <button onClick={handleGenerate} style={styles.button}>
-          Generate Stacked View
-        </button>
         {configs.length > 0 && (
           <>
             <p style={styles.info}>
