@@ -475,7 +475,7 @@ export const StackedScene: React.FC = () => {
               padding: 8
             });
 
-            sprite.position.set(attractor.pos.x, attractor.pos.y, z + zOffset + 0.3);
+            sprite.position.set(attractor.pos.x, -attractor.pos.y, z + zOffset + 0.3);
             sprite.scale.set(0.5, 0.25, 1);
             scene.add(sprite);
           }
@@ -514,8 +514,8 @@ export const StackedScene: React.FC = () => {
         const toZ = fieldKernel.potential(toAttractor.pos.x, toAttractor.pos.y, attractors) * zScale + zOffset + 0.2;
 
         // Create curved arrow
-        const from = new THREE.Vector3(fromAttractor.pos.x, fromAttractor.pos.y, fromZ);
-        const to = new THREE.Vector3(toAttractor.pos.x, toAttractor.pos.y, toZ);
+        const from = new THREE.Vector3(fromAttractor.pos.x, -fromAttractor.pos.y, fromZ);
+        const to = new THREE.Vector3(toAttractor.pos.x, -toAttractor.pos.y, toZ);
 
         // Calculate midpoint and control point for curve
         const mid = new THREE.Vector3().lerpVectors(from, to, 0.5);
@@ -678,7 +678,7 @@ export const StackedScene: React.FC = () => {
     <div style={styles.container}>
       <div style={styles.sidebar}>
         <button
-          onClick={() => window.location.hash = ''}
+          onClick={() => window.location.hash = '#create'}
           style={{ ...styles.button, backgroundColor: '#6c757d', marginBottom: '20px' }}
         >
           ← Back to Single View
