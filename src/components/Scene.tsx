@@ -267,13 +267,13 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
     <div style={currentStyles.container}>
       <div style={currentStyles.canvasWrapper}>
         <canvas ref={canvasRef} style={currentStyles.canvas} />
-        <div style={styles.overlay}>
-          <h1 style={styles.title}>{config.labels.title}</h1>
+        <div style={currentStyles.overlay}>
+          <h1 style={currentStyles.title}>{config.labels.title}</h1>
         </div>
       </div>
-      <div style={styles.controls}>
-        <div style={styles.controlGroup}>
-          <label style={styles.controlLabel}>No. of Balls</label>
+      <div style={currentStyles.controls}>
+        <div style={currentStyles.controlGroup}>
+          <label style={currentStyles.controlLabel}>No. of Balls</label>
           <input
             type="number"
             value={config.balls.count}
@@ -285,26 +285,26 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
             }}
             min="0"
             max="100"
-            style={styles.numberInput}
+            style={currentStyles.numberInput}
           />
         </div>
-        <button onClick={handlePlayPause} style={styles.button}>
+        <button onClick={handlePlayPause} style={currentStyles.button}>
           {isPlaying ? 'Pause' : 'Play'}
         </button>
-        <button onClick={handleReset} style={styles.button}>
+        <button onClick={handleReset} style={currentStyles.button}>
           Reset
         </button>
-        <button onClick={handleExportPNG} style={styles.button} disabled={exportProgress !== null}>
+        <button onClick={handleExportPNG} style={currentStyles.button} disabled={exportProgress !== null}>
           Export PNG
         </button>
-        <button onClick={handleExportWebM} style={styles.button} disabled={exportProgress !== null}>
+        <button onClick={handleExportWebM} style={currentStyles.button} disabled={exportProgress !== null}>
           {exportProgress !== null ? `Exporting ${Math.round(exportProgress * 100)}%` : 'Export Movie'}
         </button>
-        <div style={styles.spacer}></div>
+        <div style={currentStyles.spacer}></div>
         {onToggleDarkMode && (
           <button
             onClick={onToggleDarkMode}
-            style={{ ...styles.button, backgroundColor: darkMode ? '#ffa500' : '#333' }}
+            style={{ ...currentStyles.button, backgroundColor: darkMode ? '#ffa500' : '#333' }}
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
@@ -344,7 +344,7 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     fontSize: '28px',
     fontWeight: 700,
-    color: 'black',
+    color: 'white',
     textShadow: 'none'
   },
   controls: {

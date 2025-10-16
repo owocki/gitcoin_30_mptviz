@@ -25,6 +25,7 @@ export class Renderer {
   private config: SceneConfig;
   private animationId: number | null = null;
   private isPlaying: boolean = false;
+  private darkMode: boolean = false;
 
   constructor(canvas: HTMLCanvasElement, config: SceneConfig) {
     this.config = config;
@@ -265,10 +266,11 @@ export class Renderer {
     // Create text labels closer to the mesh
     const labelOffset = size * 0.6;
     const zLabelOffset = size * 0.3; // Z axis label much closer
+    const labelColor = this.darkMode ? '#ffffff' : '#000000';
     const labels = [
-      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: '#000000' },
-      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: '#000000' },
-      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, zLabelOffset), color: '#000000' }
+      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: labelColor },
+      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: labelColor },
+      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, zLabelOffset), color: labelColor }
     ];
 
     labels.forEach(({ text, position, color }) => {
@@ -351,10 +353,13 @@ export class Renderer {
         const z = this.fieldKernel.potential(attractor.pos.x, attractor.pos.y, this.config.attractors)
                   * this.config.surface.zScale;
 
+        // Use white text in dark mode, otherwise use attractor color
+        const textColor = this.darkMode ? '#ffffff' : attractor.color;
+
         const sprite = this.makeTextSprite(attractor.label, {
           fontsize: 72,
           backgroundColor: { r: 0, g: 0, b: 0, a: 1.0 },
-          textColor: attractor.color,
+          textColor: textColor,
           padding: 8
         });
 
@@ -466,7 +471,10 @@ export class Renderer {
     this.trailLines = [];
     this.trailBuffers = [];
 
-    const { radius, color: ballColor, trail } = this.config.balls;
+    const { radius, color: configBallColor, trail } = this.config.balls;
+
+    // Use white in dark mode, otherwise use config color
+    const ballColor = this.darkMode ? '#ffffff' : configBallColor;
 
     // Create ball meshes
     const geometry = new THREE.SphereGeometry(radius, 16, 16);
@@ -689,41 +697,56 @@ export class Renderer {
   }
 
   setDarkMode(darkMode: boolean): void {
+    // Store dark mode state
+    this.darkMode = darkMode;
+
     // Update background color
     const backgroundColor = darkMode ? '#0a0c10' : '#ffffff';
     this.renderer.setClearColor(new THREE.Color(backgroundColor), 1);
+
+    // Update ball colors
+    const ballColor = darkMode ? '#ffffff' : this.config.balls.color;
+    this.ballMeshes.forEach(mesh => {
+      (mesh.material as THREE.MeshStandardMaterial).color.set(ballColor);
+    });
+    this.trailLines.forEach(line => {
+      (line.material as THREE.LineBasicMaterial).color.set(ballColor);
+    });
 
     // Update axis label colors
     const labelColor = darkMode ? '#ffffff' : '#000000';
     this.axisLabels.forEach(label => this.scene.remove(label));
     this.axisLabels = [];
 
-    if (!this.config.render.showAxes) return;
+    if (this.config.render.showAxes) {
+      const { extent } = this.config.surface;
+      const size = Math.max(
+        extent.xMax - extent.xMin,
+        extent.yMax - extent.yMin
+      );
 
-    const { extent } = this.config.surface;
-    const size = Math.max(
-      extent.xMax - extent.xMin,
-      extent.yMax - extent.yMin
-    );
+      // Create text labels with new color
+      const labelOffset = size * 0.6;
+      const zLabelOffset = size * 0.3;
+      const labels = [
+        { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: labelColor },
+        { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: labelColor },
+        { text: this.config.labels.z, position: new THREE.Vector3(0, 0, zLabelOffset), color: labelColor }
+      ];
 
-    // Create text labels with new color
-    const labelOffset = size * 0.6;
-    const zLabelOffset = size * 0.3;
-    const labels = [
-      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: labelColor },
-      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: labelColor },
-      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, zLabelOffset), color: labelColor }
-    ];
-
-    labels.forEach(({ text, position, color }) => {
-      const sprite = this.makeTextSprite(text, {
-        fontsize: 64,
-        backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
-        textColor: color
+      labels.forEach(({ text, position, color }) => {
+        const sprite = this.makeTextSprite(text, {
+          fontsize: 64,
+          backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+          textColor: color
+        });
+        sprite.position.copy(position);
+        this.scene.add(sprite);
+        this.axisLabels.push(sprite);
       });
-      sprite.position.copy(position);
-      this.scene.add(sprite);
-      this.axisLabels.push(sprite);
-    });
+    }
+
+    // Update attractor label colors
+    this.initAttractorLabels();
   }
 }

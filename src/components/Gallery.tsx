@@ -66,19 +66,30 @@ export function Gallery() {
 
   return (
     <div style={styles.container}>
+      {/* Navigation Bar */}
+      <nav style={styles.navbar}>
+        <div style={styles.navContent}>
+          <div style={styles.navLogo}>
+            <span style={styles.logoText}>&nbsp;</span>
+          </div>
+          <div style={styles.navLinks}>
+            <a href="#about" style={styles.navLink}>About</a>
+            <a href="#examples" style={styles.navLink}>Examples</a>
+            <a href="#solution" style={styles.navLink}>Solutions</a>
+            <a href="#visualizations" style={styles.navLink}>Visualizations</a>
+          </div>
+        </div>
+      </nav>
+
       <header style={styles.header}>
-
-
-
         {/* Main Hero Section */}
         <div style={styles.mainHero}>
-          <h1 style={styles.mainTitle}>Solving Multipolar Traps</h1>
-          <h3 style={styles.mainTitle}>for fun & profit (with Ethereum)</h3>
+          <h1 style={styles.mainTitle}>Solving Multipolar Traps with Ethereum (for fun & profit)</h1>
           <p style={styles.mainSubtitle} className="main-subtitle">an exploration of the profound implications of programmable money as a tool to solve Multipolar traps...made w/ &gt;3 by ya boiiii <a href="https://x.com/owocki">@owocki</a></p>
         </div>
 
         {/* Hero Section: The Trap We're In */}
-        <div style={styles.landingSection}>
+        <div style={styles.landingSection} id="about">
           <h2 style={styles.landingHeadline}>What is a Multipolar trap?</h2>
               <p style={styles.landingSubheadline}>
                 A <strong>Multipolar trap</strong> occurs when individual rational actions lead to collectively worse outcomes because no single actor can afford to unilaterally cooperate.
@@ -94,7 +105,7 @@ export function Gallery() {
         </div>
 
         {/* Section 2: What is a Multipolar Trap? */}
-        <div style={styles.landingSection}>
+        <div style={styles.landingSection} id="examples">
           <div style={styles.sectionHeaderWithButton}>
             <h2 style={styles.sectionHeading}>Multipolar traps are why can't we have nice things:</h2>
             <button
@@ -209,7 +220,7 @@ export function Gallery() {
             </div>
 
             <div style={styles.bottomUpBox}>
-              <h4 style={styles.bottomUpTitle}>💡 The Power of Bottom-Up Coordination</h4>
+              <h4 style={styles.bottomUpTitle}>💡 The Power of Networked Coordination</h4>
               <p style={styles.bottomUpText}>
                 Top-down institutions are slow, captured, or corrupt. But networks of ordinary people—citizens, developers, communities—can coordinate at scale if given the right infrastructure.
               </p>
@@ -369,7 +380,7 @@ export function Gallery() {
         </div>
 
         {/* Explore Visualizations CTA */}
-        <div style={styles.ctaSection}>
+        <div style={styles.ctaSection} id="visualizations">
           <h3 style={styles.ctaHeading}>Explore the Dynamics Behind Multipolar Traps, Visually</h3>
           <p style={styles.tldrText}>
             These artifacts help us conceptualize Multipolar Traps visually, making it easier to grok the system dynamics.
@@ -419,6 +430,59 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#fff',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
+  },
+  navbar: {
+    position: 'sticky',
+    top: 0,
+    backgroundColor: '#1a1d23',
+    borderBottom: '1px solid #3a3d45',
+    zIndex: 1000,
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+  },
+  navContent: {
+    maxWidth: '1400px',
+    margin: '0 auto',
+    padding: '16px 40px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '20px',
+  },
+  navLogo: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  logoText: {
+    fontSize: '20px',
+    fontWeight: 700,
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text',
+  },
+  navLinks: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '32px',
+  },
+  navLink: {
+    color: '#a8adb7',
+    textDecoration: 'none',
+    fontSize: '15px',
+    fontWeight: 500,
+    transition: 'color 0.3s ease',
+  },
+  navButton: {
+    padding: '10px 24px',
+    backgroundColor: '#667eea',
+    border: 'none',
+    borderRadius: '6px',
+    color: 'white',
+    fontSize: '15px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
   },
   header: {
     textAlign: 'center',
@@ -900,6 +964,18 @@ const styles: Record<string, React.CSSProperties> = {
 if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
   styleSheet.textContent = `
+    /* Navbar link hover effects */
+    nav a:hover {
+      color: #ffffff !important;
+    }
+
+    /* Navbar button hover effects */
+    .nav-button:hover {
+      background-color: #764ba2 !important;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+
     /* Main subtitle link styling */
     .main-subtitle a {
       color: #ffffff;
