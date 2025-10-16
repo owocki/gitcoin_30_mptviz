@@ -687,4 +687,43 @@ export class Renderer {
   getControls(): OrbitControls {
     return this.controls;
   }
+
+  setDarkMode(darkMode: boolean): void {
+    // Update background color
+    const backgroundColor = darkMode ? '#0a0c10' : '#ffffff';
+    this.renderer.setClearColor(new THREE.Color(backgroundColor), 1);
+
+    // Update axis label colors
+    const labelColor = darkMode ? '#ffffff' : '#000000';
+    this.axisLabels.forEach(label => this.scene.remove(label));
+    this.axisLabels = [];
+
+    if (!this.config.render.showAxes) return;
+
+    const { extent } = this.config.surface;
+    const size = Math.max(
+      extent.xMax - extent.xMin,
+      extent.yMax - extent.yMin
+    );
+
+    // Create text labels with new color
+    const labelOffset = size * 0.6;
+    const zLabelOffset = size * 0.3;
+    const labels = [
+      { text: this.config.labels.x, position: new THREE.Vector3(labelOffset, 0, 0), color: labelColor },
+      { text: this.config.labels.y, position: new THREE.Vector3(0, labelOffset, 0), color: labelColor },
+      { text: this.config.labels.z, position: new THREE.Vector3(0, 0, zLabelOffset), color: labelColor }
+    ];
+
+    labels.forEach(({ text, position, color }) => {
+      const sprite = this.makeTextSprite(text, {
+        fontsize: 64,
+        backgroundColor: { r: 0, g: 0, b: 0, a: 0.0 },
+        textColor: color
+      });
+      sprite.position.copy(position);
+      this.scene.add(sprite);
+      this.axisLabels.push(sprite);
+    });
+  }
 }

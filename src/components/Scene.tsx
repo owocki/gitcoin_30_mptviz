@@ -5,7 +5,12 @@ import { PhysicsEngine } from '../physics/PhysicsEngine';
 import { ConfigManager } from '../config/ConfigManager';
 import { Exporter } from '../export/Exporter';
 
-export const Scene: React.FC = () => {
+interface SceneProps {
+  darkMode?: boolean;
+  onToggleDarkMode?: () => void;
+}
+
+export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<Renderer | null>(null);
   const physicsRef = useRef<PhysicsEngine | null>(null);
@@ -103,6 +108,12 @@ export const Scene: React.FC = () => {
 
     rendererRef.current.render();
   }, [config, isPlaying]);
+
+  // Update dark mode when it changes
+  useEffect(() => {
+    if (!rendererRef.current) return;
+    rendererRef.current.setDarkMode(darkMode);
+  }, [darkMode]);
 
   // Physics update loop (separate from render loop)
   useEffect(() => {
@@ -250,10 +261,12 @@ export const Scene: React.FC = () => {
     }
   };
 
+  const currentStyles = darkMode ? styles : lightStyles;
+
   return (
-    <div style={styles.container}>
-      <div style={styles.canvasWrapper}>
-        <canvas ref={canvasRef} style={styles.canvas} />
+    <div style={currentStyles.container}>
+      <div style={currentStyles.canvasWrapper}>
+        <canvas ref={canvasRef} style={currentStyles.canvas} />
         <div style={styles.overlay}>
           <h1 style={styles.title}>{config.labels.title}</h1>
         </div>
@@ -287,6 +300,15 @@ export const Scene: React.FC = () => {
         <button onClick={handleExportWebM} style={styles.button} disabled={exportProgress !== null}>
           {exportProgress !== null ? `Exporting ${Math.round(exportProgress * 100)}%` : 'Export Movie'}
         </button>
+        <div style={styles.spacer}></div>
+        {onToggleDarkMode && (
+          <button
+            onClick={onToggleDarkMode}
+            style={{ ...styles.button, backgroundColor: darkMode ? '#ffa500' : '#333' }}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
+        )}
       </div>
     </div>
   );
@@ -363,5 +385,86 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'background-color 0.2s'
+  },
+  spacer: {
+    flex: 1
+  }
+};
+
+const lightStyles: Record<string, React.CSSProperties> = {
+  container: {
+    width: '100%',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#ffffff'
+  },
+  canvasWrapper: {
+    flex: 1,
+    position: 'relative',
+    overflow: 'hidden',
+    backgroundColor: '#ffffff'
+  },
+  canvas: {
+    width: '100%',
+    height: '100%',
+    display: 'block'
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: '20px',
+    pointerEvents: 'none'
+  },
+  title: {
+    margin: 0,
+    fontSize: '28px',
+    fontWeight: 700,
+    color: 'black',
+    textShadow: 'none'
+  },
+  controls: {
+    display: 'flex',
+    gap: '10px',
+    padding: '15px',
+    backgroundColor: '#f5f5f5',
+    borderTop: '1px solid #ddd',
+    alignItems: 'center'
+  },
+  controlGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '5px',
+    minWidth: '120px'
+  },
+  controlLabel: {
+    fontSize: '12px',
+    color: '#666',
+    fontWeight: 500
+  },
+  numberInput: {
+    padding: '8px 12px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    color: '#333',
+    fontSize: '14px',
+    width: '100%'
+  },
+  button: {
+    padding: '12px 24px',
+    backgroundColor: '#4a7dff',
+    border: 'none',
+    borderRadius: '6px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s'
+  },
+  spacer: {
+    flex: 1
   }
 };

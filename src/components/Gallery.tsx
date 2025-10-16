@@ -223,7 +223,7 @@ export function Gallery() {
                 <li style={styles.bottomUpListItem}>✓ <strong>Incentive alignment</strong> to reward collective action</li>
               </ul>
               <p style={styles.bottomUpText}>
-                When these pieces come together, bottom-up coordination becomes possible—and powerful enough to escape multipolar traps.
+                When these pieces come together, bottom-up coordination becomes possible—and powerful enough to diffuse multipolar traps.
               </p>
             </div>
           </div>
@@ -335,6 +335,35 @@ export function Gallery() {
               style={styles.ctaButton}
             >
               Get involved locally
+            </button>
+          </div>
+        </div>
+
+        {/* Papers Section */}
+        <div style={styles.papersSection}>
+          <h3 style={styles.papersSectionHeading}>Learn More About Solving Multipolar Traps with Ethereum</h3>
+          <div style={styles.papersGrid}>
+            <button
+              onClick={() => window.open('https://www.gitcoin.co/vision', '_blank')}
+              style={styles.paperButton}
+              className="paper-button"
+            >
+              <div style={styles.paperIcon}>📄</div>
+              <div style={styles.paperContent}>
+                <div style={styles.paperTitle}>Gitcoin Vision Paper</div>
+                <div style={styles.paperSubtitle}>Our vision for coordination technology</div>
+              </div>
+            </button>
+            <button
+              onClick={() => window.open('https://www.gitcoin.co/whitepaper', '_blank')}
+              style={styles.paperButton}
+              className="paper-button"
+            >
+              <div style={styles.paperIcon}>📋</div>
+              <div style={styles.paperContent}>
+                <div style={styles.paperTitle}>Gitcoin Whitepaper</div>
+                <div style={styles.paperSubtitle}>Technical implementation details</div>
+              </div>
             </button>
           </div>
         </div>
@@ -810,6 +839,61 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
     color: '#fff',
   },
+  papersSection: {
+    maxWidth: '1000px',
+    margin: '60px auto',
+    padding: '40px 20px',
+    backgroundColor: 'rgba(102, 126, 234, 0.05)',
+    borderRadius: '16px',
+    border: '2px solid #667eea',
+  },
+  papersSectionHeading: {
+    fontSize: '32px',
+    fontWeight: 700,
+    color: '#fff',
+    textAlign: 'center',
+    margin: '0 0 30px 0',
+  },
+  papersGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '20px',
+    maxWidth: '800px',
+    margin: '0 auto',
+  },
+  paperButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '20px',
+    padding: '24px',
+    backgroundColor: '#1a1d23',
+    border: '2px solid #667eea',
+    borderRadius: '12px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    textAlign: 'left',
+  },
+  paperIcon: {
+    fontSize: '48px',
+    flexShrink: 0,
+  },
+  paperContent: {
+    flex: 1,
+  },
+  paperTitle: {
+    fontSize: '20px',
+    fontWeight: 700,
+    color: '#fff',
+    marginBottom: '6px',
+  },
+  paperSubtitle: {
+    fontSize: '14px',
+    color: '#a8adb7',
+    fontWeight: 400,
+  },
 };
 
 // Add hover effects via a style tag
@@ -886,6 +970,14 @@ if (typeof document !== 'undefined') {
       border-color: #764ba2 !important;
       color: #fff !important;
       transform: translateX(5px);
+    }
+
+    /* Paper button hover effects */
+    .paper-button:hover {
+      background-color: rgba(102, 126, 234, 0.15) !important;
+      border-color: #764ba2 !important;
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
     }
 
     /* Responsive design for solution rows */

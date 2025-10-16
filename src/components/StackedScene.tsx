@@ -154,6 +154,7 @@ export const StackedScene: React.FC = () => {
   const [animationRepeat, setAnimationRepeat] = useState(1);
   const [sceneReady, setSceneReady] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const animationIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debug effect to track configs changes
@@ -234,7 +235,7 @@ export const StackedScene: React.FC = () => {
     });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(new THREE.Color('#ffffff'), 1);
+    renderer.setClearColor(new THREE.Color(darkMode ? '#0a0c10' : '#ffffff'), 1);
     rendererRef.current = renderer;
 
     // Setup scene
@@ -300,7 +301,14 @@ export const StackedScene: React.FC = () => {
       controls.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [darkMode]);
+
+  // Update background color when darkMode changes
+  useEffect(() => {
+    if (rendererRef.current) {
+      rendererRef.current.setClearColor(new THREE.Color(darkMode ? '#0a0c10' : '#ffffff'), 1);
+    }
+  }, [darkMode]);
 
   // Render stacked fields when configs or spacing change
   useEffect(() => {
@@ -443,10 +451,11 @@ export const StackedScene: React.FC = () => {
         if (showAxisTitles) {
           const labelOffset = size * 0.6;
           const zLabelOffset = size * 0.3;
+          const labelColor = darkMode ? '#ffffff' : '#000000';
           const labels = [
-            { text: config.labels.x, position: new THREE.Vector3(labelOffset, 0, zOffset), color: '#000000' },
-            { text: config.labels.y, position: new THREE.Vector3(0, labelOffset, zOffset), color: '#000000' },
-            { text: config.labels.z, position: new THREE.Vector3(0, 0, zOffset + zLabelOffset), color: '#000000' }
+            { text: config.labels.x, position: new THREE.Vector3(labelOffset, 0, zOffset), color: labelColor },
+            { text: config.labels.y, position: new THREE.Vector3(0, labelOffset, zOffset), color: labelColor },
+            { text: config.labels.z, position: new THREE.Vector3(0, 0, zOffset + zLabelOffset), color: labelColor }
           ];
 
           labels.forEach(({ text, position, color }) => {
@@ -568,7 +577,7 @@ export const StackedScene: React.FC = () => {
     });
 
     console.log('[StackedScene] Finished rendering all configs');
-  }, [configs, zSpacing, showLabels, showMeshTitles, showAxisTitles, sceneReady]);
+  }, [configs, zSpacing, showLabels, showMeshTitles, showAxisTitles, sceneReady, darkMode]);
 
   const handleUrlsChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
@@ -674,94 +683,97 @@ export const StackedScene: React.FC = () => {
     };
   }, []);
 
+  const currentStyles = darkMode ? styles : lightStackedStyles;
+
   return (
-    <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <button
-          onClick={() => window.location.hash = '#create'}
-          style={{ ...styles.button, backgroundColor: '#6c757d', marginBottom: '20px' }}
-        >
-          ← Back to Single View
-        </button>
-        <h2 style={styles.header}>Stack Incentive Fields</h2>
+    <div style={currentStyles.outerContainer}>
+      <div style={currentStyles.contentContainer}>
+        <div style={currentStyles.sidebar}>
+          <button
+            onClick={() => window.location.hash = '#create'}
+            style={{ ...currentStyles.button, backgroundColor: '#6c757d', marginBottom: '10px' }}
+          >
+            ← Back to Single View
+          </button>
+          <h2 style={currentStyles.header}>Stack Incentive Fields</h2>
 
         {/* Title input */}
         <div style={{ marginBottom: '15px' }}>
-          <label style={styles.inputLabel}>Stack Title:</label>
+          <label style={currentStyles.inputLabel}>Stack Title:</label>
           <input
             type="text"
             value={stackTitle}
             onChange={(e) => setStackTitle(e.target.value)}
             placeholder="Enter a title for this stacked view"
-            style={styles.textInput}
+            style={currentStyles.textInput}
           />
         </div>
 
-        <p style={styles.description}>
+        <p style={currentStyles.description}>
           Paste URLs (one per line) to stack multiple incentive field visualizations. The view updates automatically.
         </p>
         <textarea
           value={urlsText}
           onChange={handleUrlsChange}
           placeholder="http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=..."
-          style={styles.textarea}
+          style={currentStyles.textarea}
           rows={10}
         />
         {configs.length > 0 && (
           <>
-            <p style={styles.info}>
+            <p style={currentStyles.info}>
               Showing {configs.length} stacked field{configs.length !== 1 ? 's' : ''}
             </p>
 
             {/* Mesh title visibility toggle */}
-            <div style={styles.labelControls}>
-              <label style={styles.spacingLabel}>Mesh Titles:</label>
-              <div style={styles.checkboxRow}>
+            <div style={currentStyles.labelControls}>
+              <label style={currentStyles.spacingLabel}>Mesh Titles:</label>
+              <div style={currentStyles.checkboxRow}>
                 <input
                   type="checkbox"
                   checked={showMeshTitles}
                   onChange={(e) => setShowMeshTitles(e.target.checked)}
-                  style={styles.checkbox}
+                  style={currentStyles.checkbox}
                   id="mesh-titles"
                 />
-                <label htmlFor="mesh-titles" style={styles.checkboxLabel}>
+                <label htmlFor="mesh-titles" style={currentStyles.checkboxLabel}>
                   Show mesh titles next to each layer
                 </label>
               </div>
             </div>
 
             {/* Axis title visibility toggle */}
-            <div style={styles.labelControls}>
-              <label style={styles.spacingLabel}>Axis Titles:</label>
-              <div style={styles.checkboxRow}>
+            <div style={currentStyles.labelControls}>
+              <label style={currentStyles.spacingLabel}>Axis Titles:</label>
+              <div style={currentStyles.checkboxRow}>
                 <input
                   type="checkbox"
                   checked={showAxisTitles}
                   onChange={(e) => setShowAxisTitles(e.target.checked)}
-                  style={styles.checkbox}
+                  style={currentStyles.checkbox}
                   id="axis-titles"
                 />
-                <label htmlFor="axis-titles" style={styles.checkboxLabel}>
+                <label htmlFor="axis-titles" style={currentStyles.checkboxLabel}>
                   Show axis labels (x, y, z)
                 </label>
               </div>
             </div>
 
             {/* Label visibility toggles */}
-            <div style={styles.labelControls}>
-              <label style={styles.spacingLabel}>Attractor Labels:</label>
+            <div style={currentStyles.labelControls}>
+              <label style={currentStyles.spacingLabel}>Attractor Labels:</label>
               {configs.map((config, index) => {
                 const fullConfig = { ...DEFAULT_CONFIG, ...config };
                 return (
-                  <div key={index} style={styles.checkboxRow}>
+                  <div key={index} style={currentStyles.checkboxRow}>
                     <input
                       type="checkbox"
                       checked={showLabels[index] || false}
                       onChange={() => toggleLabelVisibility(index)}
-                      style={styles.checkbox}
+                      style={currentStyles.checkbox}
                       id={`label-${index}`}
                     />
-                    <label htmlFor={`label-${index}`} style={styles.checkboxLabel}>
+                    <label htmlFor={`label-${index}`} style={currentStyles.checkboxLabel}>
                       Layer {index + 1}: {fullConfig.labels.title || 'Untitled'}
                     </label>
                   </div>
@@ -770,27 +782,27 @@ export const StackedScene: React.FC = () => {
             </div>
 
             {/* Spacing controls */}
-            <div style={styles.spacingControls}>
-              <label style={styles.spacingLabel}>
+            <div style={currentStyles.spacingControls}>
+              <label style={currentStyles.spacingLabel}>
                 Layer Spacing: {zSpacing.toFixed(2)}
               </label>
-              <div style={styles.buttonGroup}>
+              <div style={currentStyles.buttonGroup}>
                 <button
                   onClick={() => setZSpacing(Math.max(0, zSpacing - 0.1))}
-                  style={styles.smallButton}
+                  style={currentStyles.smallButton}
                   disabled={zSpacing <= 0}
                 >
                   Compress
                 </button>
                 <button
                   onClick={() => setZSpacing(zSpacing + 0.1)}
-                  style={styles.smallButton}
+                  style={currentStyles.smallButton}
                 >
                   Expand
                 </button>
                 <button
                   onClick={() => setZSpacing(0)}
-                  style={styles.smallButton}
+                  style={currentStyles.smallButton}
                 >
                   Merge
                 </button>
@@ -798,7 +810,7 @@ export const StackedScene: React.FC = () => {
 
               {/* Animation controls */}
               <div style={{ marginTop: '10px' }}>
-                <label style={styles.checkboxLabel}>
+                <label style={currentStyles.checkboxLabel}>
                   Repeat:
                   <input
                     type="number"
@@ -806,21 +818,21 @@ export const StackedScene: React.FC = () => {
                     onChange={(e) => setAnimationRepeat(Math.max(1, parseInt(e.target.value) || 1))}
                     min="1"
                     max="100"
-                    style={styles.numberInput}
+                    style={currentStyles.numberInput}
                   />
                 </label>
               </div>
-              <div style={{ ...styles.buttonGroup, marginTop: '8px' }}>
+              <div style={{ ...currentStyles.buttonGroup, marginTop: '8px' }}>
                 <button
                   onClick={() => handleAnimatedSpacing(-0.1)}
-                  style={styles.smallButton}
+                  style={currentStyles.smallButton}
                   disabled={zSpacing <= 0}
                 >
                   Animate ↓
                 </button>
                 <button
                   onClick={() => handleAnimatedSpacing(0.1)}
-                  style={styles.smallButton}
+                  style={currentStyles.smallButton}
                 >
                   Animate ↑
                 </button>
@@ -828,25 +840,46 @@ export const StackedScene: React.FC = () => {
             </div>
 
             {/* Share button */}
-            <button onClick={handleShareLink} style={{ ...styles.button, marginTop: '15px' }}>
+            <button onClick={handleShareLink} style={{ ...currentStyles.button, marginTop: '15px' }}>
               {copySuccess ? '✓ Copied!' : '📋 Copy Share Link'}
             </button>
           </>
         )}
+        </div>
+        <div style={currentStyles.canvasWrapper}>
+          <canvas ref={canvasRef} style={currentStyles.canvas} />
+          {stackTitle && (
+            <div style={currentStyles.titleOverlay}>
+              <h1 style={currentStyles.titleText}>{stackTitle}</h1>
+            </div>
+          )}
+        </div>
       </div>
-      <div style={styles.canvasWrapper}>
-        <canvas ref={canvasRef} style={styles.canvas} />
-        {stackTitle && (
-          <div style={styles.titleOverlay}>
-            <h1 style={styles.titleText}>{stackTitle}</h1>
-          </div>
-        )}
+      <div style={currentStyles.controls}>
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          style={{ ...currentStyles.controlButton, backgroundColor: darkMode ? '#ffa500' : '#333' }}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
       </div>
     </div>
   );
 };
 
 const styles: Record<string, React.CSSProperties> = {
+  outerContainer: {
+    width: '100%',
+    height: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#0a0c10',
+  },
+  contentContainer: {
+    flex: 1,
+    display: 'flex',
+    overflow: 'hidden',
+  },
   container: {
     width: '100%',
     height: '100vh',
@@ -1013,5 +1046,108 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     color: 'black',
     textShadow: 'none',
+  },
+  controls: {
+    display: 'flex',
+    gap: '10px',
+    padding: '15px',
+    backgroundColor: '#1a1d23',
+    borderTop: '1px solid #3a3d45',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  controlButton: {
+    padding: '12px 24px',
+    border: 'none',
+    borderRadius: '6px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s',
+  },
+};
+
+const lightStackedStyles: Record<string, React.CSSProperties> = {
+  ...styles,
+  outerContainer: {
+    ...styles.outerContainer,
+    backgroundColor: '#ffffff',
+  },
+  contentContainer: {
+    ...styles.contentContainer,
+  },
+  container: {
+    ...styles.container,
+    backgroundColor: '#ffffff',
+  },
+  sidebar: {
+    ...styles.sidebar,
+    backgroundColor: '#f5f5f5',
+    color: '#333',
+    borderRight: '1px solid #ddd',
+  },
+  header: {
+    ...styles.header,
+    color: '#333',
+  },
+  description: {
+    ...styles.description,
+    color: '#666',
+  },
+  inputLabel: {
+    ...styles.inputLabel,
+    color: '#666',
+  },
+  textInput: {
+    ...styles.textInput,
+    backgroundColor: '#ffffff',
+    border: '1px solid #ddd',
+    color: '#333',
+  },
+  textarea: {
+    ...styles.textarea,
+    backgroundColor: '#ffffff',
+    border: '1px solid #ddd',
+    color: '#333',
+  },
+  button: {
+    ...styles.button,
+  },
+  info: {
+    ...styles.info,
+    color: '#0066cc',
+  },
+  spacingControls: {
+    ...styles.spacingControls,
+    backgroundColor: '#f0f0f0',
+    border: '1px solid #ddd',
+  },
+  spacingLabel: {
+    ...styles.spacingLabel,
+    color: '#333',
+  },
+  labelControls: {
+    ...styles.labelControls,
+    backgroundColor: '#f0f0f0',
+    border: '1px solid #ddd',
+  },
+  checkboxLabel: {
+    ...styles.checkboxLabel,
+    color: '#333',
+  },
+  numberInput: {
+    ...styles.numberInput,
+    backgroundColor: '#ffffff',
+    border: '1px solid #ddd',
+    color: '#333',
+  },
+  controls: {
+    ...styles.controls,
+    backgroundColor: '#f5f5f5',
+    borderTop: '1px solid #ddd',
+  },
+  controlButton: {
+    ...styles.controlButton,
   },
 };

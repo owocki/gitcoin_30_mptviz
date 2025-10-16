@@ -18,6 +18,7 @@ function App() {
   const [copyPreviewSuccess, setCopyPreviewSuccess] = useState(false);
   const [currentPage, setCurrentPage] = useState<'gallery' | 'create' | 'stacked'>('gallery');
   const [isMobile, setIsMobile] = useState(isMobileDevice());
+  const [darkMode, setDarkMode] = useState(false);
 
   // Check for mobile on resize
   useEffect(() => {
@@ -106,7 +107,7 @@ function App() {
           onClick={() => window.location.hash = ''}
           style={styles.mobileWarningButton}
         >
-          Back to Gallery
+          Back to Homepage
         </button>
       </div>
     </div>
@@ -125,30 +126,32 @@ function App() {
     return <MobileWarning />;
   }
 
+  const currentStyles = darkMode ? darkStyles : styles;
+
   return (
-    <div style={styles.container}>
-      <div style={styles.sidebar}>
-        <div style={styles.shareButton}>
+    <div style={currentStyles.container}>
+      <div style={darkStyles.sidebar}>
+        <div style={darkStyles.shareButton}>
           <button
             onClick={() => window.location.hash = ''}
-            style={{ ...styles.button, backgroundColor: '#6c757d' }}
+            style={{ ...darkStyles.button, backgroundColor: '#6c757d' }}
           >
-            Back to Gallery
+            Back to Homepage
           </button>
-          <button onClick={handleShare} style={{ ...styles.button, marginTop: '10px' }}>
+          <button onClick={handleShare} style={{ ...darkStyles.button, marginTop: '10px' }}>
             {copySuccess ? '✓ Copied!' : '📋 Copy Share Link'}
           </button>
           <button
             onClick={() => window.location.hash = 'stacked'}
-            style={{ ...styles.button, backgroundColor: '#6c757d', marginTop: '10px' }}
+            style={{ ...darkStyles.button, backgroundColor: '#6c757d', marginTop: '10px' }}
           >
             Stack Multiple Fields
           </button>
         </div>
         <Controls />
       </div>
-      <div style={styles.main}>
-        <Scene />
+      <div style={currentStyles.main}>
+        <Scene darkMode={darkMode} onToggleDarkMode={() => setDarkMode(!darkMode)} />
       </div>
     </div>
   );
@@ -159,7 +162,91 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     height: '100vh',
     width: '100vw',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    backgroundColor: '#ffffff'
+  },
+  sidebar: {
+    width: '320px',
+    flexShrink: 0,
+    overflowY: 'auto',
+    backgroundColor: '#f5f5f5',
+    borderRight: '1px solid #ddd',
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  main: {
+    flex: 1,
+    overflow: 'hidden',
+    backgroundColor: '#ffffff'
+  },
+  shareButton: {
+    padding: '15px 20px',
+    borderBottom: '1px solid #ddd',
+    backgroundColor: '#f5f5f5'
+  },
+  button: {
+    width: '100%',
+    padding: '10px 16px',
+    backgroundColor: '#28a745',
+    border: 'none',
+    borderRadius: '4px',
+    color: 'white',
+    fontSize: '14px',
+    fontWeight: 500,
+    cursor: 'pointer'
+  },
+  mobileWarning: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    width: '100vw',
+    backgroundColor: '#0f1114',
+    padding: '20px'
+  },
+  mobileWarningContent: {
+    maxWidth: '500px',
+    textAlign: 'center',
+    backgroundColor: '#1a1d23',
+    padding: '40px',
+    borderRadius: '12px',
+    border: '1px solid #3a3d45'
+  },
+  mobileWarningTitle: {
+    fontSize: '28px',
+    fontWeight: 700,
+    color: '#fff',
+    marginBottom: '20px',
+    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    backgroundClip: 'text'
+  },
+  mobileWarningText: {
+    fontSize: '16px',
+    color: '#a8adb7',
+    marginBottom: '30px',
+    lineHeight: '1.6'
+  },
+  mobileWarningButton: {
+    padding: '12px 32px',
+    backgroundColor: '#28a745',
+    border: 'none',
+    borderRadius: '6px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer'
+  }
+};
+
+const darkStyles: Record<string, React.CSSProperties> = {
+  container: {
+    display: 'flex',
+    height: '100vh',
+    width: '100vw',
+    overflow: 'hidden',
+    backgroundColor: '#0a0c10'
   },
   sidebar: {
     width: '320px',
@@ -172,7 +259,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   main: {
     flex: 1,
-    overflow: 'hidden'
+    overflow: 'hidden',
+    backgroundColor: '#0a0c10'
   },
   shareButton: {
     padding: '15px 20px',
