@@ -98,6 +98,9 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       );
       rendererRef.current.initBalls(config.balls.count);
 
+      // Ensure dark mode is applied to newly initialized balls
+      rendererRef.current.setDarkMode(darkMode);
+
       // Update ball positions (hovering when not playing)
       const balls = physicsRef.current.getBalls();
       rendererRef.current.updateBalls(balls, isPlaying);
@@ -165,6 +168,9 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         );
         rendererRef.current.initBalls(config.balls.count);
 
+        // Ensure dark mode is applied to newly initialized balls
+        rendererRef.current.setDarkMode(darkMode);
+
         // Position balls at z=1 for the drop
         const balls = physicsRef.current.getBalls();
         rendererRef.current.positionBallsAtHeight(balls, 1);
@@ -194,6 +200,9 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         configManagerRef.current.getRNG()
       );
       rendererRef.current.initBalls(config.balls.count);
+
+      // Ensure dark mode is applied to newly initialized balls
+      rendererRef.current.setDarkMode(darkMode);
 
       // Position balls hovering at z=0.8
       const balls = physicsRef.current.getBalls();
@@ -227,6 +236,9 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         configManagerRef.current.getRNG()
       );
       rendererRef.current.initBalls(config.balls.count);
+
+      // Ensure dark mode is applied to newly initialized balls
+      rendererRef.current.setDarkMode(darkMode);
 
       // Position balls at z=1 for the drop
       const balls = physicsRef.current.getBalls();
