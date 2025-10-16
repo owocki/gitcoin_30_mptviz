@@ -86,7 +86,7 @@ export function Gallery() {
             </div>
             <div style={styles.featureItem}>
               <span style={styles.featureIcon}>✅</span>
-              <span style={styles.featureText}>DAOs & quadratic voting (shared decision-making)</span>
+              <span style={styles.featureText}>DAOs give us shared decision-making</span>
             </div>
             <div style={styles.featureItem}>
               <span style={styles.featureIcon}>✅</span>
@@ -95,6 +95,10 @@ export function Gallery() {
             <div style={styles.featureItem}>
               <span style={styles.featureIcon}>✅</span>
               <span style={styles.featureText}>Trustless enforcement (code = law)</span>
+            </div>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>Anyone can build on it</span>
             </div>
           </div>
         </div>
@@ -137,7 +141,7 @@ export function Gallery() {
 
         {/* Section 6: Join the Coordinators */}
         <div style={styles.landingSection}>
-          <h2 style={styles.sectionHeading}>We're Building the Tools to Escape These Traps</h2>
+          <h2 style={styles.sectionHeading}>In Ethereum, We're Building the Tools to Disarm These Traps</h2>
           <p style={styles.joinSubheading}>Are you in?</p>
 
           <div style={styles.ctaButtonsGrid}>
@@ -145,28 +149,35 @@ export function Gallery() {
               onClick={() => window.open('https://ethereum.org/en/community/grants/', '_blank')}
               style={styles.ctaButton}
             >
-              Learn More about Ethereum Public Goods
+              Learn More about Ethereum Coordination Ecosystem
             </button>
             <button
               onClick={() => window.open('https://gitcoin.co/', '_blank')}
               style={styles.ctaButton}
             >
-              Support Coordination Tech
+              Support Ethereum Coordination Tech
             </button>
             <button
-              onClick={() => window.location.hash = 'create'}
-              style={styles.ctaButtonPrimary}
+              onClick={() => window.open('https://ethereumlocalism.xyz/', '_blank')}
+              style={styles.ctaButton}
             >
-              Create a Visualization
+              Get involved locally
             </button>
           </div>
         </div>
 
         {/* Explore Visualizations CTA */}
         <div style={styles.ctaSection}>
-          <h3 style={styles.ctaHeading}>Explore the Dynamics, Visually</h3>
-          <p style={styles.ctaText}>
-            Browse featured visualizations below to visualize multipolar traps in action
+          <h3 style={styles.ctaHeading}>Explore the Dynamics Behind Multipolar Traps, Visually</h3>
+          <p style={styles.tldrText}>
+            These artifacts help us conceptualize Multipolar Traps visually, making it easier to grok the system dynamics.
+          </p>
+          <p style={styles.tldrText}>
+            Each shows a 3D landscape that represents possible futures within a “design space.” The flat grid is the space of choices or designs humans can make. The height (z-axis) represents the overall success of the system. 
+          </p>
+
+          <p style={styles.tldrText}>
+These are maps of possibilities. Some design choices lift the world toward better outcomes, others sink it into breakdown. The goal is to climb the ridge toward the peak rather than slide into the valley of collapse.
           </p>
         </div>
       </header>
