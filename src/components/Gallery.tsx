@@ -10,10 +10,59 @@ interface GalleryItem {
 
 export function Gallery() {
   const [showMoreExamples, setShowMoreExamples] = React.useState(false);
+  const [hoveredSolution, setHoveredSolution] = React.useState<number | null>(null);
 
   const handleImageClick = (fullUrl: string) => {
     window.location.href = fullUrl;
   };
+
+  const solutionDetails = [
+    {
+      problem: "Climate inaction",
+      tool: "Tokenized carbon credits",
+      outcome: "Verified action, shared cost",
+      details: "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
+      projects: [
+        { name: "Toucan Protocol", url: "https://toucan.earth/" },
+        { name: "KlimaDAO", url: "https://www.klimadao.finance/" },
+        { name: "Regen Network", url: "https://www.regen.network/" }
+      ]
+    },
+    {
+      problem: "AI arms race",
+      tool: "Open models + attestations",
+      outcome: "Shared safety incentives",
+      details: "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
+      projects: [
+        { name: "Bittensor", url: "https://bittensor.com/" },
+        { name: "Theoriq", url: "https://www.theoriq.ai/" },
+        { name: "Ocean Protocol", url: "https://oceanprotocol.com/" }
+      ]
+    },
+    {
+      problem: "Public goods underfunding",
+      tool: "Quadratic Funding",
+      outcome: "Fairer shared contribution",
+      details: "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
+      projects: [
+        { name: "Gitcoin Grants", url: "https://grants.gitcoin.co/" },
+        { name: "Giveth", url: "https://giveth.io/" },
+        { name: "clr.fund", url: "https://clr.fund/" },
+        { name: "Optimism RetroPGF", url: "https://app.optimism.io/retropgf" }
+      ]
+    },
+    {
+      problem: "Misinformation",
+      tool: "Reputation + attestations",
+      outcome: "Credibility over virality",
+      details: "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+      projects: [
+        { name: "Ethereum Attestation Service", url: "https://attest.sh/" },
+        { name: "Gitcoin Passport", url: "https://passport.gitcoin.co/" },
+        { name: "Clique", url: "https://www.clique.social/" }
+      ]
+    }
+  ];
 
   return (
     <div style={styles.container}>
@@ -23,8 +72,9 @@ export function Gallery() {
 
         {/* Main Hero Section */}
         <div style={styles.mainHero}>
-          <h1 style={styles.mainTitle}>Solving Multipolar Traps with Ethereum</h1>
-          <p style={styles.mainSubtitle}>an exploration of the profound implications of programmable money as a tool to solve Multipolar traps...made w/ &gt;3 by ya boiiii <a href="https://x.com/owocki">@owocki</a></p>
+          <h1 style={styles.mainTitle}>Solving Multipolar Traps</h1>
+          <h3 style={styles.mainTitle}>for fun & profit (with Ethereum)</h3>
+          <p style={styles.mainSubtitle} className="main-subtitle">an exploration of the profound implications of programmable money as a tool to solve Multipolar traps...made w/ &gt;3 by ya boiiii <a href="https://x.com/owocki">@owocki</a></p>
         </div>
 
         {/* Hero Section: The Trap We're In */}
@@ -121,7 +171,7 @@ export function Gallery() {
           </p>
 
           <div style={styles.coordinationBreakdown}>
-            <h3 style={styles.subSectionHeading}>The Coordination Toolkit We Need</h3>
+            <h2 style={styles.sectionHeading}>The Coordination Toolkit We Need</h2>
             <p style={styles.coordinationText}>
               We need systems that help groups <strong>see</strong>, <strong>coordinate</strong>, and <strong>commit</strong>:
             </p>
@@ -214,36 +264,51 @@ export function Gallery() {
         {/* Section 5: Real-World Solutions */}
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>Multipolar Trap → Ethereum Solution</h2>
+          <p style={styles.coordinationText}>
+            Hover over each solution to learn how it works
+          </p>
 
           <div style={styles.solutionsTable}>
-            <div style={styles.solutionRow}>
-              <div style={styles.solutionProblem}>Climate inaction</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionTool}>Tokenized carbon credits</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionOutcome}>Verified action, shared cost</div>
-            </div>
-            <div style={styles.solutionRow}>
-              <div style={styles.solutionProblem}>AI arms race</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionTool}>Open models + attestations</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionOutcome}>Shared safety incentives</div>
-            </div>
-            <div style={styles.solutionRow}>
-              <div style={styles.solutionProblem}>Public goods underfunding</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionTool}>Quadratic Funding</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionOutcome}>Fairer shared contribution</div>
-            </div>
-            <div style={styles.solutionRow}>
-              <div style={styles.solutionProblem}>Misinformation</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionTool}>Reputation + attestations</div>
-              <div style={styles.solutionArrow}>→</div>
-              <div style={styles.solutionOutcome}>Credibility over virality</div>
-            </div>
+            {solutionDetails.map((solution, index) => (
+              <div
+                key={index}
+                onMouseEnter={() => setHoveredSolution(index)}
+                onMouseLeave={() => setHoveredSolution(null)}
+              >
+                <div
+                  style={styles.solutionRow}
+                  className="solution-row"
+                >
+                  <div style={styles.solutionProblem}>{solution.problem}</div>
+                  <div style={styles.solutionArrow}>→</div>
+                  <div style={styles.solutionTool}>{solution.tool}</div>
+                  <div style={styles.solutionArrow}>→</div>
+                  <div style={styles.solutionOutcome}>{solution.outcome}</div>
+                </div>
+                {hoveredSolution === index && (
+                  <div style={styles.solutionDetails} className="solution-details">
+                    <p style={styles.solutionDetailsText}>{solution.details}</p>
+                    <div style={styles.projectsList}>
+                      <h5 style={styles.projectsHeading}>Projects working on this:</h5>
+                      <div style={styles.projectsGrid}>
+                        {solution.projects.map((project, pIndex) => (
+                          <a
+                            key={pIndex}
+                            href={project.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={styles.projectLink}
+                            className="project-link"
+                          >
+                            {project.name} →
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -568,6 +633,8 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: '#0f1114',
     border: '1px solid #3a3d45',
     borderRadius: '12px',
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
   },
   solutionProblem: {
     fontSize: '16px',
@@ -590,6 +657,49 @@ const styles: Record<string, React.CSSProperties> = {
   solutionArrow: {
     fontSize: '18px',
     color: '#a8adb7',
+  },
+  solutionDetails: {
+    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+    border: '1px solid #667eea',
+    borderRadius: '0 0 12px 12px',
+    padding: '20px',
+    marginTop: '-12px',
+    marginBottom: '20px',
+    animation: 'slideDown 0.3s ease',
+  },
+  solutionDetailsText: {
+    fontSize: '15px',
+    color: '#d1d5db',
+    lineHeight: '1.7',
+    margin: '0 0 20px 0',
+  },
+  projectsList: {
+    marginTop: '20px',
+    paddingTop: '20px',
+    borderTop: '1px solid rgba(102, 126, 234, 0.3)',
+  },
+  projectsHeading: {
+    fontSize: '16px',
+    fontWeight: 600,
+    color: '#fff',
+    margin: '0 0 12px 0',
+  },
+  projectsGrid: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '12px',
+  },
+  projectLink: {
+    display: 'inline-block',
+    padding: '8px 16px',
+    backgroundColor: 'rgba(102, 126, 234, 0.2)',
+    border: '1px solid #667eea',
+    borderRadius: '6px',
+    color: '#667eea',
+    fontSize: '14px',
+    fontWeight: 600,
+    textDecoration: 'none',
+    transition: 'all 0.3s ease',
   },
   joinSubheading: {
     fontSize: '24px',
@@ -706,6 +816,18 @@ const styles: Record<string, React.CSSProperties> = {
 if (typeof document !== 'undefined') {
   const styleSheet = document.createElement('style');
   styleSheet.textContent = `
+    /* Main subtitle link styling */
+    .main-subtitle a {
+      color: #ffffff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+      transition: border-color 0.3s ease;
+    }
+
+    .main-subtitle a:hover {
+      border-bottom-color: #ffffff;
+    }
+
     .gallery-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -733,6 +855,37 @@ if (typeof document !== 'undefined') {
     .trap-example-card:hover {
       border-color: #667eea !important;
       transform: translateY(-3px);
+    }
+
+    /* Solution row hover effects */
+    .solution-row:hover {
+      border-color: #667eea !important;
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Slide down animation for solution details */
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .solution-details {
+      animation: slideDown 0.3s ease;
+    }
+
+    /* Project link hover effects */
+    .project-link:hover {
+      background-color: rgba(102, 126, 234, 0.4) !important;
+      border-color: #764ba2 !important;
+      color: #fff !important;
+      transform: translateX(5px);
     }
 
     /* Responsive design for solution rows */
