@@ -117,9 +117,66 @@ export function Gallery() {
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>Why Don't We Just Work Together?</h2>
           <p style={styles.coordinationText}>
-            Incentives are misaligned. Trust is expensive. Enforcement is hard & states are bad at it and in some places, are corrupt.<br/>
-            We need systems that help groups <strong>see</strong>, <strong>coordinate</strong>, and <strong>commit</strong>.
+            Incentives are misaligned. Trust is expensive. Enforcement is hard & states are bad at it and in some places, are corrupt.
           </p>
+
+          <div style={styles.coordinationBreakdown}>
+            <h3 style={styles.subSectionHeading}>The Coordination Toolkit We Need</h3>
+            <p style={styles.coordinationText}>
+              We need systems that help groups <strong>see</strong>, <strong>coordinate</strong>, and <strong>commit</strong>:
+            </p>
+
+            <div style={styles.coordinationStepsGrid}>
+              <div style={styles.coordinationStep}>
+                <div style={styles.stepNumber}>1</div>
+                <div style={styles.stepContent}>
+                  <h4 style={styles.stepTitle}>See</h4>
+                  <p style={styles.stepText}>
+                    Shared visibility into the problem. Everyone needs to see the same truth - the state of the commons, the actions of others, and the consequences of inaction.
+                  </p>
+                </div>
+              </div>
+
+              <div style={styles.coordinationStep}>
+                <div style={styles.stepNumber}>2</div>
+                <div style={styles.stepContent}>
+                  <h4 style={styles.stepTitle}>Coordinate</h4>
+                  <p style={styles.stepText}>
+                    Communicate and align on shared goals. Networks of bottom-up, peer-to-peer people can self-organize if they have the right tools to signal intentions and build consensus.
+                  </p>
+                </div>
+              </div>
+
+              <div style={styles.coordinationStep}>
+                <div style={styles.stepNumber}>3</div>
+                <div style={styles.stepContent}>
+                  <h4 style={styles.stepTitle}>Commit</h4>
+                  <p style={styles.stepText}>
+                    Make credible, enforceable commitments. Without a way to lock in cooperation, the temptation to defect always wins. We need mechanisms that make cooperation the rational choice.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div style={styles.bottomUpBox}>
+              <h4 style={styles.bottomUpTitle}>💡 The Power of Bottom-Up Coordination</h4>
+              <p style={styles.bottomUpText}>
+                Top-down institutions are slow, captured, or corrupt. But networks of ordinary people—citizens, developers, communities—can coordinate at scale if given the right infrastructure.
+              </p>
+              <p style={styles.bottomUpText}>
+                Peer-to-peer networks don't need permission. They don't need central authorities. They just need:
+              </p>
+              <ul style={styles.bottomUpList}>
+                <li style={styles.bottomUpListItem}>✓ <strong>Transparency</strong> to see what's happening</li>
+                <li style={styles.bottomUpListItem}>✓ <strong>Communication channels</strong> to align on goals</li>
+                <li style={styles.bottomUpListItem}>✓ <strong>Commitment devices</strong> to lock in cooperation</li>
+                <li style={styles.bottomUpListItem}>✓ <strong>Incentive alignment</strong> to reward collective action</li>
+              </ul>
+              <p style={styles.bottomUpText}>
+                When these pieces come together, bottom-up coordination becomes possible—and powerful enough to escape multipolar traps.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Section 4: Ethereum Is a Coordination Substrate */}
@@ -392,6 +449,86 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#d1d5db',
     lineHeight: '1.7',
     margin: '20px 0',
+  },
+  coordinationBreakdown: {
+    marginTop: '40px',
+  },
+  subSectionHeading: {
+    fontSize: '24px',
+    fontWeight: 600,
+    color: '#fff',
+    marginBottom: '16px',
+    marginTop: 0,
+  },
+  coordinationStepsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '24px',
+    margin: '30px 0 40px',
+  },
+  coordinationStep: {
+    display: 'flex',
+    gap: '16px',
+    alignItems: 'flex-start',
+  },
+  stepNumber: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    backgroundColor: '#667eea',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '20px',
+    fontWeight: 700,
+    flexShrink: 0,
+  },
+  stepContent: {
+    flex: 1,
+  },
+  stepTitle: {
+    fontSize: '20px',
+    fontWeight: 600,
+    color: '#fff',
+    margin: '0 0 8px 0',
+  },
+  stepText: {
+    fontSize: '16px',
+    color: '#d1d5db',
+    lineHeight: '1.6',
+    margin: 0,
+  },
+  bottomUpBox: {
+    backgroundColor: 'rgba(102, 126, 234, 0.05)',
+    border: '2px solid #667eea',
+    borderRadius: '12px',
+    padding: '30px',
+    marginTop: '30px',
+  },
+  bottomUpTitle: {
+    fontSize: '22px',
+    fontWeight: 700,
+    color: '#fff',
+    margin: '0 0 16px 0',
+  },
+  bottomUpText: {
+    fontSize: '16px',
+    color: '#d1d5db',
+    lineHeight: '1.7',
+    margin: '0 0 16px 0',
+  },
+  bottomUpList: {
+    listStyle: 'none',
+    padding: 0,
+    margin: '16px 0',
+  },
+  bottomUpListItem: {
+    fontSize: '16px',
+    color: '#d1d5db',
+    lineHeight: '1.8',
+    marginBottom: '8px',
+    paddingLeft: '8px',
   },
   featuresGrid: {
     display: 'grid',
