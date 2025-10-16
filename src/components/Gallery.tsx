@@ -16,61 +16,158 @@ export function Gallery() {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Multi-Polar Traps (MPT) - a new frontier</h1>
 
-        {/* Hero Section with Explanation */}
-        <div style={styles.heroSection}>
-          <div style={styles.heroContent} className="hero-content">
-            <div style={styles.heroText}>
-              <h2 style={styles.heroHeading}>What is a Multi-Polar Trap?</h2>
-              <p style={styles.heroDescription}>
-                A <strong>multi-polar trap</strong> occurs when individual rational actions lead to collectively worse outcomes because no single actor can afford to unilaterally cooperate.
+
+
+        {/* Main Hero Section */}
+        <div style={styles.mainHero}>
+          <h1 style={styles.mainTitle}>Solving Multipolar Traps with Ethereum</h1>
+          <p style={styles.mainSubtitle}>an exploration of the profound implications of programmable money as a tool to solve Multipolar traps...made w/ &gt;3 by ya boiiii <a href="https://x.com/owocki">@owocki</a></p>
+        </div>
+
+        {/* Hero Section: The Trap We're In */}
+        <div style={styles.landingSection}>
+          <h2 style={styles.landingHeadline}>What is a Multipolar trap?</h2>
+              <p style={styles.landingSubheadline}>
+                A <strong>Multipolar trap</strong> occurs when individual rational actions lead to collectively worse outcomes because no single actor can afford to unilaterally cooperate.
               </p>
-              <p style={styles.heroDescription}>
+              <p style={styles.landingSubheadline}>
                 Think of it like a race to the bottom: each actor follows the steepest incentive gradient toward local optimization, but these individual "rational" choices compound into a globally suboptimal equilibrium that traps everyone.
               </p>
-              <p style={styles.heroDescription}>
-                This visualizer models MPTs as <strong>incentive gradients</strong>: actors follow the steepest path toward local attractors, getting trapped in suboptimal equilibria.
-              </p>
-            </div>
+          <div style={styles.tldrBox}>
+            <p style={styles.tldrText}>
+              "A multipolar trap is when no one can unilaterally fix a problem—but together, they could."
+            </p>
+          </div>
+        </div>
 
-            <div style={styles.examplesGrid}>
-              <div style={styles.exampleCard} className="example-card">
-                <div style={styles.exampleHeader}>
-                  <div style={styles.exampleIcon}>🏭</div>
-                  <h3 style={styles.exampleTitle}>Example 1: Tragedy of the Commons</h3>
-                </div>
-                <p style={styles.exampleText}>Individual farmers overgraze shared land, depleting resources for all</p>
-              </div>
-              <div style={styles.exampleCard} className="example-card">
-                <div style={styles.exampleHeader}>
-                  <div style={styles.exampleIcon}>⚔️</div>
-                  <h3 style={styles.exampleTitle}>Example 2: Arms Race</h3>
-                </div>
-                <p style={styles.exampleText}>Nations stockpile weapons for security, making everyone less safe</p>
-              </div>
-              <div style={styles.exampleCard} className="example-card">
-                <div style={styles.exampleHeader}>
-                  <div style={styles.exampleIcon}>📱</div>
-                  <h3 style={styles.exampleTitle}>Example 3: Attention Economy</h3>
-                </div>
-                <p style={styles.exampleText}>Platforms optimize for engagement, degrading collective well-being</p>
-              </div>
+        {/* Section 2: What is a Multipolar Trap? */}
+        <div style={styles.landingSection}>
+          <h2 style={styles.sectionHeading}>Multipolar traps are why can't we have nice things:</h2>
+
+          <div style={styles.trapExamplesGrid}>
+            <div style={styles.trapExampleCard} className="trap-example-card">
+              <div style={styles.trapExampleBadge}>🌍</div>
+              <p style={styles.trapExampleText}><strong>Climate change:</strong> Everyone pollutes → Earth suffers</p>
+            </div>
+            <div style={styles.trapExampleCard} className="trap-example-card">
+              <div style={styles.trapExampleBadge}>🐟</div>
+              <p style={styles.trapExampleText}><strong>Overfishing:</strong> Everyone takes more → Fish go extinct</p>
+            </div>
+            <div style={styles.trapExampleCard} className="trap-example-card">
+              <div style={styles.trapExampleBadge}>🤖</div>
+              <p style={styles.trapExampleText}><strong>AI arms race:</strong> Every lab rushes ahead → Global risk increases</p>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Section 3: The Coordination Problem */}
+        <div style={styles.landingSection}>
+          <h2 style={styles.sectionHeading}>Why Don't We Just Work Together?</h2>
+          <p style={styles.coordinationText}>
+            Trust is expensive. Enforcement is hard. Incentives are misaligned.<br/>
+            We need systems that help groups <strong>see</strong>, <strong>coordinate</strong>, and <strong>commit</strong>.
+          </p>
+        </div>
+
+        {/* Section 4: Ethereum Is a Coordination Substrate */}
+        <div style={styles.landingSection} id="solution">
+          <h2 style={styles.sectionHeading}>Ethereum Is More Than Money—It's a Coordination Engine</h2>
+
+          <div style={styles.featuresGrid}>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>Transparent, shared ledgers (no hidden info)</span>
+            </div>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>Smart contracts (credible commitments)</span>
+            </div>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>DAOs & quadratic voting (shared decision-making)</span>
+            </div>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>Public goods funding (RetroPGF, Gitcoin, Allo)</span>
+            </div>
+            <div style={styles.featureItem}>
+              <span style={styles.featureIcon}>✅</span>
+              <span style={styles.featureText}>Trustless enforcement (code = law)</span>
             </div>
           </div>
         </div>
 
+        {/* Section 5: Real-World Solutions */}
+        <div style={styles.landingSection}>
+          <h2 style={styles.sectionHeading}>Multipolar Trap → Ethereum Solution</h2>
+
+          <div style={styles.solutionsTable}>
+            <div style={styles.solutionRow}>
+              <div style={styles.solutionProblem}>Climate inaction</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionTool}>Tokenized carbon credits</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionOutcome}>Verified action, shared cost</div>
+            </div>
+            <div style={styles.solutionRow}>
+              <div style={styles.solutionProblem}>AI arms race</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionTool}>Open models + attestations</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionOutcome}>Shared safety incentives</div>
+            </div>
+            <div style={styles.solutionRow}>
+              <div style={styles.solutionProblem}>Public goods underfunding</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionTool}>Quadratic Funding</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionOutcome}>Fairer shared contribution</div>
+            </div>
+            <div style={styles.solutionRow}>
+              <div style={styles.solutionProblem}>Misinformation</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionTool}>Reputation + attestations</div>
+              <div style={styles.solutionArrow}>→</div>
+              <div style={styles.solutionOutcome}>Credibility over virality</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 6: Join the Coordinators */}
+        <div style={styles.landingSection}>
+          <h2 style={styles.sectionHeading}>We're Building the Tools to Escape These Traps</h2>
+          <p style={styles.joinSubheading}>Are you in?</p>
+
+          <div style={styles.ctaButtonsGrid}>
+            <button
+              onClick={() => window.open('https://ethereum.org/en/community/grants/', '_blank')}
+              style={styles.ctaButton}
+            >
+              Learn More about Ethereum Public Goods
+            </button>
+            <button
+              onClick={() => window.open('https://gitcoin.co/', '_blank')}
+              style={styles.ctaButton}
+            >
+              Support Coordination Tech
+            </button>
+            <button
+              onClick={() => window.location.hash = 'create'}
+              style={styles.ctaButtonPrimary}
+            >
+              Create a Visualization
+            </button>
+          </div>
+        </div>
+
+        {/* Explore Visualizations CTA */}
         <div style={styles.ctaSection}>
-          <h3 style={styles.ctaHeading}>Explore the Dynamics</h3>
+          <h3 style={styles.ctaHeading}>Explore the Dynamics, Visually</h3>
           <p style={styles.ctaText}>
-            Browse featured visualizations below or create your own custom multi-polar trap scenario
+            Browse featured visualizations below to visualize multipolar traps in action
           </p>
-          <button
-            onClick={() => window.location.hash = 'create'}
-            style={styles.createButton}
-          >
-            Create New Visualization
-          </button>
         </div>
       </header>
 
@@ -108,110 +205,222 @@ const styles: Record<string, React.CSSProperties> = {
     backgroundColor: '#0f1114',
     color: '#fff',
     overflow: 'auto',
-    WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+    WebkitOverflowScrolling: 'touch',
   },
   header: {
     textAlign: 'center',
-    padding: '60px 20px 40px',
+    padding: '40px 20px',
     backgroundColor: '#1a1d23',
     borderBottom: '1px solid #3a3d45',
   },
-  title: {
-    fontSize: '42px',
+  mainHero: {
+    padding: '40px 0 20px',
+  },
+  mainTitle: {
+    fontSize: '48px',
     fontWeight: 700,
-    margin: '0 0 40px 0',
+    margin: '0 0 10px 0',
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
   },
-  heroSection: {
-    maxWidth: '1200px',
-    margin: '0 auto 60px',
-    padding: '40px 20px',
+  mainSubtitle: {
+    fontSize: '18px',
+    color: '#a8adb7',
+    fontStyle: 'italic',
+    margin: 0,
   },
-  heroContent: {
-    display: 'grid',
-    gridTemplateColumns: '1.5fr 1fr',
-    gap: '60px',
-    alignItems: 'start',
+  landingSection: {
+    maxWidth: '1000px',
+    margin: '60px auto',
+    padding: '0 20px',
   },
-  heroText: {
-    textAlign: 'left',
-  },
-  heroHeading: {
-    fontSize: '28px',
+  landingHeadline: {
+    fontSize: '36px',
     fontWeight: 700,
     color: '#fff',
     marginBottom: '20px',
-    marginTop: 0,
+    lineHeight: '1.3',
   },
-  heroDescription: {
-    fontSize: '16px',
-    lineHeight: '1.7',
+  landingSubheadline: {
+    fontSize: '20px',
     color: '#d1d5db',
-    marginBottom: '16px',
-    textAlign: 'left',
+    marginBottom: '30px',
+    lineHeight: '1.6',
   },
-  examplesGrid: {
+  primaryButton: {
+    padding: '16px 40px',
+    backgroundColor: '#667eea',
+    border: 'none',
+    borderRadius: '8px',
+    color: 'white',
+    fontSize: '18px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  },
+  sectionHeading: {
+    fontSize: '32px',
+    fontWeight: 700,
+    color: '#fff',
+    marginBottom: '30px',
+    lineHeight: '1.3',
+  },
+  trapExamplesGrid: {
     display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '20px',
+    margin: '30px 0',
   },
-  exampleCard: {
+  trapExampleCard: {
     backgroundColor: '#0f1114',
     border: '1px solid #3a3d45',
-    borderRadius: '8px',
-    padding: '16px',
-    textAlign: 'left',
+    borderRadius: '12px',
+    padding: '20px',
+    textAlign: 'center',
     transition: 'border-color 0.3s ease',
   },
-  exampleHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '8px',
+  trapExampleBadge: {
+    fontSize: '48px',
+    marginBottom: '12px',
   },
-  exampleIcon: {
-    fontSize: '24px',
-    flexShrink: 0,
-  },
-  exampleTitle: {
+  trapExampleText: {
     fontSize: '16px',
-    fontWeight: 600,
-    color: '#fff',
-    margin: 0,
-  },
-  exampleText: {
-    fontSize: '14px',
-    color: '#a8adb7',
+    color: '#d1d5db',
     margin: 0,
     lineHeight: '1.5',
   },
-  ctaSection: {
-    marginTop: '40px',
+  tldrBox: {
+    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+    border: '2px solid #667eea',
+    borderRadius: '12px',
+    padding: '24px',
+    margin: '30px 0',
   },
-  ctaHeading: {
-    fontSize: '24px',
-    fontWeight: 600,
+  tldrText: {
+    fontSize: '20px',
     color: '#fff',
-    margin: '0 0 12px 0',
+    fontStyle: 'italic',
+    margin: 0,
+    lineHeight: '1.6',
   },
-  ctaText: {
+  coordinationText: {
+    fontSize: '18px',
+    color: '#d1d5db',
+    lineHeight: '1.7',
+    margin: '20px 0',
+  },
+  featuresGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr',
+    gap: '16px',
+    margin: '30px 0',
+  },
+  featureItem: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '12px',
+    padding: '12px',
+    backgroundColor: '#0f1114',
+    borderRadius: '8px',
+    border: '1px solid #3a3d45',
+  },
+  featureIcon: {
+    fontSize: '20px',
+    flexShrink: 0,
+  },
+  featureText: {
     fontSize: '16px',
-    color: '#a8adb7',
-    margin: '0 0 24px 0',
+    color: '#d1d5db',
+    lineHeight: '1.5',
   },
-  createButton: {
-    padding: '12px 32px',
-    backgroundColor: '#28a745',
-    border: 'none',
-    borderRadius: '6px',
+  solutionsTable: {
+    display: 'grid',
+    gap: '20px',
+    margin: '30px 0',
+  },
+  solutionRow: {
+    display: 'grid',
+    gridTemplateColumns: '1fr auto 1fr auto 1fr',
+    alignItems: 'center',
+    gap: '16px',
+    padding: '20px',
+    backgroundColor: '#0f1114',
+    border: '1px solid #3a3d45',
+    borderRadius: '12px',
+  },
+  solutionProblem: {
+    fontSize: '16px',
+    color: '#fb923c',
+    fontWeight: 600,
+    textAlign: 'right',
+  },
+  solutionTool: {
+    fontSize: '16px',
+    color: '#667eea',
+    fontWeight: 600,
+    textAlign: 'center',
+  },
+  solutionOutcome: {
+    fontSize: '16px',
+    color: '#4ade80',
+    fontWeight: 600,
+    textAlign: 'left',
+  },
+  solutionArrow: {
+    fontSize: '18px',
+    color: '#a8adb7',
+  },
+  joinSubheading: {
+    fontSize: '24px',
+    color: '#d1d5db',
+    marginBottom: '30px',
+    fontWeight: 600,
+  },
+  ctaButtonsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '16px',
+    margin: '30px 0',
+  },
+  ctaButton: {
+    padding: '14px 28px',
+    backgroundColor: '#3a3d45',
+    border: '1px solid #667eea',
+    borderRadius: '8px',
     color: 'white',
     fontSize: '16px',
     fontWeight: 600,
     cursor: 'pointer',
     transition: 'all 0.3s ease',
+  },
+  ctaButtonPrimary: {
+    padding: '14px 28px',
+    backgroundColor: '#28a745',
+    border: 'none',
+    borderRadius: '8px',
+    color: 'white',
+    fontSize: '16px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  },
+  ctaSection: {
+    marginTop: '60px',
+    paddingTop: '40px',
+    borderTop: '2px solid #3a3d45',
+  },
+  ctaHeading: {
+    fontSize: '28px',
+    fontWeight: 600,
+    color: '#fff',
+    margin: '0 0 12px 0',
+  },
+  ctaText: {
+    fontSize: '18px',
+    color: '#a8adb7',
+    margin: '0 0 40px 0',
   },
   gallery: {
     display: 'grid',
@@ -288,20 +497,24 @@ if (typeof document !== 'undefined') {
     .gallery-card:hover img {
       transform: scale(1.05);
     }
-    .create-button:hover {
-      background-color: #218838 !important;
+
+    /* Button hover effects */
+    button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
-    }
-    .example-card:hover {
-      border-color: #667eea !important;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
     }
 
-    /* Responsive design for hero section */
+    /* Trap example cards hover */
+    .trap-example-card:hover {
+      border-color: #667eea !important;
+      transform: translateY(-3px);
+    }
+
+    /* Responsive design for solution rows */
     @media (max-width: 768px) {
-      .hero-content {
+      .solution-row {
         grid-template-columns: 1fr !important;
-        gap: 40px !important;
+        text-align: center !important;
       }
     }
   `;

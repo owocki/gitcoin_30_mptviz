@@ -32,9 +32,9 @@
     },
     {
       "id": "example1",
-      "title": "Add new",
+      "title": "Create new",
       "previewUrl": "/img/plus.png",
-      "fullUrl": "https://github.com/owocki/gitcoin_30_mptviz/issues/new"
+      "fullUrl": "#create"
     }
   ]
 }
