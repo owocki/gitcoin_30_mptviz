@@ -649,7 +649,8 @@ export class Renderer {
 
   updateConfig(config: SceneConfig): void {
     this.config = config;
-    this.renderer.setClearColor(new THREE.Color(config.render.background), 1);
+    // Background color is controlled by setDarkMode, not by config
+    // This prevents config changes from overriding the dark mode setting
     this.updateCameraPosition();
     this.initSurface();
     this.initGrid();
