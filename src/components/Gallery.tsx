@@ -9,6 +9,8 @@ interface GalleryItem {
 }
 
 export function Gallery() {
+  const [showMoreExamples, setShowMoreExamples] = React.useState(false);
+
   const handleImageClick = (fullUrl: string) => {
     window.location.href = fullUrl;
   };
@@ -43,7 +45,15 @@ export function Gallery() {
 
         {/* Section 2: What is a Multipolar Trap? */}
         <div style={styles.landingSection}>
-          <h2 style={styles.sectionHeading}>Multipolar traps are why can't we have nice things:</h2>
+          <div style={styles.sectionHeaderWithButton}>
+            <h2 style={styles.sectionHeading}>Multipolar traps are why can't we have nice things:</h2>
+            <button
+              onClick={() => setShowMoreExamples(!showMoreExamples)}
+              style={styles.viewMoreButton}
+            >
+              {showMoreExamples ? 'View Less' : 'View More'}
+            </button>
+          </div>
 
           <div style={styles.trapExamplesGrid}>
             <div style={styles.trapExampleCard} className="trap-example-card">
@@ -58,6 +68,47 @@ export function Gallery() {
               <div style={styles.trapExampleBadge}>🤖</div>
               <p style={styles.trapExampleText}><strong>AI arms race:</strong> Every lab rushes ahead → Global risk increases</p>
             </div>
+
+            {showMoreExamples && (
+              <>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>🏭</div>
+                  <p style={styles.trapExampleText}><strong>Tragedy of the Commons:</strong> Shared resources depleted by individual use</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>🏠</div>
+                  <p style={styles.trapExampleText}><strong>Housing crisis:</strong> Everyone buys property as investment → Prices unaffordable</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>📱</div>
+                  <p style={styles.trapExampleText}><strong>Attention economy:</strong> Platforms maximize engagement → Mental health crisis</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>⚔️</div>
+                  <p style={styles.trapExampleText}><strong>Nuclear arms race:</strong> Nations stockpile weapons → Existential risk for all</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>💉</div>
+                  <p style={styles.trapExampleText}><strong>Doping in sports:</strong> Athletes cheat to compete → Everyone must cheat to keep up</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>🎓</div>
+                  <p style={styles.trapExampleText}><strong>Education arms race:</strong> Students pile on credentials → Degree inflation</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>🏢</div>
+                  <p style={styles.trapExampleText}><strong>Corporate lobbying:</strong> Companies buy influence → Democracy eroded</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>💊</div>
+                  <p style={styles.trapExampleText}><strong>Antibiotic overuse:</strong> Doctors overprescribe → Drug-resistant bacteria</p>
+                </div>
+                <div style={styles.trapExampleCard} className="trap-example-card">
+                  <div style={styles.trapExampleBadge}>🚗</div>
+                  <p style={styles.trapExampleText}><strong>Traffic congestion:</strong> Everyone drives alone → Roads gridlocked</p>
+                </div>
+              </>
+            )}
           </div>
 
         </div>
@@ -66,7 +117,7 @@ export function Gallery() {
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>Why Don't We Just Work Together?</h2>
           <p style={styles.coordinationText}>
-            Trust is expensive. Enforcement is hard. Incentives are misaligned.<br/>
+            Incentives are misaligned. Trust is expensive. Enforcement is hard & states are bad at it and in some places, are corrupt.<br/>
             We need systems that help groups <strong>see</strong>, <strong>coordinate</strong>, and <strong>commit</strong>.
           </p>
         </div>
@@ -277,6 +328,26 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#fff',
     marginBottom: '30px',
     lineHeight: '1.3',
+  },
+  sectionHeaderWithButton: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px',
+    flexWrap: 'wrap',
+    gap: '16px',
+  },
+  viewMoreButton: {
+    padding: '10px 24px',
+    backgroundColor: 'transparent',
+    border: '1px solid #667eea',
+    borderRadius: '6px',
+    color: '#667eea',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    flexShrink: 0,
   },
   trapExamplesGrid: {
     display: 'grid',
@@ -513,6 +584,12 @@ if (typeof document !== 'undefined') {
     button:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* View More button specific hover */
+    button[style*="border: 1px solid rgb(102, 126, 234)"]:hover {
+      background-color: rgba(102, 126, 234, 0.1) !important;
+      border-color: #764ba2 !important;
     }
 
     /* Trap example cards hover */
