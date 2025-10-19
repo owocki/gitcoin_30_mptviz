@@ -14,6 +14,7 @@ interface WorkerMessage {
   config?: PhysicsConfig;
   reinforcements?: Reinforcement[];
   extent?: { xMin: number; xMax: number; yMin: number; yMax: number };
+  directionality?: 'up' | 'down';
 }
 
 interface WorkerResponse {
@@ -33,6 +34,7 @@ let config: PhysicsConfig = {
   stickiness: 0.0
 };
 let extent = { xMin: -1.5, xMax: 1.5, yMin: -1.5, yMax: 1.5 };
+let directionality: 'up' | 'down' = 'down';
 
 /**
  * Apply dynamic strength modifications based on reinforcements
@@ -131,11 +133,14 @@ function stepPhysics(): { positions: Float32Array; modifiedAttractors: Attractor
   // Apply dynamic strength modifications based on reinforcements
   const modifiedAttractors = applyReinforcementDynamics(attractors);
 
+  // Gravity multiplier: -1 for down (normal), +1 for up (reversed)
+  const gravityDirection = directionality === 'down' ? -1 : 1;
+
   for (const ball of balls) {
-    // Compute force (negative gradient)
+    // Compute force (gradient with direction modifier)
     const grad = gradientV(ball.x, ball.y, modifiedAttractors);
-    const fx = -grad.x;
-    const fy = -grad.y;
+    const fx = gravityDirection * grad.x;
+    const fy = gravityDirection * grad.y;
 
     // Update velocity with damping and force
     ball.vx = damping * ball.vx + dt * fx;
@@ -192,7 +197,7 @@ function stepPhysics(): { positions: Float32Array; modifiedAttractors: Attractor
  * Message handler
  */
 self.onmessage = (e: MessageEvent<WorkerMessage>) => {
-  const { type, balls: newBalls, attractors: newAttractors, config: newConfig, reinforcements: newReinforcements, extent: newExtent } = e.data;
+  const { type, balls: newBalls, attractors: newAttractors, config: newConfig, reinforcements: newReinforcements, extent: newExtent, directionality: newDirectionality } = e.data;
 
   switch (type) {
     case 'init':
@@ -201,12 +206,14 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
       if (newConfig) config = newConfig;
       if (newReinforcements !== undefined) reinforcements = newReinforcements;
       if (newExtent) extent = newExtent;
+      if (newDirectionality) directionality = newDirectionality;
       break;
 
     case 'step':
       if (newAttractors) attractors = newAttractors;
       if (newConfig) config = newConfig;
       if (newReinforcements !== undefined) reinforcements = newReinforcements;
+      if (newDirectionality) directionality = newDirectionality;
 
       const result = stepPhysics();
 

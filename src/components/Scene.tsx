@@ -128,8 +128,8 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
     const physicsLoop = () => {
       if (!physicsRef.current || !rendererRef.current) return;
 
-      // Step physics with reinforcements
-      physicsRef.current.step(config.attractors, config.balls.physics, config.reinforcements || []);
+      // Step physics with reinforcements and directionality
+      physicsRef.current.step(config.attractors, config.balls.physics, config.reinforcements || [], config.balls.directionality);
 
       // Get modified attractors from physics (with dynamic strength from reinforcements)
       const modifiedAttractors = physicsRef.current.getModifiedAttractors();
@@ -157,7 +157,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
 
   const handlePlayPause = () => {
     if (!isPlaying) {
-      // Starting play - randomize positions and drop from z=1
+      // Starting play - randomize positions and position based on directionality
       if (physicsRef.current && rendererRef.current && configManagerRef.current) {
         physicsRef.current.reset(
           config.balls.count,
@@ -171,9 +171,10 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         // Ensure dark mode is applied to newly initialized balls
         rendererRef.current.setDarkMode(darkMode);
 
-        // Position balls at z=1 for the drop
+        // Position balls based on directionality
         const balls = physicsRef.current.getBalls();
-        rendererRef.current.positionBallsAtHeight(balls, 1);
+        const startHeight = config.balls.directionality === 'down' ? 1 : -1;
+        rendererRef.current.positionBallsAtHeight(balls, startHeight);
 
         // Show balls when starting to play
         rendererRef.current.showBalls(true);
@@ -227,7 +228,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
     setPlaying(false);
 
     try {
-      // Reset physics for fresh export - balls start at z=1
+      // Reset physics for fresh export - balls start based on directionality
       physicsRef.current.reset(
         config.balls.count,
         'random',
@@ -240,17 +241,18 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       // Ensure dark mode is applied to newly initialized balls
       rendererRef.current.setDarkMode(darkMode);
 
-      // Position balls at z=1 for the drop
+      // Position balls based on directionality
       const balls = physicsRef.current.getBalls();
-      rendererRef.current.positionBallsAtHeight(balls, 1);
+      const startHeight = config.balls.directionality === 'down' ? 1 : -1;
+      rendererRef.current.positionBallsAtHeight(balls, startHeight);
 
       // Show balls during export
       rendererRef.current.showBalls(true);
 
       const canvas = rendererRef.current.getCanvas();
       const onFrame = () => {
-        // Step physics with falling animation and reinforcements
-        physicsRef.current!.step(config.attractors, config.balls.physics, config.reinforcements || []);
+        // Step physics with falling animation, reinforcements, and directionality
+        physicsRef.current!.step(config.attractors, config.balls.physics, config.reinforcements || [], config.balls.directionality);
         const balls = physicsRef.current!.getBalls();
         rendererRef.current!.updateBalls(balls, true);
         rendererRef.current!.render();
@@ -299,6 +301,21 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
             max="100"
             style={currentStyles.numberInput}
           />
+        </div>
+        <div style={currentStyles.controlGroup}>
+          <label style={currentStyles.controlLabel}>Direction</label>
+          <select
+            value={config.balls.directionality}
+            onChange={(e) => {
+              useStore.getState().setConfig({
+                balls: { ...config.balls, directionality: e.target.value as 'up' | 'down' }
+              });
+            }}
+            style={currentStyles.selectInput}
+          >
+            <option value="down">Down</option>
+            <option value="up">Up</option>
+          </select>
         </div>
         <button onClick={handlePlayPause} style={currentStyles.button}>
           {isPlaying ? 'Pause' : 'Play'}
@@ -387,6 +404,16 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '14px',
     width: '100%'
   },
+  selectInput: {
+    padding: '8px 12px',
+    backgroundColor: '#2a2d35',
+    border: '1px solid #3a3d45',
+    borderRadius: '4px',
+    color: '#e0e0e0',
+    fontSize: '14px',
+    width: '100%',
+    cursor: 'pointer'
+  },
   button: {
     padding: '12px 24px',
     backgroundColor: '#4a7dff',
@@ -464,6 +491,16 @@ const lightStyles: Record<string, React.CSSProperties> = {
     color: '#333',
     fontSize: '14px',
     width: '100%'
+  },
+  selectInput: {
+    padding: '8px 12px',
+    backgroundColor: '#ffffff',
+    border: '1px solid #ddd',
+    borderRadius: '4px',
+    color: '#333',
+    fontSize: '14px',
+    width: '100%',
+    cursor: 'pointer'
   },
   button: {
     padding: '12px 24px',

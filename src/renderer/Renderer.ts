@@ -513,14 +513,27 @@ export class Renderer {
       const mesh = this.ballMeshes[i];
 
       if (isPlaying) {
-        // When playing, follow physics and rest on surface
-        const z = this.fieldKernel.potential(ball.x, ball.y, attractorsToUse) * surface.zScale;
-        mesh.position.set(ball.x, -ball.y, z + ballConfig.radius * 1.5);
+        // When playing, follow physics and move toward surface based on directionality
+        const surfaceZ = this.fieldKernel.potential(ball.x, ball.y, attractorsToUse) * surface.zScale;
+        const targetZ = surfaceZ + ballConfig.radius * 1.5;
+        const currentZ = mesh.position.z;
+
+        // Move toward the surface based on directionality
+        let newZ: number;
+        if (ballConfig.directionality === 'down') {
+          // Falling down: approach surface from above
+          newZ = Math.max(currentZ - 0.02, targetZ);
+        } else {
+          // Rising up: approach surface from below
+          newZ = Math.min(currentZ + 0.02, targetZ);
+        }
+
+        mesh.position.set(ball.x, -ball.y, newZ);
 
         // Update trail
         if (ballConfig.trail.enable && this.trailBuffers[i]) {
           const trailBuffer = this.trailBuffers[i];
-          trailBuffer.push(new THREE.Vector3(ball.x, -ball.y, z));
+          trailBuffer.push(new THREE.Vector3(ball.x, -ball.y, newZ));
 
           if (trailBuffer.length > ballConfig.trail.length) {
             trailBuffer.shift();

@@ -113,20 +113,21 @@ export class PhysicsEngine {
     }
   }
 
-  step(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = []): void {
+  step(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = [], directionality: 'up' | 'down' = 'down'): void {
     if (this.worker) {
       this.worker.postMessage({
         type: 'step',
         attractors,
         config,
-        reinforcements
+        reinforcements,
+        directionality
       });
     } else {
-      this.stepLocal(attractors, config, reinforcements);
+      this.stepLocal(attractors, config, reinforcements, directionality);
     }
   }
 
-  private stepLocal(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = []): void {
+  private stepLocal(attractors: Attractor[], config: PhysicsConfig, reinforcements: Reinforcement[] = [], directionality: 'up' | 'down' = 'down'): void {
     const { dt, damping, maxSpeed, noise, stickiness } = config;
 
     console.log(`[PhysicsEngine] Step called with ${reinforcements.length} reinforcements, ${this.balls.length} balls`);
@@ -137,10 +138,13 @@ export class PhysicsEngine {
     // Store modified attractors for rendering
     this.currentModifiedAttractors = modifiedAttractors;
 
+    // Gravity multiplier: -1 for down (normal), +1 for up (reversed)
+    const gravityDirection = directionality === 'down' ? -1 : 1;
+
     for (const ball of this.balls) {
       const grad = this.gradientV(ball.x, ball.y, modifiedAttractors);
-      const fx = -grad.x;
-      const fy = -grad.y;
+      const fx = gravityDirection * grad.x;
+      const fy = gravityDirection * grad.y;
 
       ball.vx = damping * ball.vx + dt * fx;
       ball.vy = damping * ball.vy + dt * fy;

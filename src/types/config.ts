@@ -56,6 +56,7 @@ export interface BallsConfig {
   color: string;
   trail: TrailConfig;
   physics: PhysicsConfig;
+  directionality: 'up' | 'down';
 }
 
 export interface LabelsConfig {

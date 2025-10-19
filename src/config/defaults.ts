@@ -62,7 +62,8 @@ export const DEFAULT_CONFIG: SceneConfig = {
       noise: 0.0,
       maxSpeed: 1.5,
       stickiness: 0.0
-    }
+    },
+    directionality: 'down'
   },
   labels: {
     title: 'Multi Polar Trap',
