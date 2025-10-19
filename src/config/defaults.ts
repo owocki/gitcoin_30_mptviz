@@ -78,7 +78,7 @@ export const DEFAULT_CONFIG: SceneConfig = {
     autoOrbit: false
   },
   render: {
-    grid: { show: true, divisions: 40, color: '#00000033' },
+    grid: { show: false, divisions: 40, color: '#00000033' },
     showAxes: true,
     colormap: 'viridis',
     lighting: { ao: 0.5, specular: 0.2 },
