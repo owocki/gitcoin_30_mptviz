@@ -1,6 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import galleryData from '../config/gallery.json';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../components/button";
+import { HeroAnimation } from "../components/HeroAnimation";
 
 interface GalleryItem {
   id: string;
@@ -9,14 +10,74 @@ interface GalleryItem {
   fullUrl: string;
 }
 
+const coordination = [
+  {
+    name: "See",
+    description:
+      "Shared visibility into the problem. Everyone needs to see the same truth - the state of the commons, the actions of others, and the consequences of inaction.",
+  },
+  {
+    name: "Coordinate",
+    description:
+      "Communicate and align on shared goals. Networks of bottom-up, peer-to-peer people can self-organize if they have the right tools to signal intentions and build consensus.",
+  },
+  {
+    name: "Commit",
+    description:
+      "Make credible, enforceable commitments. Without a way to lock in cooperation, the temptation to defect always wins. We need mechanisms that make cooperation the rational choice.",
+  },
+];
+
+const CoordinationCard = ({
+  name,
+  description,
+  index,
+}: {
+  name: string;
+  description: string;
+  index: number;
+}) => {
+  return (
+    <div className="pr-4 py-6 pl-8 md:pl-12 bg-lichen-100 border border-moss-500/25 rounded-lg relative">
+      <h4 className="text-moss-500 font-semibold text-xl sm:text-2xl font-mori mb-2">
+        {name}
+      </h4>
+      <p className="text-moon-900">{description}</p>
+
+      <div className="absolute top-1/2 -translate-x-1/2 left-0 -translate-y-1/2">
+        <div className="md:size-16 size-10 flex items-center justify-center text-3xl md:text-4xl bg-lichen-100 border border-moss-500/25 rounded-full">
+          {index + 1}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const CardWithBorder = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <div
+    className={`rounded-md py-4 px-5 text-moss-500 border border-moss-500 font-mori font-semibold text-4xl sm:text-5xl
+        ${className}`}
+  >
+    {children}
+  </div>
+);
+
 export function HomePage() {
   const navigate = useNavigate();
   const [showMoreExamples, setShowMoreExamples] = React.useState(false);
-  const [hoveredSolution, setHoveredSolution] = React.useState<number | null>(null);
+  const [hoveredSolution, setHoveredSolution] = React.useState<number | null>(
+    null
+  );
 
   const handleImageClick = (fullUrl: string) => {
     // Check if it's an external URL
-    if (fullUrl.startsWith('http://') || fullUrl.startsWith('https://')) {
+    if (fullUrl.startsWith("http://") || fullUrl.startsWith("https://")) {
       window.location.href = fullUrl;
     } else {
       // Use React Router for internal navigation
@@ -29,52 +90,194 @@ export function HomePage() {
       problem: "Climate inaction",
       tool: "Tokenized carbon credits",
       outcome: "Verified action, shared cost",
-      details: "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
+      details:
+        "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
       projects: [
         { name: "Toucan Protocol", url: "https://toucan.earth/" },
         { name: "KlimaDAO", url: "https://www.klimadao.finance/" },
-        { name: "Regen Network", url: "https://www.regen.network/" }
-      ]
+        { name: "Regen Network", url: "https://www.regen.network/" },
+      ],
     },
     {
       problem: "AI arms race",
       tool: "Open models + attestations",
       outcome: "Shared safety incentives",
-      details: "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
+      details:
+        "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
       projects: [
         { name: "Bittensor", url: "https://bittensor.com/" },
         { name: "Theoriq", url: "https://www.theoriq.ai/" },
-        { name: "Ocean Protocol", url: "https://oceanprotocol.com/" }
-      ]
+        { name: "Ocean Protocol", url: "https://oceanprotocol.com/" },
+      ],
     },
     {
       problem: "Public goods underfunding",
       tool: "Quadratic Funding",
       outcome: "Fairer shared contribution",
-      details: "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
+      details:
+        "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
       projects: [
         { name: "Gitcoin Grants", url: "https://grants.gitcoin.co/" },
         { name: "Giveth", url: "https://giveth.io/" },
         { name: "clr.fund", url: "https://clr.fund/" },
-        { name: "Optimism RetroPGF", url: "https://app.optimism.io/retropgf" }
-      ]
+        { name: "Optimism RetroPGF", url: "https://app.optimism.io/retropgf" },
+      ],
     },
     {
       problem: "Misinformation",
       tool: "Reputation + attestations",
       outcome: "Credibility over virality",
-      details: "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+      details:
+        "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
       projects: [
         { name: "Ethereum Attestation Service", url: "https://attest.sh/" },
         { name: "Gitcoin Passport", url: "https://passport.gitcoin.co/" },
-        { name: "Clique", url: "https://www.clique.social/" }
-      ]
-    }
+        { name: "Clique", url: "https://www.clique.social/" },
+      ],
+    },
   ];
 
   return (
-    <div style={styles.container}>
-      {/* Navigation Bar */}
+    <main className="min-h-screen">
+      {/* hero */}
+      <div className="bg-moss-900">
+        <section className="relative h-screen">
+          {/* hero p5 animation - background */}
+          <div className="absolute inset-0">
+            <HeroAnimation />
+          </div>
+          {/* hero content - foreground */}
+          <div className="absolute inset-0 z-10 flex items-end pb-20 px-20">
+            <div>
+              <h1 className="text-lichen-500 text-4xl sm:text-6xl md:text-7xl mb-12 font-mori max-w-[15ch]">
+                Solving Alignment with Ethereum
+              </h1>
+              <div className="flex flex-wrap gap-5">
+                <a
+                  href="https://www.gitcoin.co/vision"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button>Gitcoin Vision Paper</Button>
+                </a>
+                <Button>Learn more</Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 px-20">
+          <h2 className="mb-12 text-moss-100 font-mori font-semibold text-3xl sm:text-5xl">
+            What is a Multipolar trap?
+          </h2>
+
+          <div className="flex gap-12 items-center justify-center text-moon-300">
+            <div className="max-w-sm flex flex-col gap-6">
+              <p className="text-lg">
+                A Multipolar trap occurs when{" "}
+                <span className="text-nectar-500">
+                  individual rational actions
+                </span>{" "}
+                lead to{" "}
+                <span className="text-nectar-500">
+                  collectively worse outcomes
+                </span>{" "}
+                because no single actor can afford to unilaterally cooperate.
+              </p>
+              <p className="text-lg">
+                Think of it like a race to the bottom: each actor follows the
+                steepest incentive gradient toward local optimization, but these
+                individual "rational" choices compound into a globally
+                suboptimal equilibrium that traps everyone.
+              </p>
+              <p className="text-nectar-500 font-semibold text-2xl md:text-3xl">
+                "A multipolar trap is when no one can unilaterally fix a
+                problem—but together, they could."
+              </p>
+            </div>
+
+            <div>
+              <img src="/img/trap.svg" width="914" height="392" />
+            </div>
+          </div>
+        </section>
+
+        <section className="py-20 px-20">
+          <h2 className="mb-12 text-moss-100 font-mori font-semibold text-3xl sm:text-5xl text-center">
+            Alignment issues
+          </h2>
+          <div>
+            <div className="flex items-center justify-center">
+              <img src="/img/trap.svg" width="914" height="392" />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div className="bg-moss-100 py-16 flex flex-col gap-16">
+        <section className="flex items-center justify-center gap-16 ">
+          <div>
+            <h2 className="text-moss-500 font-semibold text-3xl sm:text-5xl font-mori max-w-[13ch] mb-12">
+              The Coordination Toolkit We Need
+            </h2>
+            <div className="size-[434px] bg-gray-400"></div>
+          </div>
+
+          <div className="flex flex-col gap-8 max-w-[360px]">
+            {coordination.map((item, index) => (
+              <CoordinationCard
+                key={item.name}
+                name={item.name}
+                description={item.description}
+                index={index}
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="py-20 px-20">
+          <div className="relative h-[350px] max-w-5xl mb-12">
+            <CardWithBorder className="absolute top-0 left-[50px]">
+              The Power
+            </CardWithBorder>
+            <CardWithBorder className="absolute top-[60px] left-[300px]">
+              of Networked
+            </CardWithBorder>
+            <CardWithBorder className="absolute top-[120px] left-0">
+              Coordination
+            </CardWithBorder>
+          </div>
+
+          <div className="flex items-center justify-center gap-10">
+            <div className="h-full bg-moss-500 rounded-lg py-8 px-10 sm:px-14 text-moss-100 flex flex-col gap-9 max-w-[377px]">
+              <p>
+                Top-down institutions are slow, captured, or corrupt. But
+                networks of ordinary people—citizens, developers,
+                communities—can coordinate at scale if given the right
+                infrastructure.
+              </p>
+              <p>
+                When these pieces come together, bottom-up coordination becomes
+                possible—and powerful enough to diffuse multipolar traps.
+              </p>
+              <p>
+                Peer-to-peer networks don't need permission. They don't need
+                central authorities.
+              </p>
+            </div>
+
+            <div className="bg-moss-500 rounded-lg px-12 py-6">
+              <div className="size-[400px] bg-gray-300"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+/*
+ * OLD CONTENT - COMMENTED OUT FOR REFERENCE
       <nav style={styles.navbar}>
         <div style={styles.navContent}>
           <div style={styles.navLogo}>
@@ -90,13 +293,11 @@ export function HomePage() {
       </nav>
 
       <header style={styles.header}>
-        {/* Main Hero Section */}
         <div style={styles.mainHero}>
           <h1 style={styles.mainTitle}>Solving Multipolar Traps with Ethereum (for fun & profit)</h1>
           <p style={styles.mainSubtitle} className="main-subtitle">an exploration of the profound implications of programmable money as a tool to solve Multipolar traps...made w/ &gt;3 by ya boiiii <a href="https://x.com/owocki">@owocki</a></p>
         </div>
 
-        {/* Hero Section: The Trap We're In */}
         <div style={styles.landingSection} id="about">
           <h2 style={styles.landingHeadline}>What is a Multipolar trap?</h2>
               <p style={styles.landingSubheadline}>
@@ -112,7 +313,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Section 2: What is a Multipolar Trap? */}
         <div style={styles.landingSection} id="examples">
           <div style={styles.sectionHeaderWithButton}>
             <h2 style={styles.sectionHeading}>Multipolar traps are why can't we have nice things:</h2>
@@ -182,7 +382,6 @@ export function HomePage() {
 
         </div>
 
-        {/* Section 3: The Coordination Problem */}
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>Why Don't We Just Work Together?</h2>
           <p style={styles.coordinationText}>
@@ -248,7 +447,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Section 4: Ethereum Is a Coordination Substrate */}
         <div style={styles.landingSection} id="solution">
           <h2 style={styles.sectionHeading}>Ethereum Is More Than Money—It's a Coordination Engine</h2>
 
@@ -280,7 +478,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Section 5: Real-World Solutions */}
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>Multipolar Trap → Ethereum Solution</h2>
           <p style={styles.coordinationText}>
@@ -331,7 +528,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Section 6: Join the Coordinators */}
         <div style={styles.landingSection}>
           <h2 style={styles.sectionHeading}>In Ethereum, We're Building the Tools to Disarm These Traps</h2>
           <p style={styles.joinSubheading}>Are you in?</p>
@@ -358,7 +554,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Papers Section */}
         <div style={styles.papersSection}>
           <h3 style={styles.papersSectionHeading}>Learn More About Solving Multipolar Traps with Ethereum</h3>
           <div style={styles.papersGrid}>
@@ -387,8 +582,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Explore Visualizations CTA */}
-        <div style={styles.ctaSection} id="visualizations">
           <h3 style={styles.ctaHeading}>Explore the Dynamics Behind Multipolar Traps, Visually</h3>
           <p style={styles.tldrText}>
             These artifacts help us conceptualize Multipolar Traps visually, making it easier to grok the system dynamics.
@@ -427,226 +620,224 @@ These are maps of possibilities. Some design choices lift the world toward bette
           </div>
         ))}
       </div>
-    </div>
-  );
-}
+*/
 
 const styles: Record<string, React.CSSProperties> = {
   container: {
-    height: '100vh',
-    backgroundColor: '#0f1114',
-    color: '#fff',
-    overflow: 'auto',
-    WebkitOverflowScrolling: 'touch',
+    height: "100vh",
+    backgroundColor: "#0f1114",
+    color: "#fff",
+    overflow: "auto",
+    WebkitOverflowScrolling: "touch",
   },
   navbar: {
-    position: 'sticky',
+    position: "sticky",
     top: 0,
-    backgroundColor: '#1a1d23',
-    borderBottom: '1px solid #3a3d45',
+    backgroundColor: "#1a1d23",
+    borderBottom: "1px solid #3a3d45",
     zIndex: 1000,
-    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
   },
   navContent: {
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '16px 40px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: '20px',
+    maxWidth: "1400px",
+    margin: "0 auto",
+    padding: "16px 40px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "20px",
   },
   navLogo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
   },
   logoText: {
-    fontSize: '20px',
+    fontSize: "20px",
     fontWeight: 700,
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
   },
   navLinks: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '32px',
+    display: "flex",
+    alignItems: "center",
+    gap: "32px",
   },
   navLink: {
-    color: '#a8adb7',
-    textDecoration: 'none',
-    fontSize: '15px',
+    color: "#a8adb7",
+    textDecoration: "none",
+    fontSize: "15px",
     fontWeight: 500,
-    transition: 'color 0.3s ease',
+    transition: "color 0.3s ease",
   },
   navButton: {
-    padding: '10px 24px',
-    backgroundColor: '#667eea',
-    border: 'none',
-    borderRadius: '6px',
-    color: 'white',
-    fontSize: '15px',
+    padding: "10px 24px",
+    backgroundColor: "#667eea",
+    border: "none",
+    borderRadius: "6px",
+    color: "white",
+    fontSize: "15px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
   header: {
-    textAlign: 'center',
-    padding: '40px 20px',
-    backgroundColor: '#1a1d23',
-    borderBottom: '1px solid #3a3d45',
+    textAlign: "center",
+    padding: "40px 20px",
+    backgroundColor: "#1a1d23",
+    borderBottom: "1px solid #3a3d45",
   },
   mainHero: {
-    padding: '40px 0 20px',
+    padding: "40px 0 20px",
   },
   mainTitle: {
-    fontSize: '48px',
+    fontSize: "48px",
     fontWeight: 700,
-    margin: '0 0 10px 0',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
+    margin: "0 0 10px 0",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
   },
   mainSubtitle: {
-    fontSize: '18px',
-    color: '#a8adb7',
-    fontStyle: 'italic',
+    fontSize: "18px",
+    color: "#a8adb7",
+    fontStyle: "italic",
     margin: 0,
   },
   landingSection: {
-    maxWidth: '1000px',
-    margin: '60px auto',
-    padding: '0 20px',
+    maxWidth: "1000px",
+    margin: "60px auto",
+    padding: "0 20px",
   },
   landingHeadline: {
-    fontSize: '36px',
+    fontSize: "36px",
     fontWeight: 700,
-    color: '#fff',
-    marginBottom: '20px',
-    lineHeight: '1.3',
+    color: "#fff",
+    marginBottom: "20px",
+    lineHeight: "1.3",
   },
   landingSubheadline: {
-    fontSize: '20px',
-    color: '#d1d5db',
-    marginBottom: '30px',
-    lineHeight: '1.6',
+    fontSize: "20px",
+    color: "#d1d5db",
+    marginBottom: "30px",
+    lineHeight: "1.6",
   },
   primaryButton: {
-    padding: '16px 40px',
-    backgroundColor: '#667eea',
-    border: 'none',
-    borderRadius: '8px',
-    color: 'white',
-    fontSize: '18px',
+    padding: "16px 40px",
+    backgroundColor: "#667eea",
+    border: "none",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "18px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
   sectionHeading: {
-    fontSize: '32px',
+    fontSize: "32px",
     fontWeight: 700,
-    color: '#fff',
-    marginBottom: '30px',
-    lineHeight: '1.3',
+    color: "#fff",
+    marginBottom: "30px",
+    lineHeight: "1.3",
   },
   sectionHeaderWithButton: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px',
-    flexWrap: 'wrap',
-    gap: '16px',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    flexWrap: "wrap",
+    gap: "16px",
   },
   viewMoreButton: {
-    padding: '10px 24px',
-    backgroundColor: 'transparent',
-    border: '1px solid #667eea',
-    borderRadius: '6px',
-    color: '#667eea',
-    fontSize: '14px',
+    padding: "10px 24px",
+    backgroundColor: "transparent",
+    border: "1px solid #667eea",
+    borderRadius: "6px",
+    color: "#667eea",
+    fontSize: "14px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
     flexShrink: 0,
   },
   trapExamplesGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '20px',
-    margin: '30px 0',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "20px",
+    margin: "30px 0",
   },
   trapExampleCard: {
-    backgroundColor: '#0f1114',
-    border: '1px solid #3a3d45',
-    borderRadius: '12px',
-    padding: '20px',
-    textAlign: 'center',
-    transition: 'border-color 0.3s ease',
+    backgroundColor: "#0f1114",
+    border: "1px solid #3a3d45",
+    borderRadius: "12px",
+    padding: "20px",
+    textAlign: "center",
+    transition: "border-color 0.3s ease",
   },
   trapExampleBadge: {
-    fontSize: '48px',
-    marginBottom: '12px',
+    fontSize: "48px",
+    marginBottom: "12px",
   },
   trapExampleText: {
-    fontSize: '16px',
-    color: '#d1d5db',
+    fontSize: "16px",
+    color: "#d1d5db",
     margin: 0,
-    lineHeight: '1.5',
+    lineHeight: "1.5",
   },
   tldrBox: {
-    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-    border: '2px solid #667eea',
-    borderRadius: '12px',
-    padding: '24px',
-    margin: '30px 0',
+    backgroundColor: "rgba(102, 126, 234, 0.1)",
+    border: "2px solid #667eea",
+    borderRadius: "12px",
+    padding: "24px",
+    margin: "30px 0",
   },
   tldrText: {
-    fontSize: '20px',
-    color: '#fff',
-    fontStyle: 'italic',
+    fontSize: "20px",
+    color: "#fff",
+    fontStyle: "italic",
     margin: 0,
-    lineHeight: '1.6',
+    lineHeight: "1.6",
   },
   coordinationText: {
-    fontSize: '18px',
-    color: '#d1d5db',
-    lineHeight: '1.7',
-    margin: '20px 0',
+    fontSize: "18px",
+    color: "#d1d5db",
+    lineHeight: "1.7",
+    margin: "20px 0",
   },
   coordinationBreakdown: {
-    marginTop: '40px',
+    marginTop: "40px",
   },
   subSectionHeading: {
-    fontSize: '24px',
+    fontSize: "24px",
     fontWeight: 600,
-    color: '#fff',
-    marginBottom: '16px',
+    color: "#fff",
+    marginBottom: "16px",
     marginTop: 0,
   },
   coordinationStepsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '24px',
-    margin: '30px 0 40px',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "24px",
+    margin: "30px 0 40px",
   },
   coordinationStep: {
-    display: 'flex',
-    gap: '16px',
-    alignItems: 'flex-start',
+    display: "flex",
+    gap: "16px",
+    alignItems: "flex-start",
   },
   stepNumber: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '50%',
-    backgroundColor: '#667eea',
-    color: '#fff',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '20px',
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    backgroundColor: "#667eea",
+    color: "#fff",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "20px",
     fontWeight: 700,
     flexShrink: 0,
   },
@@ -654,323 +845,323 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
   },
   stepTitle: {
-    fontSize: '20px',
+    fontSize: "20px",
     fontWeight: 600,
-    color: '#fff',
-    margin: '0 0 8px 0',
+    color: "#fff",
+    margin: "0 0 8px 0",
   },
   stepText: {
-    fontSize: '16px',
-    color: '#d1d5db',
-    lineHeight: '1.6',
+    fontSize: "16px",
+    color: "#d1d5db",
+    lineHeight: "1.6",
     margin: 0,
   },
   bottomUpBox: {
-    backgroundColor: 'rgba(102, 126, 234, 0.05)',
-    border: '2px solid #667eea',
-    borderRadius: '12px',
-    padding: '30px',
-    marginTop: '30px',
+    backgroundColor: "rgba(102, 126, 234, 0.05)",
+    border: "2px solid #667eea",
+    borderRadius: "12px",
+    padding: "30px",
+    marginTop: "30px",
   },
   bottomUpTitle: {
-    fontSize: '22px',
+    fontSize: "22px",
     fontWeight: 700,
-    color: '#fff',
-    margin: '0 0 16px 0',
+    color: "#fff",
+    margin: "0 0 16px 0",
   },
   bottomUpText: {
-    fontSize: '16px',
-    color: '#d1d5db',
-    lineHeight: '1.7',
-    margin: '0 0 16px 0',
+    fontSize: "16px",
+    color: "#d1d5db",
+    lineHeight: "1.7",
+    margin: "0 0 16px 0",
   },
   bottomUpList: {
-    listStyle: 'none',
+    listStyle: "none",
     padding: 0,
-    margin: '16px 0',
+    margin: "16px 0",
   },
   bottomUpListItem: {
-    fontSize: '16px',
-    color: '#d1d5db',
-    lineHeight: '1.8',
-    marginBottom: '8px',
-    paddingLeft: '8px',
+    fontSize: "16px",
+    color: "#d1d5db",
+    lineHeight: "1.8",
+    marginBottom: "8px",
+    paddingLeft: "8px",
   },
   featuresGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr',
-    gap: '16px',
-    margin: '30px 0',
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "16px",
+    margin: "30px 0",
   },
   featureItem: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    gap: '12px',
-    padding: '12px',
-    backgroundColor: '#0f1114',
-    borderRadius: '8px',
-    border: '1px solid #3a3d45',
+    display: "flex",
+    alignItems: "flex-start",
+    gap: "12px",
+    padding: "12px",
+    backgroundColor: "#0f1114",
+    borderRadius: "8px",
+    border: "1px solid #3a3d45",
   },
   featureIcon: {
-    fontSize: '20px',
+    fontSize: "20px",
     flexShrink: 0,
   },
   featureText: {
-    fontSize: '16px',
-    color: '#d1d5db',
-    lineHeight: '1.5',
+    fontSize: "16px",
+    color: "#d1d5db",
+    lineHeight: "1.5",
   },
   solutionsTable: {
-    display: 'grid',
-    gap: '20px',
-    margin: '30px 0',
+    display: "grid",
+    gap: "20px",
+    margin: "30px 0",
   },
   solutionRow: {
-    display: 'grid',
-    gridTemplateColumns: '1fr auto 1fr auto 1fr',
-    alignItems: 'center',
-    gap: '16px',
-    padding: '20px',
-    backgroundColor: '#0f1114',
-    border: '1px solid #3a3d45',
-    borderRadius: '12px',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    display: "grid",
+    gridTemplateColumns: "1fr auto 1fr auto 1fr",
+    alignItems: "center",
+    gap: "16px",
+    padding: "20px",
+    backgroundColor: "#0f1114",
+    border: "1px solid #3a3d45",
+    borderRadius: "12px",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
   solutionProblem: {
-    fontSize: '16px',
-    color: '#fb923c',
+    fontSize: "16px",
+    color: "#fb923c",
     fontWeight: 600,
-    textAlign: 'right',
+    textAlign: "right",
   },
   solutionTool: {
-    fontSize: '16px',
-    color: '#667eea',
+    fontSize: "16px",
+    color: "#667eea",
     fontWeight: 600,
-    textAlign: 'center',
+    textAlign: "center",
   },
   solutionOutcome: {
-    fontSize: '16px',
-    color: '#4ade80',
+    fontSize: "16px",
+    color: "#4ade80",
     fontWeight: 600,
-    textAlign: 'left',
+    textAlign: "left",
   },
   solutionArrow: {
-    fontSize: '18px',
-    color: '#a8adb7',
+    fontSize: "18px",
+    color: "#a8adb7",
   },
   solutionDetails: {
-    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-    border: '1px solid #667eea',
-    borderRadius: '0 0 12px 12px',
-    padding: '20px',
-    marginTop: '-12px',
-    marginBottom: '20px',
-    animation: 'slideDown 0.3s ease',
+    backgroundColor: "rgba(102, 126, 234, 0.1)",
+    border: "1px solid #667eea",
+    borderRadius: "0 0 12px 12px",
+    padding: "20px",
+    marginTop: "-12px",
+    marginBottom: "20px",
+    animation: "slideDown 0.3s ease",
   },
   solutionDetailsText: {
-    fontSize: '15px',
-    color: '#d1d5db',
-    lineHeight: '1.7',
-    margin: '0 0 20px 0',
+    fontSize: "15px",
+    color: "#d1d5db",
+    lineHeight: "1.7",
+    margin: "0 0 20px 0",
   },
   projectsList: {
-    marginTop: '20px',
-    paddingTop: '20px',
-    borderTop: '1px solid rgba(102, 126, 234, 0.3)',
+    marginTop: "20px",
+    paddingTop: "20px",
+    borderTop: "1px solid rgba(102, 126, 234, 0.3)",
   },
   projectsHeading: {
-    fontSize: '16px',
+    fontSize: "16px",
     fontWeight: 600,
-    color: '#fff',
-    margin: '0 0 12px 0',
+    color: "#fff",
+    margin: "0 0 12px 0",
   },
   projectsGrid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    gap: '12px',
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "12px",
   },
   projectLink: {
-    display: 'inline-block',
-    padding: '8px 16px',
-    backgroundColor: 'rgba(102, 126, 234, 0.2)',
-    border: '1px solid #667eea',
-    borderRadius: '6px',
-    color: '#667eea',
-    fontSize: '14px',
+    display: "inline-block",
+    padding: "8px 16px",
+    backgroundColor: "rgba(102, 126, 234, 0.2)",
+    border: "1px solid #667eea",
+    borderRadius: "6px",
+    color: "#667eea",
+    fontSize: "14px",
     fontWeight: 600,
-    textDecoration: 'none',
-    transition: 'all 0.3s ease',
+    textDecoration: "none",
+    transition: "all 0.3s ease",
   },
   joinSubheading: {
-    fontSize: '24px',
-    color: '#d1d5db',
-    marginBottom: '30px',
+    fontSize: "24px",
+    color: "#d1d5db",
+    marginBottom: "30px",
     fontWeight: 600,
   },
   ctaButtonsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '16px',
-    margin: '30px 0',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+    gap: "16px",
+    margin: "30px 0",
   },
   ctaButton: {
-    padding: '14px 28px',
-    backgroundColor: '#3a3d45',
-    border: '1px solid #667eea',
-    borderRadius: '8px',
-    color: 'white',
-    fontSize: '16px',
+    padding: "14px 28px",
+    backgroundColor: "#3a3d45",
+    border: "1px solid #667eea",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "16px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
   ctaButtonPrimary: {
-    padding: '14px 28px',
-    backgroundColor: '#28a745',
-    border: 'none',
-    borderRadius: '8px',
-    color: 'white',
-    fontSize: '16px',
+    padding: "14px 28px",
+    backgroundColor: "#28a745",
+    border: "none",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "16px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
   },
   ctaSection: {
-    marginTop: '60px',
-    paddingTop: '40px',
-    borderTop: '2px solid #3a3d45',
+    marginTop: "60px",
+    paddingTop: "40px",
+    borderTop: "2px solid #3a3d45",
   },
   ctaHeading: {
-    fontSize: '28px',
+    fontSize: "28px",
     fontWeight: 600,
-    color: '#fff',
-    margin: '0 0 12px 0',
+    color: "#fff",
+    margin: "0 0 12px 0",
   },
   ctaText: {
-    fontSize: '18px',
-    color: '#a8adb7',
-    margin: '0 0 40px 0',
+    fontSize: "18px",
+    color: "#a8adb7",
+    margin: "0 0 40px 0",
   },
   gallery: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-    gap: '30px',
-    padding: '40px',
-    maxWidth: '1400px',
-    margin: '0 auto',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+    gap: "30px",
+    padding: "40px",
+    maxWidth: "1400px",
+    margin: "0 auto",
   },
   card: {
-    backgroundColor: '#1a1d23',
-    borderRadius: '12px',
-    overflow: 'hidden',
-    cursor: 'pointer',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-    border: '1px solid #3a3d45',
+    backgroundColor: "#1a1d23",
+    borderRadius: "12px",
+    overflow: "hidden",
+    cursor: "pointer",
+    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    border: "1px solid #3a3d45",
   },
   imageContainer: {
-    position: 'relative',
-    width: '100%',
-    paddingBottom: '75%',
-    backgroundColor: '#0f1114',
-    overflow: 'hidden',
+    position: "relative",
+    width: "100%",
+    paddingBottom: "75%",
+    backgroundColor: "#0f1114",
+    overflow: "hidden",
   },
   image: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    transition: 'transform 0.3s ease',
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    transition: "transform 0.3s ease",
   },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     opacity: 0,
-    transition: 'opacity 0.3s ease',
+    transition: "opacity 0.3s ease",
   },
   viewText: {
-    color: 'white',
-    fontSize: '18px',
+    color: "white",
+    fontSize: "18px",
     fontWeight: 600,
   },
   cardContent: {
-    padding: '20px',
+    padding: "20px",
   },
   cardTitle: {
-    fontSize: '18px',
+    fontSize: "18px",
     fontWeight: 600,
     margin: 0,
-    color: '#fff',
+    color: "#fff",
   },
   papersSection: {
-    maxWidth: '1000px',
-    margin: '60px auto',
-    padding: '40px 20px',
-    backgroundColor: 'rgba(102, 126, 234, 0.05)',
-    borderRadius: '16px',
-    border: '2px solid #667eea',
+    maxWidth: "1000px",
+    margin: "60px auto",
+    padding: "40px 20px",
+    backgroundColor: "rgba(102, 126, 234, 0.05)",
+    borderRadius: "16px",
+    border: "2px solid #667eea",
   },
   papersSectionHeading: {
-    fontSize: '32px',
+    fontSize: "32px",
     fontWeight: 700,
-    color: '#fff',
-    textAlign: 'center',
-    margin: '0 0 30px 0',
+    color: "#fff",
+    textAlign: "center",
+    margin: "0 0 30px 0",
   },
   papersGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '20px',
-    maxWidth: '800px',
-    margin: '0 auto',
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+    gap: "20px",
+    maxWidth: "800px",
+    margin: "0 auto",
   },
   paperButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '20px',
-    padding: '24px',
-    backgroundColor: '#1a1d23',
-    border: '2px solid #667eea',
-    borderRadius: '12px',
-    color: 'white',
-    fontSize: '16px',
+    display: "flex",
+    alignItems: "center",
+    gap: "20px",
+    padding: "24px",
+    backgroundColor: "#1a1d23",
+    border: "2px solid #667eea",
+    borderRadius: "12px",
+    color: "white",
+    fontSize: "16px",
     fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    textAlign: 'left',
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+    textAlign: "left",
   },
   paperIcon: {
-    fontSize: '48px',
+    fontSize: "48px",
     flexShrink: 0,
   },
   paperContent: {
     flex: 1,
   },
   paperTitle: {
-    fontSize: '20px',
+    fontSize: "20px",
     fontWeight: 700,
-    color: '#fff',
-    marginBottom: '6px',
+    color: "#fff",
+    marginBottom: "6px",
   },
   paperSubtitle: {
-    fontSize: '14px',
-    color: '#a8adb7',
+    fontSize: "14px",
+    color: "#a8adb7",
     fontWeight: 400,
   },
 };
 
 // Add hover effects via a style tag
-if (typeof document !== 'undefined') {
-  const styleSheet = document.createElement('style');
+if (typeof document !== "undefined") {
+  const styleSheet = document.createElement("style");
   styleSheet.textContent = `
     /* Navbar link hover effects */
     nav a:hover {
