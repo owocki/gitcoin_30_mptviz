@@ -163,11 +163,11 @@ export default defineConfig({
     format: 'es'
   },
   optimizeDeps: {
-    include: ['tailwind-variants']
+    include: ['tailwind-variants', 'tailwind-merge']
   },
   build: {
     commonjsOptions: {
-      include: [/tailwind-variants/, /node_modules/]
+      include: [/tailwind-variants/, /tailwind-merge/, /node_modules/]
     }
   }
 })
