@@ -161,5 +161,13 @@ export default defineConfig({
   plugins: [react(), htmlMetaTagsPlugin()],
   worker: {
     format: 'es'
+  },
+  optimizeDeps: {
+    include: ['tailwind-variants']
+  },
+  build: {
+    commonjsOptions: {
+      include: [/tailwind-variants/, /node_modules/]
+    }
   }
 })
