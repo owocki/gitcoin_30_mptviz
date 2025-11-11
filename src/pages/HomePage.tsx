@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import galleryData from '../config/gallery.json';
 
 interface GalleryItem {
@@ -8,12 +9,19 @@ interface GalleryItem {
   fullUrl: string;
 }
 
-export function Gallery() {
+export function HomePage() {
+  const navigate = useNavigate();
   const [showMoreExamples, setShowMoreExamples] = React.useState(false);
   const [hoveredSolution, setHoveredSolution] = React.useState<number | null>(null);
 
   const handleImageClick = (fullUrl: string) => {
-    window.location.href = fullUrl;
+    // Check if it's an external URL
+    if (fullUrl.startsWith('http://') || fullUrl.startsWith('https://')) {
+      window.location.href = fullUrl;
+    } else {
+      // Use React Router for internal navigation
+      navigate(fullUrl);
+    }
   };
 
   const solutionDetails = [
