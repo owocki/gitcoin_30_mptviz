@@ -2,16 +2,16 @@ import { ReactNode } from "react";
 import { tv } from "tailwind-variants";
 
 const button = tv({
-  base: "w-fit text-center leading-none flex-shrink-0 transition-all duration-300 text-sm font-mono leading-5 tracking-[0.56px]",
+  base: "w-fit text-center leading-none flex-shrink-0 transition-all duration-300 tracking-[0.56px]",
   variants: {
     variant: {
       primary: "bg-sand text-moss-500  hover:bg-moss-300",
-      secondary: "",
+      secondary: "bg-transparent text-iris-900 border border-iris-900",
       ghost: "bg-transparent ",
     },
     size: {
       lg: "py-3.5 px-5 rounded-md",
-      sm: "py-2.5 px-3 rounded-md",
+      sm: "py-2 px-3 rounded-md",
     },
     isLoading: {
       true: "opacity-50",
