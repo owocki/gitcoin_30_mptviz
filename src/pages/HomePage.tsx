@@ -394,7 +394,7 @@ export function HomePage() {
             <h2 className="text-moss-500 font-semibold text-3xl sm:text-5xl font-mori max-w-[13ch] mb-12">
               The Coordination Toolkit We Need
             </h2>
-            <div className="size-[434px] bg-gray-400"></div>
+            <img src="/img/coordination-globe-graphic.svg" width="400" height="396" />
           </div>
 
           <div className="flex flex-col gap-8 max-w-[360px]">
