@@ -2,14 +2,22 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/button";
 import { HeroAnimation } from "../components/HeroAnimation";
+import EarthGraphic from "../components/EarthGraphic";
 
-interface GalleryItem {
-  id: string;
-  title: string;
-  previewUrl: string;
-  fullUrl: string;
-}
-
+const RightArrow = () => (
+  <svg
+    width="21"
+    height="18"
+    viewBox="0 0 21 18"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M20.8558 10.1039L13.3678 17.6159L11.3518 15.9359L17.1838 10.1039H-0.000183582V7.48792H17.2078L11.3758 1.67992L13.3678 -7.9155e-05L20.8558 7.48792V10.1039Z"
+      fill="currentColor"
+    />
+  </svg>
+);
 const coordination = [
   {
     name: "See",
@@ -68,74 +76,240 @@ const CardWithBorder = ({
   </div>
 );
 
-export function HomePage() {
-  const navigate = useNavigate();
-  const [showMoreExamples, setShowMoreExamples] = React.useState(false);
-  const [hoveredSolution, setHoveredSolution] = React.useState<number | null>(
-    null
-  );
-
-  const handleImageClick = (fullUrl: string) => {
-    // Check if it's an external URL
-    if (fullUrl.startsWith("http://") || fullUrl.startsWith("https://")) {
-      window.location.href = fullUrl;
-    } else {
-      // Use React Router for internal navigation
-      navigate(fullUrl);
-    }
-  };
-
-  const solutionDetails = [
+const TrapsSection = () => {
+  const traps = [
     {
-      problem: "Climate inaction",
-      tool: "Tokenized carbon credits",
-      outcome: "Verified action, shared cost",
-      details:
-        "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
-      projects: [
-        { name: "Toucan Protocol", url: "https://toucan.earth/" },
-        { name: "KlimaDAO", url: "https://www.klimadao.finance/" },
-        { name: "Regen Network", url: "https://www.regen.network/" },
+      steps: [
+        "Misinformation",
+        "Reputation + attestations",
+        "Credibility over virality",
       ],
-    },
-    {
-      problem: "AI arms race",
-      tool: "Open models + attestations",
-      outcome: "Shared safety incentives",
-      details:
-        "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
-      projects: [
-        { name: "Bittensor", url: "https://bittensor.com/" },
-        { name: "Theoriq", url: "https://www.theoriq.ai/" },
-        { name: "Ocean Protocol", url: "https://oceanprotocol.com/" },
-      ],
-    },
-    {
-      problem: "Public goods underfunding",
-      tool: "Quadratic Funding",
-      outcome: "Fairer shared contribution",
-      details:
-        "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
-      projects: [
-        { name: "Gitcoin Grants", url: "https://grants.gitcoin.co/" },
-        { name: "Giveth", url: "https://giveth.io/" },
-        { name: "clr.fund", url: "https://clr.fund/" },
-        { name: "Optimism RetroPGF", url: "https://app.optimism.io/retropgf" },
-      ],
-    },
-    {
-      problem: "Misinformation",
-      tool: "Reputation + attestations",
-      outcome: "Credibility over virality",
-      details:
+      colors: {
+        lightBg: "bg-lichen-100",
+        bg: "bg-lichen-500",
+        text: "text-moss-500",
+        border: "border-moss-500",
+      },
+      description:
         "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
       projects: [
-        { name: "Ethereum Attestation Service", url: "https://attest.sh/" },
-        { name: "Gitcoin Passport", url: "https://passport.gitcoin.co/" },
-        { name: "Clique", url: "https://www.clique.social/" },
+        {
+          url: "https://passport.gitcoin.co/",
+          logoUrl: "/img/logos/human-logo.svg",
+          width: 151,
+          height: 38,
+          alt: "Human Passport",
+        },
+        {
+          url: "https://attest.sh/",
+          logoUrl: "/img/logos/eas-logo.svg",
+          width: 77,
+          height: 38,
+          alt: "Ethereum Attestation Service",
+        },
+        {
+          url: "https://www.clique.social/",
+          logoUrl: "/img/logos/clique-logo.svg",
+          width: 98,
+          height: 38,
+          alt: "Clique",
+        },
+      ],
+    },
+    {
+      steps: [
+        "AI arms race",
+        "Open models + attestations",
+        "Shared safety incentives",
+      ],
+      colors: {
+        lightBg: "bg-sun-100",
+        bg: "bg-sun-500",
+        text: "text-sun-900",
+        border: "border-sun-900",
+      },
+      description:
+        "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
+      projects: [
+        {
+          url: "https://oceanprotocol.com/",
+          logoUrl: "/img/logos/ocean-logo.svg",
+          width: 168,
+          height: 38,
+          alt: "Ocean Protocol",
+        },
+        {
+          url: "https://bittensor.com/",
+          logoUrl: "/img/logos/bittensor-logo.svg",
+          width: 116,
+          height: 38,
+          alt: "Bittensor",
+        },
+        {
+          url: "https://www.theoriq.ai/",
+          logoUrl: "/img/logos/theoriq-logo.svg",
+          width: 122,
+          height: 38,
+          alt: "Theoriq",
+        },
+      ],
+    },
+    {
+      steps: [
+        "Public goods underfunding",
+        "Quadratic funding",
+        "Fairer shared contribution",
+      ],
+      colors: {
+        lightBg: "bg-nectar-100",
+        bg: "bg-nectar-300",
+        text: "text-nectar-900",
+        border: "border-nectar-900",
+      },
+      description:
+        "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
+      projects: [
+        {
+          url: "https://grants.gitcoin.co/",
+          logoUrl: "/img/logos/grants-logo.svg",
+          width: 162,
+          height: 38,
+          alt: "Gitcoin Grants",
+        },
+        {
+          url: "https://clr.fund/",
+          logoUrl: "/img/logos/clr-logo.svg",
+          width: 114,
+          height: 38,
+          alt: "clr.fund",
+        },
+        {
+          url: "https://giveth.io/",
+          logoUrl: "/img/logos/giveth-logo.svg",
+          width: 99,
+          height: 38,
+          alt: "Giveth",
+        },
+      ],
+    },
+    {
+      steps: [
+        "Climate inaction",
+        "Tokenized carbon credits",
+        "Verified action, shared cost",
+      ],
+      colors: {
+        lightBg: "bg-iris-100",
+        bg: "bg-iris-500",
+        text: "text-iris-900",
+        border: "border-iris-900",
+      },
+      description:
+        "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
+      projects: [
+        {
+          url: "https://toucan.earth/",
+          logoUrl: "/img/logos/toucan-logo.svg",
+          width: 175,
+          height: 38,
+          alt: "Toucan Protocol",
+        },
+        {
+          url: "https://www.regen.network/",
+          logoUrl: "/img/logos/regen-logo.svg",
+          width: 165,
+          height: 38,
+          alt: "Regen Network",
+        },
+        {
+          url: "https://www.klimadao.finance/",
+          logoUrl: "/img/logos/klima-logo.svg",
+          width: 131,
+          height: 38,
+          alt: "Klima DAO",
+        },
       ],
     },
   ];
+
+  return (
+    <section className="">
+      {traps.map((trap, i) => (
+        <div
+          key={i}
+          className={`${trap.colors.bg} relative flex items-center justify-between py-10 gap-8 h-screen `}
+        >
+          <div className="w-full flex items-center justify-center flex-col">
+            <div className="flex flex-col justify-start">
+              <div
+                className={`py-2 px-3 rounded-md ${trap.colors.lightBg} ${trap.colors.text} font-semibold w-fit mb-6`}
+              >
+                Multipolar Trap → Ethereum Solution
+              </div>
+              <p className="mb-6 flex items-center gap-2">
+                {trap.steps.map((entry, stepIndex) => (
+                  <div className="flex items-center gap-2 font-semibold text-xl md:text-xl">
+                    <span>{entry}</span>
+                    {stepIndex !== trap.steps.length - 1 && <RightArrow />}
+                  </div>
+                ))}
+              </p>
+              <p className="max-w-xl mb-12">{trap.description}</p>
+
+              <div
+                className={`w-fit flex items-center gap-2.5 flex-wrap px-4 py-2 rounded-2xl border ${trap.colors.border} ${trap.colors.text}`}
+              >
+                <span className="mr-4 leading-none">
+                  Projects working on this
+                </span>
+                {trap.projects.map((entry) => (
+                  <a href={entry.url} className="leading-none">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className={`!py-0 !px-0 border ${trap.colors.border} ${trap.colors.text}`}
+                    >
+                      <img
+                        src={entry.logoUrl}
+                        width={entry.width}
+                        height={entry.height}
+                        alt={entry.alt}
+                      />
+                    </Button>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <EarthGraphic
+              className={`max-h-[90vh] w-auto ${trap.colors.text}`}
+            />
+            {/* <img
+              src="/img/earth.svg"
+              width="413"
+              height="735"
+              className="max-h-[90vh] w-auto"
+            /> */}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+};
+
+export function HomePage() {
+  const navigate = useNavigate();
+
+  // const handleImageClick = (fullUrl: string) => {
+  //   // Check if it's an external URL
+  //   if (fullUrl.startsWith("http://") || fullUrl.startsWith("https://")) {
+  //     window.location.href = fullUrl;
+  //   } else {
+  //     // Use React Router for internal navigation
+  //     navigate(fullUrl);
+  //   }
+  // };
 
   return (
     <main className="min-h-screen">
@@ -214,7 +388,7 @@ export function HomePage() {
         </section>
       </div>
 
-      <div className="bg-moss-100 py-16 flex flex-col gap-16">
+      <div className="bg-moss-100 py-32 flex flex-col gap-16">
         <section className="flex items-center justify-center gap-16 ">
           <div>
             <h2 className="text-moss-500 font-semibold text-3xl sm:text-5xl font-mori max-w-[13ch] mb-12">
@@ -235,21 +409,23 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="py-20 px-20">
-          <div className="relative h-[350px] max-w-5xl mb-12">
-            <CardWithBorder className="absolute top-0 left-[50px]">
-              The Power
-            </CardWithBorder>
-            <CardWithBorder className="absolute top-[60px] left-[300px]">
-              of Networked
-            </CardWithBorder>
-            <CardWithBorder className="absolute top-[120px] left-0">
-              Coordination
-            </CardWithBorder>
+        <section className="py-20 px-20 ">
+          <div>
+            <div className="relative h-[350px] max-w-5xl mb-12 ml-[20%]">
+              <CardWithBorder className="absolute top-0 left-[50px]">
+                The Power
+              </CardWithBorder>
+              <CardWithBorder className="absolute top-[60px] left-[300px]">
+                of Networked
+              </CardWithBorder>
+              <CardWithBorder className="absolute top-[120px] left-0">
+                Coordination
+              </CardWithBorder>
+            </div>
           </div>
 
           <div className="flex items-center justify-center gap-10">
-            <div className="h-full bg-moss-500 rounded-lg py-8 px-10 sm:px-14 text-moss-100 flex flex-col gap-9 max-w-[377px]">
+            <div className="h-[450px] bg-moss-500 rounded-lg py-8 px-10 sm:px-14 text-moss-100 flex flex-col gap-9 max-w-[377px]">
               <p>
                 Top-down institutions are slow, captured, or corrupt. But
                 networks of ordinary people—citizens, developers,
@@ -266,12 +442,113 @@ export function HomePage() {
               </p>
             </div>
 
-            <div className="bg-moss-500 rounded-lg px-12 py-6">
-              <div className="size-[400px] bg-gray-300"></div>
+            <div className="bg-moss-500 rounded-lg px-12">
+              <img src="/img/power-graphic.svg" width="450" height="450" />
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div className="">
+            <div className="w-full max-w-[1060px] h-[440px] mx-auto relative border border-moss-500 rounded-2xl child:border child:border-moss-500 child:rounded-2xl">
+              <div className="absolute -top-9 -bottom-9 -left-12 flex items-center justify-end p-2 pl-16">
+                <p className="text-moss-500 font-semibold font-mori text-3xl md:text-5xl max-w-[10ch]">
+                  Ethereum Is More Than Money - It's a Coordination Engine
+                </p>
+              </div>
+              <div className="absolute top-1/2 -translate-y-1/2 -right-12 py-10 pl-6 pr-20 flex items-center">
+                <p className="text-moss-500 font-semibold text-base md:text-lg text-left leading-loose">
+                  ✓ Transparent, shared ledgers (no hidden info) <br />
+                  ✓ Smart contracts (credible commitments) <br />
+                  ✓ DAOs give us shared decision-making <br />
+                  ✓ Public goods funding (RetroPGF, Gitcoin, Allo) <br />✓
+                  Trustless enforcement (code = law) <br />✓ Anyone can build on
+                  it
+                </p>
+              </div>
             </div>
           </div>
         </section>
       </div>
+
+      <div>
+        <TrapsSection />
+      </div>
+
+      {/* CTA */}
+      <section className="relative h-screen">
+        {/* hero p5 animation - background */}
+        <div className="absolute inset-0">
+          <HeroAnimation />
+        </div>
+        {/* hero content - foreground */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 sm:gap-12 md:gap-16 p-4">
+          <h1 className="text-moss-100 text-3xl sm:text-4xl md:text-5xl font-mori font-semibold">
+            Are you in?
+          </h1>
+          <div className="flex flex-wrap gap-8">
+            <a
+              href="https://www.gitcoin.co/vision"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button>Gitcoin Vision Paper</Button>
+            </a>
+            <a
+              href="https://www.gitcoin.co/whitepaper"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button>Gitcoin Whitepaper</Button>
+            </a>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-2 font-semibold max-w-lg text-moss-100">
+            <a href="" target="_blank">
+              &gt; Support Ethereum Coordination Tech
+            </a>
+            <a href="" target="_blank">
+              &gt; Get involved locally
+            </a>
+            <a href="" target="_blank">
+              &gt; Learn more about Ethereum Coordination Ecosystem
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-moss-900 min-h-screen py-20 px-20">
+        <div className="text-moss-100">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-mori font-semibold max-w-[25ch] mb-12">
+            Explore the Dynamics Behind Multipolar Traps, Visually
+          </h2>
+          <div>
+            <div className="max-w-[40rem]">
+              <p>
+                These artifacts help us conceptualize Multipolar Traps visually,
+                making it easier to grok the system dynamics. <br />
+                Each shows a 3D landscape that represents possible futures
+                within a “design space.”
+              </p>
+              <ol className="list-decimal mb-6">
+                <li>
+                  The flat grid is the space of choices or designs humans can
+                  make.
+                </li>
+                <li>
+                  The height (z-axis) represents the overall success of the
+                  system.
+                </li>
+              </ol>
+              <p>
+                These are maps of possibilities. Some design choices lift the
+                world toward better outcomes, others sink it into breakdown. The
+                goal is to climb the ridge toward the peak rather than slide
+                into the valley of collapse.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
@@ -621,647 +898,3 @@ These are maps of possibilities. Some design choices lift the world toward bette
         ))}
       </div>
 */
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    height: "100vh",
-    backgroundColor: "#0f1114",
-    color: "#fff",
-    overflow: "auto",
-    WebkitOverflowScrolling: "touch",
-  },
-  navbar: {
-    position: "sticky",
-    top: 0,
-    backgroundColor: "#1a1d23",
-    borderBottom: "1px solid #3a3d45",
-    zIndex: 1000,
-    boxShadow: "0 2px 10px rgba(0, 0, 0, 0.3)",
-  },
-  navContent: {
-    maxWidth: "1400px",
-    margin: "0 auto",
-    padding: "16px 40px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "20px",
-  },
-  navLogo: {
-    display: "flex",
-    alignItems: "center",
-    gap: "12px",
-  },
-  logoText: {
-    fontSize: "20px",
-    fontWeight: 700,
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
-  },
-  navLinks: {
-    display: "flex",
-    alignItems: "center",
-    gap: "32px",
-  },
-  navLink: {
-    color: "#a8adb7",
-    textDecoration: "none",
-    fontSize: "15px",
-    fontWeight: 500,
-    transition: "color 0.3s ease",
-  },
-  navButton: {
-    padding: "10px 24px",
-    backgroundColor: "#667eea",
-    border: "none",
-    borderRadius: "6px",
-    color: "white",
-    fontSize: "15px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  header: {
-    textAlign: "center",
-    padding: "40px 20px",
-    backgroundColor: "#1a1d23",
-    borderBottom: "1px solid #3a3d45",
-  },
-  mainHero: {
-    padding: "40px 0 20px",
-  },
-  mainTitle: {
-    fontSize: "48px",
-    fontWeight: 700,
-    margin: "0 0 10px 0",
-    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    backgroundClip: "text",
-  },
-  mainSubtitle: {
-    fontSize: "18px",
-    color: "#a8adb7",
-    fontStyle: "italic",
-    margin: 0,
-  },
-  landingSection: {
-    maxWidth: "1000px",
-    margin: "60px auto",
-    padding: "0 20px",
-  },
-  landingHeadline: {
-    fontSize: "36px",
-    fontWeight: 700,
-    color: "#fff",
-    marginBottom: "20px",
-    lineHeight: "1.3",
-  },
-  landingSubheadline: {
-    fontSize: "20px",
-    color: "#d1d5db",
-    marginBottom: "30px",
-    lineHeight: "1.6",
-  },
-  primaryButton: {
-    padding: "16px 40px",
-    backgroundColor: "#667eea",
-    border: "none",
-    borderRadius: "8px",
-    color: "white",
-    fontSize: "18px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  sectionHeading: {
-    fontSize: "32px",
-    fontWeight: 700,
-    color: "#fff",
-    marginBottom: "30px",
-    lineHeight: "1.3",
-  },
-  sectionHeaderWithButton: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: "20px",
-    flexWrap: "wrap",
-    gap: "16px",
-  },
-  viewMoreButton: {
-    padding: "10px 24px",
-    backgroundColor: "transparent",
-    border: "1px solid #667eea",
-    borderRadius: "6px",
-    color: "#667eea",
-    fontSize: "14px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    flexShrink: 0,
-  },
-  trapExamplesGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "20px",
-    margin: "30px 0",
-  },
-  trapExampleCard: {
-    backgroundColor: "#0f1114",
-    border: "1px solid #3a3d45",
-    borderRadius: "12px",
-    padding: "20px",
-    textAlign: "center",
-    transition: "border-color 0.3s ease",
-  },
-  trapExampleBadge: {
-    fontSize: "48px",
-    marginBottom: "12px",
-  },
-  trapExampleText: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    margin: 0,
-    lineHeight: "1.5",
-  },
-  tldrBox: {
-    backgroundColor: "rgba(102, 126, 234, 0.1)",
-    border: "2px solid #667eea",
-    borderRadius: "12px",
-    padding: "24px",
-    margin: "30px 0",
-  },
-  tldrText: {
-    fontSize: "20px",
-    color: "#fff",
-    fontStyle: "italic",
-    margin: 0,
-    lineHeight: "1.6",
-  },
-  coordinationText: {
-    fontSize: "18px",
-    color: "#d1d5db",
-    lineHeight: "1.7",
-    margin: "20px 0",
-  },
-  coordinationBreakdown: {
-    marginTop: "40px",
-  },
-  subSectionHeading: {
-    fontSize: "24px",
-    fontWeight: 600,
-    color: "#fff",
-    marginBottom: "16px",
-    marginTop: 0,
-  },
-  coordinationStepsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-    gap: "24px",
-    margin: "30px 0 40px",
-  },
-  coordinationStep: {
-    display: "flex",
-    gap: "16px",
-    alignItems: "flex-start",
-  },
-  stepNumber: {
-    width: "40px",
-    height: "40px",
-    borderRadius: "50%",
-    backgroundColor: "#667eea",
-    color: "#fff",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "20px",
-    fontWeight: 700,
-    flexShrink: 0,
-  },
-  stepContent: {
-    flex: 1,
-  },
-  stepTitle: {
-    fontSize: "20px",
-    fontWeight: 600,
-    color: "#fff",
-    margin: "0 0 8px 0",
-  },
-  stepText: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    lineHeight: "1.6",
-    margin: 0,
-  },
-  bottomUpBox: {
-    backgroundColor: "rgba(102, 126, 234, 0.05)",
-    border: "2px solid #667eea",
-    borderRadius: "12px",
-    padding: "30px",
-    marginTop: "30px",
-  },
-  bottomUpTitle: {
-    fontSize: "22px",
-    fontWeight: 700,
-    color: "#fff",
-    margin: "0 0 16px 0",
-  },
-  bottomUpText: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    lineHeight: "1.7",
-    margin: "0 0 16px 0",
-  },
-  bottomUpList: {
-    listStyle: "none",
-    padding: 0,
-    margin: "16px 0",
-  },
-  bottomUpListItem: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    lineHeight: "1.8",
-    marginBottom: "8px",
-    paddingLeft: "8px",
-  },
-  featuresGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "16px",
-    margin: "30px 0",
-  },
-  featureItem: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: "12px",
-    padding: "12px",
-    backgroundColor: "#0f1114",
-    borderRadius: "8px",
-    border: "1px solid #3a3d45",
-  },
-  featureIcon: {
-    fontSize: "20px",
-    flexShrink: 0,
-  },
-  featureText: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    lineHeight: "1.5",
-  },
-  solutionsTable: {
-    display: "grid",
-    gap: "20px",
-    margin: "30px 0",
-  },
-  solutionRow: {
-    display: "grid",
-    gridTemplateColumns: "1fr auto 1fr auto 1fr",
-    alignItems: "center",
-    gap: "16px",
-    padding: "20px",
-    backgroundColor: "#0f1114",
-    border: "1px solid #3a3d45",
-    borderRadius: "12px",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  solutionProblem: {
-    fontSize: "16px",
-    color: "#fb923c",
-    fontWeight: 600,
-    textAlign: "right",
-  },
-  solutionTool: {
-    fontSize: "16px",
-    color: "#667eea",
-    fontWeight: 600,
-    textAlign: "center",
-  },
-  solutionOutcome: {
-    fontSize: "16px",
-    color: "#4ade80",
-    fontWeight: 600,
-    textAlign: "left",
-  },
-  solutionArrow: {
-    fontSize: "18px",
-    color: "#a8adb7",
-  },
-  solutionDetails: {
-    backgroundColor: "rgba(102, 126, 234, 0.1)",
-    border: "1px solid #667eea",
-    borderRadius: "0 0 12px 12px",
-    padding: "20px",
-    marginTop: "-12px",
-    marginBottom: "20px",
-    animation: "slideDown 0.3s ease",
-  },
-  solutionDetailsText: {
-    fontSize: "15px",
-    color: "#d1d5db",
-    lineHeight: "1.7",
-    margin: "0 0 20px 0",
-  },
-  projectsList: {
-    marginTop: "20px",
-    paddingTop: "20px",
-    borderTop: "1px solid rgba(102, 126, 234, 0.3)",
-  },
-  projectsHeading: {
-    fontSize: "16px",
-    fontWeight: 600,
-    color: "#fff",
-    margin: "0 0 12px 0",
-  },
-  projectsGrid: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "12px",
-  },
-  projectLink: {
-    display: "inline-block",
-    padding: "8px 16px",
-    backgroundColor: "rgba(102, 126, 234, 0.2)",
-    border: "1px solid #667eea",
-    borderRadius: "6px",
-    color: "#667eea",
-    fontSize: "14px",
-    fontWeight: 600,
-    textDecoration: "none",
-    transition: "all 0.3s ease",
-  },
-  joinSubheading: {
-    fontSize: "24px",
-    color: "#d1d5db",
-    marginBottom: "30px",
-    fontWeight: 600,
-  },
-  ctaButtonsGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-    gap: "16px",
-    margin: "30px 0",
-  },
-  ctaButton: {
-    padding: "14px 28px",
-    backgroundColor: "#3a3d45",
-    border: "1px solid #667eea",
-    borderRadius: "8px",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  ctaButtonPrimary: {
-    padding: "14px 28px",
-    backgroundColor: "#28a745",
-    border: "none",
-    borderRadius: "8px",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  },
-  ctaSection: {
-    marginTop: "60px",
-    paddingTop: "40px",
-    borderTop: "2px solid #3a3d45",
-  },
-  ctaHeading: {
-    fontSize: "28px",
-    fontWeight: 600,
-    color: "#fff",
-    margin: "0 0 12px 0",
-  },
-  ctaText: {
-    fontSize: "18px",
-    color: "#a8adb7",
-    margin: "0 0 40px 0",
-  },
-  gallery: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-    gap: "30px",
-    padding: "40px",
-    maxWidth: "1400px",
-    margin: "0 auto",
-  },
-  card: {
-    backgroundColor: "#1a1d23",
-    borderRadius: "12px",
-    overflow: "hidden",
-    cursor: "pointer",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    border: "1px solid #3a3d45",
-  },
-  imageContainer: {
-    position: "relative",
-    width: "100%",
-    paddingBottom: "75%",
-    backgroundColor: "#0f1114",
-    overflow: "hidden",
-  },
-  image: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    transition: "transform 0.3s ease",
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: 0,
-    transition: "opacity 0.3s ease",
-  },
-  viewText: {
-    color: "white",
-    fontSize: "18px",
-    fontWeight: 600,
-  },
-  cardContent: {
-    padding: "20px",
-  },
-  cardTitle: {
-    fontSize: "18px",
-    fontWeight: 600,
-    margin: 0,
-    color: "#fff",
-  },
-  papersSection: {
-    maxWidth: "1000px",
-    margin: "60px auto",
-    padding: "40px 20px",
-    backgroundColor: "rgba(102, 126, 234, 0.05)",
-    borderRadius: "16px",
-    border: "2px solid #667eea",
-  },
-  papersSectionHeading: {
-    fontSize: "32px",
-    fontWeight: 700,
-    color: "#fff",
-    textAlign: "center",
-    margin: "0 0 30px 0",
-  },
-  papersGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-    gap: "20px",
-    maxWidth: "800px",
-    margin: "0 auto",
-  },
-  paperButton: {
-    display: "flex",
-    alignItems: "center",
-    gap: "20px",
-    padding: "24px",
-    backgroundColor: "#1a1d23",
-    border: "2px solid #667eea",
-    borderRadius: "12px",
-    color: "white",
-    fontSize: "16px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-    textAlign: "left",
-  },
-  paperIcon: {
-    fontSize: "48px",
-    flexShrink: 0,
-  },
-  paperContent: {
-    flex: 1,
-  },
-  paperTitle: {
-    fontSize: "20px",
-    fontWeight: 700,
-    color: "#fff",
-    marginBottom: "6px",
-  },
-  paperSubtitle: {
-    fontSize: "14px",
-    color: "#a8adb7",
-    fontWeight: 400,
-  },
-};
-
-// Add hover effects via a style tag
-if (typeof document !== "undefined") {
-  const styleSheet = document.createElement("style");
-  styleSheet.textContent = `
-    /* Navbar link hover effects */
-    nav a:hover {
-      color: #ffffff !important;
-    }
-
-    /* Navbar button hover effects */
-    .nav-button:hover {
-      background-color: #764ba2 !important;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    /* Main subtitle link styling */
-    .main-subtitle a {
-      color: #ffffff;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-      transition: border-color 0.3s ease;
-    }
-
-    .main-subtitle a:hover {
-      border-bottom-color: #ffffff;
-    }
-
-    .gallery-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-    .gallery-card:hover .overlay {
-      opacity: 1 !important;
-    }
-    .gallery-card:hover img {
-      transform: scale(1.05);
-    }
-
-    /* Button hover effects */
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    /* View More button specific hover */
-    button[style*="border: 1px solid rgb(102, 126, 234)"]:hover {
-      background-color: rgba(102, 126, 234, 0.1) !important;
-      border-color: #764ba2 !important;
-    }
-
-    /* Trap example cards hover */
-    .trap-example-card:hover {
-      border-color: #667eea !important;
-      transform: translateY(-3px);
-    }
-
-    /* Solution row hover effects */
-    .solution-row:hover {
-      border-color: #667eea !important;
-      transform: scale(1.02);
-      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    }
-
-    /* Slide down animation for solution details */
-    @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .solution-details {
-      animation: slideDown 0.3s ease;
-    }
-
-    /* Project link hover effects */
-    .project-link:hover {
-      background-color: rgba(102, 126, 234, 0.4) !important;
-      border-color: #764ba2 !important;
-      color: #fff !important;
-      transform: translateX(5px);
-    }
-
-    /* Paper button hover effects */
-    .paper-button:hover {
-      background-color: rgba(102, 126, 234, 0.15) !important;
-      border-color: #764ba2 !important;
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-    }
-
-    /* Responsive design for solution rows */
-    @media (max-width: 768px) {
-      .solution-row {
-        grid-template-columns: 1fr !important;
-        text-align: center !important;
-      }
-    }
-  `;
-  document.head.appendChild(styleSheet);
-}
