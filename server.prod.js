@@ -127,9 +127,12 @@ app.get('/api/preview', async (req, res) => {
 });
 
 // Serve static files from dist
-app.use(express.static(resolve(__dirname, 'dist')));
+app.use(express.static(resolve(__dirname, 'dist'), {
+  // Ignore index.html for static serving so we can handle it dynamically
+  index: false
+}));
 
-// Handle all routes with dynamic meta tags
+// Handle all routes with dynamic meta tags and SPA fallback
 app.get('*', async (req, res) => {
   try {
     const cfg = req.query.cfg || '';

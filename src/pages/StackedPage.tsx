@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SceneConfig } from '../types/config';
@@ -64,7 +65,8 @@ function makeTextSprite(
   return sprite;
 }
 
-export const StackedScene: React.FC = () => {
+export const StackedPage: React.FC = () => {
+  const navigate = useNavigate();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
@@ -77,9 +79,7 @@ export const StackedScene: React.FC = () => {
   // Initialize state from URL - LAZY INITIALIZATION (only runs once, survives Strict Mode)
   const [configs, setConfigs] = useState<Partial<SceneConfig>[]>(() => {
     console.log('[StackedScene] Initializing configs from URL');
-    const hash = window.location.hash.slice(1); // Remove '#'
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : ''; // Remove 'stacked?'
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const urlsParam = params.get('urls');
 
     if (!urlsParam) {
@@ -103,17 +103,13 @@ export const StackedScene: React.FC = () => {
   });
 
   const [zSpacing, setZSpacing] = useState(() => {
-    const hash = window.location.hash.slice(1);
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const spacingParam = params.get('spacing');
     return spacingParam ? parseFloat(spacingParam) : 0.5;
   });
 
   const [showLabels, setShowLabels] = useState<boolean[]>(() => {
-    const hash = window.location.hash.slice(1);
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const labelsParam = params.get('labels');
     const urlsParam = params.get('urls');
 
@@ -128,25 +124,19 @@ export const StackedScene: React.FC = () => {
   });
 
   const [showMeshTitles, setShowMeshTitles] = useState(() => {
-    const hash = window.location.hash.slice(1);
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const titlesParam = params.get('meshTitles');
     return titlesParam === '1' || titlesParam === null; // Default to true if not specified
   });
 
   const [showAxisTitles, setShowAxisTitles] = useState(() => {
-    const hash = window.location.hash.slice(1);
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const axisParam = params.get('axisTitles');
     return axisParam === '1' || axisParam === null; // Default to true if not specified
   });
 
   const [stackTitle, setStackTitle] = useState(() => {
-    const hash = window.location.hash.slice(1);
-    const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-    const params = new URLSearchParams(hashParams);
+    const params = new URLSearchParams(window.location.search);
     const titleParam = params.get('title');
     return titleParam || 'Stacked Incentive Fields';
   });
@@ -170,9 +160,7 @@ export const StackedScene: React.FC = () => {
   // Populate URL textarea after 0.5s on page load
   useEffect(() => {
     const timer = setTimeout(() => {
-      const hash = window.location.hash.slice(1);
-      const hashParams = hash.startsWith('stacked?') ? hash.slice(8) : '';
-      const params = new URLSearchParams(hashParams);
+      const params = new URLSearchParams(window.location.search);
       const urlsParam = params.get('urls');
 
       if (urlsParam) {
@@ -690,7 +678,7 @@ export const StackedScene: React.FC = () => {
       <div style={currentStyles.contentContainer}>
         <div style={currentStyles.sidebar}>
           <button
-            onClick={() => window.location.hash = '#create'}
+            onClick={() => navigate('/create')}
             style={{ ...currentStyles.button, backgroundColor: '#6c757d', marginBottom: '10px' }}
           >
             ← Back to Single View
