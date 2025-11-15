@@ -3,6 +3,176 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/button";
 import { HeroAnimation } from "../components/HeroAnimation";
 import EarthGraphic from "../components/EarthGraphic";
+import TrapGraphic from "../components/TrapGraphic";
+import { GlobeAnimation } from "../components/GlobeAnimation";
+import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
+
+const traps = [
+  {
+    title: "Misinformation",
+    problem: "Platforms maximize engagement",
+    outcome: "Mental health crisis",
+    steps: [
+      "Misinformation",
+      "Reputation + attestations",
+      "Credibility over virality",
+    ],
+    colors: {
+      lightBg: "bg-lichen-100",
+      bg: "bg-lichen-500",
+      text: "text-moss-500",
+      border: "border-moss-500",
+    },
+    description:
+      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+    projects: [
+      {
+        url: "https://passport.gitcoin.co/",
+        logoUrl: "/img/logos/human-logo.svg",
+        width: 151,
+        height: 38,
+        alt: "Human Passport",
+      },
+      {
+        url: "https://attest.sh/",
+        logoUrl: "/img/logos/eas-logo.svg",
+        width: 77,
+        height: 38,
+        alt: "Ethereum Attestation Service",
+      },
+      {
+        url: "https://www.clique.social/",
+        logoUrl: "/img/logos/clique-logo.svg",
+        width: 98,
+        height: 38,
+        alt: "Clique",
+      },
+    ],
+  },
+  {
+    title: "AI arms race",
+    problem: "Every lab rushes ahead",
+    outcome: "Global risk increases",
+    steps: [
+      "AI arms race",
+      "Open models + attestations",
+      "Shared safety incentives",
+    ],
+    colors: {
+      lightBg: "bg-sun-100",
+      bg: "bg-sun-500",
+      text: "text-sun-900",
+      border: "border-sun-900",
+    },
+    description:
+      "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
+    projects: [
+      {
+        url: "https://oceanprotocol.com/",
+        logoUrl: "/img/logos/ocean-logo.svg",
+        width: 168,
+        height: 38,
+        alt: "Ocean Protocol",
+      },
+      {
+        url: "https://bittensor.com/",
+        logoUrl: "/img/logos/bittensor-logo.svg",
+        width: 116,
+        height: 38,
+        alt: "Bittensor",
+      },
+      {
+        url: "https://www.theoriq.ai/",
+        logoUrl: "/img/logos/theoriq-logo.svg",
+        width: 122,
+        height: 38,
+        alt: "Theoriq",
+      },
+    ],
+  },
+  {
+    title: "Public goods underfunding",
+    problem: "Shared resources depleted by individual use",
+    outcome: "-",
+    steps: [
+      "Public goods underfunding",
+      "Quadratic funding",
+      "Fairer shared contribution",
+    ],
+    colors: {
+      lightBg: "bg-nectar-100",
+      bg: "bg-nectar-300",
+      text: "text-nectar-900",
+      border: "border-nectar-900",
+    },
+    description:
+      "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
+    projects: [
+      {
+        url: "https://grants.gitcoin.co/",
+        logoUrl: "/img/logos/grants-logo.svg",
+        width: 162,
+        height: 38,
+        alt: "Gitcoin Grants",
+      },
+      {
+        url: "https://clr.fund/",
+        logoUrl: "/img/logos/clr-logo.svg",
+        width: 114,
+        height: 38,
+        alt: "clr.fund",
+      },
+      {
+        url: "https://giveth.io/",
+        logoUrl: "/img/logos/giveth-logo.svg",
+        width: 99,
+        height: 38,
+        alt: "Giveth",
+      },
+    ],
+  },
+  {
+    title: "Climate inaction",
+    problem: "Everyone pollutes",
+    outcome: "Earth suffers",
+    steps: [
+      "Climate inaction",
+      "Tokenized carbon credits",
+      "Verified action, shared cost",
+    ],
+    colors: {
+      lightBg: "bg-iris-100",
+      bg: "bg-iris-500",
+      text: "text-iris-900",
+      border: "border-iris-900",
+    },
+    description:
+      "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
+    projects: [
+      {
+        url: "https://toucan.earth/",
+        logoUrl: "/img/logos/toucan-logo.svg",
+        width: 175,
+        height: 38,
+        alt: "Toucan Protocol",
+      },
+      {
+        url: "https://www.regen.network/",
+        logoUrl: "/img/logos/regen-logo.svg",
+        width: 165,
+        height: 38,
+        alt: "Regen Network",
+      },
+      {
+        url: "https://www.klimadao.finance/",
+        logoUrl: "/img/logos/klima-logo.svg",
+        width: 131,
+        height: 38,
+        alt: "Klima DAO",
+      },
+    ],
+  },
+];
 
 const RightArrow = () => (
   <svg
@@ -69,228 +239,187 @@ const CardWithBorder = ({
   className?: string;
 }) => (
   <div
-    className={`rounded-md py-4 px-5 text-moss-500 border border-moss-500 font-mori font-semibold text-4xl sm:text-5xl
+    className={`rounded-md py-4 px-5 text-moss-500 border border-moss-500 font-mori font-semibold text-3xl md:text-5xl
         ${className}`}
   >
     {children}
   </div>
 );
 
-const TrapsSection = () => {
-  const traps = [
-    {
-      steps: [
-        "Misinformation",
-        "Reputation + attestations",
-        "Credibility over virality",
-      ],
-      colors: {
-        lightBg: "bg-lichen-100",
-        bg: "bg-lichen-500",
-        text: "text-moss-500",
-        border: "border-moss-500",
-      },
-      description:
-        "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
-      projects: [
-        {
-          url: "https://passport.gitcoin.co/",
-          logoUrl: "/img/logos/human-logo.svg",
-          width: 151,
-          height: 38,
-          alt: "Human Passport",
-        },
-        {
-          url: "https://attest.sh/",
-          logoUrl: "/img/logos/eas-logo.svg",
-          width: 77,
-          height: 38,
-          alt: "Ethereum Attestation Service",
-        },
-        {
-          url: "https://www.clique.social/",
-          logoUrl: "/img/logos/clique-logo.svg",
-          width: 98,
-          height: 38,
-          alt: "Clique",
-        },
-      ],
-    },
-    {
-      steps: [
-        "AI arms race",
-        "Open models + attestations",
-        "Shared safety incentives",
-      ],
-      colors: {
-        lightBg: "bg-sun-100",
-        bg: "bg-sun-500",
-        text: "text-sun-900",
-        border: "border-sun-900",
-      },
-      description:
-        "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
-      projects: [
-        {
-          url: "https://oceanprotocol.com/",
-          logoUrl: "/img/logos/ocean-logo.svg",
-          width: 168,
-          height: 38,
-          alt: "Ocean Protocol",
-        },
-        {
-          url: "https://bittensor.com/",
-          logoUrl: "/img/logos/bittensor-logo.svg",
-          width: 116,
-          height: 38,
-          alt: "Bittensor",
-        },
-        {
-          url: "https://www.theoriq.ai/",
-          logoUrl: "/img/logos/theoriq-logo.svg",
-          width: 122,
-          height: 38,
-          alt: "Theoriq",
-        },
-      ],
-    },
-    {
-      steps: [
-        "Public goods underfunding",
-        "Quadratic funding",
-        "Fairer shared contribution",
-      ],
-      colors: {
-        lightBg: "bg-nectar-100",
-        bg: "bg-nectar-300",
-        text: "text-nectar-900",
-        border: "border-nectar-900",
-      },
-      description:
-        "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
-      projects: [
-        {
-          url: "https://grants.gitcoin.co/",
-          logoUrl: "/img/logos/grants-logo.svg",
-          width: 162,
-          height: 38,
-          alt: "Gitcoin Grants",
-        },
-        {
-          url: "https://clr.fund/",
-          logoUrl: "/img/logos/clr-logo.svg",
-          width: 114,
-          height: 38,
-          alt: "clr.fund",
-        },
-        {
-          url: "https://giveth.io/",
-          logoUrl: "/img/logos/giveth-logo.svg",
-          width: 99,
-          height: 38,
-          alt: "Giveth",
-        },
-      ],
-    },
-    {
-      steps: [
-        "Climate inaction",
-        "Tokenized carbon credits",
-        "Verified action, shared cost",
-      ],
-      colors: {
-        lightBg: "bg-iris-100",
-        bg: "bg-iris-500",
-        text: "text-iris-900",
-        border: "border-iris-900",
-      },
-      description:
-        "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
-      projects: [
-        {
-          url: "https://toucan.earth/",
-          logoUrl: "/img/logos/toucan-logo.svg",
-          width: 175,
-          height: 38,
-          alt: "Toucan Protocol",
-        },
-        {
-          url: "https://www.regen.network/",
-          logoUrl: "/img/logos/regen-logo.svg",
-          width: 165,
-          height: 38,
-          alt: "Regen Network",
-        },
-        {
-          url: "https://www.klimadao.finance/",
-          logoUrl: "/img/logos/klima-logo.svg",
-          width: 131,
-          height: 38,
-          alt: "Klima DAO",
-        },
-      ],
-    },
-  ];
+const AlignmentIssuesSection = () => {
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [direction, setDirection] = React.useState<"next" | "prev">("next");
+
+  const handlePrevious = () => {
+    setDirection("prev");
+    setCurrentIndex((prev) => (prev === 0 ? traps.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setDirection("next");
+    setCurrentIndex((prev) => (prev === traps.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleDotClick = (index: number) => {
+    if (index === currentIndex) return;
+    setDirection(index > currentIndex ? "next" : "prev");
+    setCurrentIndex(index);
+  };
+
+  const renderTrap = (trap: (typeof traps)[0]) => (
+    <div className="flex items-center justify-center relative w-full py-4">
+      <div className="relative inline-block mx-auto max-w-[90vw] md:max-w-[600px]">
+        {/* Graphic defines the size */}
+        <div className="relative">
+          <TrapGraphic
+            className={`block w-full h-auto max-h-[60vh] md:max-h-[70vh] ${trap.colors.text}`}
+          />
+          {/* Position text using transform to maintain consistency */}
+          <div className="absolute text-lichen-500 font-mori text-[clamp(8px,1.5vw,14px)] w-[22ch] sm:text-right top-[86%] left-[0%] sm:top-[86%] sm:left-[7%] sm:-translate-y-1/2">
+            {trap.problem}
+          </div>
+          <div className="absolute text-nectar-500 font-mori text-[clamp(8px,1.5vw,14px)] top-[110%] right-[0%] -translate-y-1/2    sm:top-[90%] sm:right-[4%] sm:-translate-x-1/2 sm:-translate-y-1/2">
+            {trap.outcome}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <section className="">
+    <section className="py-8 md:py-16 px-2 lg:px-20">
+      <div className="">
+        <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl text-center">
+          Alignment issues
+        </h2>
+        <div className="relative flex items-center justify-center gap-2 md:gap-8">
+          {/* Left Arrow */}
+          <button
+            onClick={handlePrevious}
+            className="flex-shrink-0 p-4 hover:opacity-70 transition-opacity"
+            aria-label="Previous trap"
+          >
+            <img
+              src="/img/carousel-left-arrow.svg"
+              alt="Previous"
+              className="w-8 h-8 sm:w-12 sm:h-12"
+            />
+          </button>
+
+          {/* Carousel Content */}
+          <div className="flex-1 max-w-4xl overflow-hidden relative">
+            <div
+              className="relative w-full flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {traps.map((trap, index) => (
+                <div key={index} className="w-full flex-shrink-0">
+                  {renderTrap(trap)}
+                  <div className="text-moss-100 text-center font-mori text-xl sm:text-3xl mt-3">
+                    {trap.title}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={handleNext}
+            className="flex-shrink-0 p-4 hover:opacity-70 transition-opacity"
+            aria-label="Next trap"
+          >
+            <img
+              src="/img/carousel-right-arrow.svg"
+              alt="Next"
+              className="w-8 h-8 sm:w-12 sm:h-12"
+            />
+          </button>
+        </div>
+
+        {/* Carousel Indicators */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {traps.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === currentIndex
+                  ? "bg-moss-100 w-8"
+                  : "bg-moss-100/30 hover:bg-moss-100/50"
+              }`}
+              aria-label={`Go to trap ${index + 1}`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+const TrapsSection = () => {
+  return (
+    <section className="relative">
       {traps.map((trap, i) => (
         <div
           key={i}
-          className={`${trap.colors.bg} relative flex items-center justify-between py-10 gap-8 h-screen `}
+          className="sticky top-0 h-screen"
+          style={{ zIndex: i + 1 }}
         >
-          <div className="w-full flex items-center justify-center flex-col">
-            <div className="flex flex-col justify-start">
-              <div
-                className={`py-2 px-3 rounded-md ${trap.colors.lightBg} ${trap.colors.text} font-semibold w-fit mb-6`}
-              >
-                Multipolar Trap → Ethereum Solution
-              </div>
-              <p className="mb-6 flex items-center gap-2">
-                {trap.steps.map((entry, stepIndex) => (
-                  <div className="flex items-center gap-2 font-semibold text-xl md:text-xl">
-                    <span>{entry}</span>
-                    {stepIndex !== trap.steps.length - 1 && <RightArrow />}
-                  </div>
-                ))}
-              </p>
-              <p className="max-w-xl mb-12">{trap.description}</p>
-
-              <div
-                className={`w-fit flex items-center gap-2.5 flex-wrap px-4 py-2 rounded-2xl border ${trap.colors.border} ${trap.colors.text}`}
-              >
-                <span className="mr-4 leading-none">
-                  Projects working on this
-                </span>
-                {trap.projects.map((entry) => (
-                  <a href={entry.url} className="leading-none">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      className={`!py-0 !px-0 border ${trap.colors.border} ${trap.colors.text}`}
+          <div
+            className={`${trap.colors.bg} h-full flex flex-col md:flex-row items-center justify-between md:pl-20 py-10 gap-8 sm:px-0 px-2`}
+          >
+            <div className="w-full flex items-center justify-center flex-col">
+              <div className="flex flex-col justify-start">
+                <div
+                  className={`py-2 px-3 rounded-md ${trap.colors.lightBg} ${trap.colors.text} font-semibold w-fit mb-4 md:mb-6 text-xs md:text-sm`}
+                >
+                  Multipolar Trap → Ethereum Solution
+                </div>
+                <p className="mb-4 md:mb-6 flex flex-col md:flex-row items-start md:items-center gap-2">
+                  {trap.steps.map((entry, stepIndex) => (
+                    <div
+                      key={stepIndex}
+                      className="flex items-center gap-2 font-semibold text-sm md:text-xl"
                     >
-                      <img
-                        src={entry.logoUrl}
-                        width={entry.width}
-                        height={entry.height}
-                        alt={entry.alt}
-                      />
-                    </Button>
-                  </a>
-                ))}
+                      <span>{entry}</span>
+                      {stepIndex !== trap.steps.length - 1 && <RightArrow />}
+                    </div>
+                  ))}
+                </p>
+                <p className="max-w-xl mb-8 md:mb-12 text-sm md:text-base">
+                  {trap.description}
+                </p>
+
+                <div
+                  className={`w-fit flex items-center gap-2.5 flex-wrap px-4 py-2 rounded-2xl border ${trap.colors.border} ${trap.colors.text}`}
+                >
+                  <span className="mr-4 leading-none">
+                    Projects working on this
+                  </span>
+                  {trap.projects.map((entry, idx) => (
+                    <a key={idx} href={entry.url} className="leading-none">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        className={`!py-0 !px-0 border ${trap.colors.border} ${trap.colors.text}`}
+                      >
+                        <img
+                          src={entry.logoUrl}
+                          width={entry.width}
+                          height={entry.height}
+                          alt={entry.alt}
+                        />
+                      </Button>
+                    </a>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="flex-shrink-0">
-            <EarthGraphic
-              className={`max-h-[90vh] w-auto ${trap.colors.text}`}
-            />
-            {/* <img
-              src="/img/earth.svg"
-              width="413"
-              height="735"
-              className="max-h-[90vh] w-auto"
-            /> */}
+            <div className="hidden md:block flex-shrink-0">
+              <EarthGraphic
+                className={`max-h-[90vh] w-auto ${trap.colors.text}`}
+              />
+            </div>
           </div>
         </div>
       ))}
@@ -321,12 +450,12 @@ export function HomePage() {
             <HeroAnimation />
           </div>
           {/* hero content - foreground */}
-          <div className="absolute inset-0 z-10 flex items-end pb-20 px-20">
+          <div className="absolute inset-0 z-10 flex items-end pb-10 md:pb-20 px-5 md:px-20">
             <div>
-              <h1 className="text-lichen-500 text-4xl sm:text-6xl md:text-7xl mb-12 font-mori max-w-[15ch]">
+              <h1 className="text-lichen-500 text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 md:mb-12 font-mori max-w-[15ch]">
                 Solving Alignment with Ethereum
               </h1>
-              <div className="flex flex-wrap gap-5">
+              <div className="flex flex-wrap gap-3 md:gap-5">
                 <a
                   href="https://www.gitcoin.co/vision"
                   target="_blank"
@@ -340,12 +469,12 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="py-20 px-20">
-          <h2 className="mb-12 text-moss-100 font-mori font-semibold text-3xl sm:text-5xl">
+        <section className="py-10 md:py-20 px-5 md:px-20">
+          <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl">
             What is a Multipolar trap?
           </h2>
 
-          <div className="flex gap-12 items-center justify-center text-moon-300">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-6">
               <p className="text-lg">
                 A Multipolar trap occurs when{" "}
@@ -376,46 +505,36 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="py-20 px-20">
-          <h2 className="mb-12 text-moss-100 font-mori font-semibold text-3xl sm:text-5xl text-center">
-            Alignment issues
-          </h2>
-          <div>
-            <div className="flex items-center justify-center">
-              <img src="/img/trap.svg" width="914" height="392" />
-            </div>
-          </div>
-        </section>
+        <AlignmentIssuesSection />
       </div>
 
-      <div className="bg-moss-100 py-32 flex flex-col gap-16">
-        <section className="flex items-center justify-center gap-16 ">
-          <div>
-            <h2 className="text-moss-500 font-semibold text-3xl sm:text-5xl font-mori max-w-[13ch] mb-12">
+      <div className="bg-moss-100 py-16 md:py-32 flex flex-col gap-8 md:gap-16">
+        <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
+          <div className="md:sticky md:top-20 h-fit">
+            <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
-            <img src="/img/coordination-globe-graphic.svg" width="400" height="396" />
+            <GlobeAnimation />
           </div>
 
-          <div className="flex flex-col gap-8 max-w-[360px]">
+          <div className="flex flex-col gap-20 md:gap-40 max-w-full md:max-w-[360px] md:pt-20 w-full">
             {coordination.map((item, index) => (
-              <CoordinationCard
+              <AnimatedCoordinationCard
                 key={item.name}
-                name={item.name}
-                description={item.description}
+                item={item}
                 index={index}
               />
             ))}
           </div>
         </section>
 
-        <section className="py-20 px-20 ">
+        <section className="py-10 md:py-20 px-5 md:px-20">
           <div>
-            <div className="relative h-[350px] max-w-5xl mb-12 ml-[20%]">
-              <CardWithBorder className="absolute top-0 left-[50px]">
+            <div className="relative h-[220px] md:h-[250px] max-w-5xl mb-8 ml-0 md:ml-[20%]">
+              <CardWithBorder className="absolute top-0 left-[20px] md:left-[50px]">
                 The Power
               </CardWithBorder>
-              <CardWithBorder className="absolute top-[60px] left-[300px]">
+              <CardWithBorder className="absolute top-[60px] right-0 md:left-[300px] w-fit">
                 of Networked
               </CardWithBorder>
               <CardWithBorder className="absolute top-[120px] left-0">
@@ -424,8 +543,8 @@ export function HomePage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-10">
-            <div className="h-[450px] bg-moss-500 rounded-lg py-8 px-10 sm:px-14 text-moss-100 flex flex-col gap-9 max-w-[377px]">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
+            <div className="h-auto md:h-[450px] bg-moss-500 rounded-lg py-6 md:py-8 px-6 sm:px-10 md:px-14 text-moss-100 flex flex-col gap-6 md:gap-9 max-w-full md:max-w-[377px]">
               <p>
                 Top-down institutions are slow, captured, or corrupt. But
                 networks of ordinary people—citizens, developers,
@@ -449,22 +568,30 @@ export function HomePage() {
         </section>
 
         <section>
-          <div className="">
-            <div className="w-full max-w-[1060px] h-[440px] mx-auto relative border border-moss-500 rounded-2xl child:border child:border-moss-500 child:rounded-2xl">
-              <div className="absolute -top-9 -bottom-9 -left-12 flex items-center justify-end p-2 pl-16">
-                <p className="text-moss-500 font-semibold font-mori text-3xl md:text-5xl max-w-[10ch]">
+          <div className="mx-2 sm:mx-16">
+            <div className="max-w-[1060px] md:h-[440px] mx-auto md:p-8 p-4 relative mb-24 border border-moss-500 rounded-2xl">
+              <div className="md:absolute md:mb-0 mb-4 border border-moss-500 rounded-2xl -top-9 md:-bottom-9 -left-12 flex items-center justify-center md:justify-end p-2 md:pl-16">
+                <p className="text-moss-500 font-semibold font-mori text-2xl sm:text-3xl md:text-5xl md:max-w-[10ch]">
                   Ethereum Is More Than Money - It's a Coordination Engine
                 </p>
               </div>
-              <div className="absolute top-1/2 -translate-y-1/2 -right-12 py-10 pl-6 pr-20 flex items-center">
-                <p className="text-moss-500 font-semibold text-base md:text-lg text-left leading-loose">
-                  ✓ Transparent, shared ledgers (no hidden info) <br />
-                  ✓ Smart contracts (credible commitments) <br />
-                  ✓ DAOs give us shared decision-making <br />
-                  ✓ Public goods funding (RetroPGF, Gitcoin, Allo) <br />✓
-                  Trustless enforcement (code = law) <br />✓ Anyone can build on
-                  it
-                </p>
+              <div className="md:absolute border border-moss-500 rounded-2xl top-1/2 md:-translate-y-1/2 -right-12 py-12 pl-2 pr-2 md:pl-6 md:pr-20 flex items-center">
+                <div className="text-moon-900 font-medium text-base md:text-lg text-left flex flex-col gap-4">
+                  <p>✓ Transparent, shared ledgers (no hidden info)</p>
+                  <p>✓ Smart contracts (credible commitments) </p>
+                  <p>✓ DAOs give us shared decision-making</p>
+                  <p>✓ Public goods funding (RetroPGF, Gitcoin, Allo) </p>
+                  <p>✓ Trustless enforcement (code = law) </p>
+                  <p>✓ Anyone can build on it</p>
+                </div>
+              </div>
+
+              <div className="absolute bottom-0 translate-y-[68%] md:translate-y-[55%] left-1/2 -translate-x-1/2 sm:w-auto w-[70vw]">
+                <img
+                  src="/img/stacked-layers-graphic.svg"
+                  width="687"
+                  height="367"
+                />
               </div>
             </div>
           </div>
@@ -476,17 +603,17 @@ export function HomePage() {
       </div>
 
       {/* CTA */}
-      <section className="relative h-screen">
+      <section className="relative h-screen ">
         {/* hero p5 animation - background */}
         <div className="absolute inset-0">
           <HeroAnimation />
         </div>
         {/* hero content - foreground */}
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-6 sm:gap-12 md:gap-16 p-4">
-          <h1 className="text-moss-100 text-3xl sm:text-4xl md:text-5xl font-mori font-semibold">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 sm:gap-8 md:gap-12 p-4">
+          <h1 className="text-moss-100 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-mori font-semibold text-center">
             Are you in?
           </h1>
-          <div className="flex flex-wrap gap-8">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
             <a
               href="https://www.gitcoin.co/vision"
               target="_blank"
@@ -502,7 +629,7 @@ export function HomePage() {
               <Button>Gitcoin Whitepaper</Button>
             </a>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-2 font-semibold max-w-lg text-moss-100">
+          <div className="flex flex-wrap items-center justify-center text-center gap-x-10 gap-y-2 font-semibold max-w-lg text-moss-100">
             <a href="" target="_blank">
               &gt; Support Ethereum Coordination Tech
             </a>
@@ -516,36 +643,34 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="bg-moss-900 min-h-screen py-20 px-20">
-        <div className="text-moss-100">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-mori font-semibold max-w-[25ch] mb-12">
+      <section className="bg-moss-900 min-h-screen py-10 md:py-20 px-5 md:px-20">
+        <div className="text-moss-100 flex flex-col justify-center w-fit mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-mori font-semibold max-w-[25ch] mb-8 md:mb-12">
             Explore the Dynamics Behind Multipolar Traps, Visually
           </h2>
-          <div>
-            <div className="max-w-[40rem]">
-              <p>
-                These artifacts help us conceptualize Multipolar Traps visually,
-                making it easier to grok the system dynamics. <br />
-                Each shows a 3D landscape that represents possible futures
-                within a “design space.”
-              </p>
-              <ol className="list-decimal mb-6">
-                <li>
-                  The flat grid is the space of choices or designs humans can
-                  make.
-                </li>
-                <li>
-                  The height (z-axis) represents the overall success of the
-                  system.
-                </li>
-              </ol>
-              <p>
-                These are maps of possibilities. Some design choices lift the
-                world toward better outcomes, others sink it into breakdown. The
-                goal is to climb the ridge toward the peak rather than slide
-                into the valley of collapse.
-              </p>
-            </div>
+          <div className="max-w-[40rem]">
+            <p>
+              These artifacts help us conceptualize Multipolar Traps visually,
+              making it easier to grok the system dynamics. <br />
+              Each shows a 3D landscape that represents possible futures within
+              a “design space.”
+            </p>
+            <ol className="list-decimal mb-6">
+              <li>
+                The flat grid is the space of choices or designs humans can
+                make.
+              </li>
+              <li>
+                The height (z-axis) represents the overall success of the
+                system.
+              </li>
+            </ol>
+            <p>
+              These are maps of possibilities. Some design choices lift the
+              world toward better outcomes, others sink it into breakdown. The
+              goal is to climb the ridge toward the peak rather than slide into
+              the valley of collapse.
+            </p>
           </div>
         </div>
       </section>
