@@ -461,7 +461,7 @@ export function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button>Gitcoin Vision Paper</Button>
+                  <Button>Read the Rainbow Paper</Button>
                 </a>
               </div>
             </div>
@@ -618,7 +618,7 @@ export function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button>Gitcoin Rainbow Paper</Button>
+              <Button>Read the Rainbow Paper</Button>
             </a>
           </div>
         </div>
