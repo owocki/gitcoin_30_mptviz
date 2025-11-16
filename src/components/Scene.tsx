@@ -1,16 +1,12 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useStore } from '../store/useStore';
-import { Renderer } from '../renderer/Renderer';
-import { PhysicsEngine } from '../physics/PhysicsEngine';
-import { ConfigManager } from '../config/ConfigManager';
-import { Exporter } from '../export/Exporter';
+import React, { useRef, useEffect, useState } from "react";
+import { useStore } from "../store/useStore";
+import { Renderer } from "../renderer/Renderer";
+import { PhysicsEngine } from "../physics/PhysicsEngine";
+import { ConfigManager } from "../config/ConfigManager";
+import { Exporter } from "../export/Exporter";
+import { Button } from "./button";
 
-interface SceneProps {
-  darkMode?: boolean;
-  onToggleDarkMode?: () => void;
-}
-
-export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode }) => {
+export const Scene: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<Renderer | null>(null);
   const physicsRef = useRef<PhysicsEngine | null>(null);
@@ -66,11 +62,11 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize();
 
     return () => {
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
       }
@@ -81,7 +77,12 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
 
   // Update config when it changes
   useEffect(() => {
-    if (!rendererRef.current || !physicsRef.current || !configManagerRef.current) return;
+    if (
+      !rendererRef.current ||
+      !physicsRef.current ||
+      !configManagerRef.current
+    )
+      return;
 
     configManagerRef.current.updateConfig(config);
     rendererRef.current.updateConfig(config);
@@ -99,7 +100,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       rendererRef.current.initBalls(config.balls.count);
 
       // Ensure dark mode is applied to newly initialized balls
-      rendererRef.current.setDarkMode(darkMode);
+      rendererRef.current.setDarkMode(true);
 
       // Update ball positions (hovering when not playing)
       const balls = physicsRef.current.getBalls();
@@ -112,12 +113,6 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
     rendererRef.current.render();
   }, [config, isPlaying]);
 
-  // Update dark mode when it changes
-  useEffect(() => {
-    if (!rendererRef.current) return;
-    rendererRef.current.setDarkMode(darkMode);
-  }, [darkMode]);
-
   // Physics update loop (separate from render loop)
   useEffect(() => {
     if (!isPlaying || !physicsRef.current || !rendererRef.current) {
@@ -129,7 +124,12 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       if (!physicsRef.current || !rendererRef.current) return;
 
       // Step physics with reinforcements and directionality
-      physicsRef.current.step(config.attractors, config.balls.physics, config.reinforcements || [], config.balls.directionality);
+      physicsRef.current.step(
+        config.attractors,
+        config.balls.physics,
+        config.reinforcements || [],
+        config.balls.directionality
+      );
 
       // Get modified attractors from physics (with dynamic strength from reinforcements)
       const modifiedAttractors = physicsRef.current.getModifiedAttractors();
@@ -141,7 +141,11 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
 
       // Update renderer with physics (balls follow surface)
       const balls = physicsRef.current.getBalls();
-      rendererRef.current.updateBalls(balls, true, modifiedAttractors.length > 0 ? modifiedAttractors : undefined);
+      rendererRef.current.updateBalls(
+        balls,
+        true,
+        modifiedAttractors.length > 0 ? modifiedAttractors : undefined
+      );
 
       animationId = requestAnimationFrame(physicsLoop);
     };
@@ -153,15 +157,24 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         cancelAnimationFrame(animationId);
       }
     };
-  }, [isPlaying, config.attractors, config.balls.physics, config.reinforcements]);
+  }, [
+    isPlaying,
+    config.attractors,
+    config.balls.physics,
+    config.reinforcements,
+  ]);
 
   const handlePlayPause = () => {
     if (!isPlaying) {
       // Starting play - randomize positions and position based on directionality
-      if (physicsRef.current && rendererRef.current && configManagerRef.current) {
+      if (
+        physicsRef.current &&
+        rendererRef.current &&
+        configManagerRef.current
+      ) {
         physicsRef.current.reset(
           config.balls.count,
-          'random',
+          "random",
           config.balls.manualPositions,
           config.surface.extent,
           configManagerRef.current.getRNG()
@@ -169,11 +182,11 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
         rendererRef.current.initBalls(config.balls.count);
 
         // Ensure dark mode is applied to newly initialized balls
-        rendererRef.current.setDarkMode(darkMode);
+        rendererRef.current.setDarkMode(true);
 
         // Position balls based on directionality
         const balls = physicsRef.current.getBalls();
-        const startHeight = config.balls.directionality === 'down' ? 1 : -1;
+        const startHeight = config.balls.directionality === "down" ? 1 : -1;
         rendererRef.current.positionBallsAtHeight(balls, startHeight);
 
         // Show balls when starting to play
@@ -195,7 +208,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       configManagerRef.current.resetSeed(config.seed);
       physicsRef.current.reset(
         config.balls.count,
-        'random',
+        "random",
         config.balls.manualPositions,
         config.surface.extent,
         configManagerRef.current.getRNG()
@@ -203,7 +216,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       rendererRef.current.initBalls(config.balls.count);
 
       // Ensure dark mode is applied to newly initialized balls
-      rendererRef.current.setDarkMode(darkMode);
+      rendererRef.current.setDarkMode(true);
 
       // Position balls hovering at z=0.8
       const balls = physicsRef.current.getBalls();
@@ -221,7 +234,12 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
   };
 
   const handleExportWebM = async () => {
-    if (!rendererRef.current || !physicsRef.current || !configManagerRef.current) return;
+    if (
+      !rendererRef.current ||
+      !physicsRef.current ||
+      !configManagerRef.current
+    )
+      return;
 
     setExportProgress(0);
     const wasPlaying = isPlaying;
@@ -231,7 +249,7 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       // Reset physics for fresh export - balls start based on directionality
       physicsRef.current.reset(
         config.balls.count,
-        'random',
+        "random",
         config.balls.manualPositions,
         config.surface.extent,
         configManagerRef.current.getRNG()
@@ -239,11 +257,11 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       rendererRef.current.initBalls(config.balls.count);
 
       // Ensure dark mode is applied to newly initialized balls
-      rendererRef.current.setDarkMode(darkMode);
+      rendererRef.current.setDarkMode(true);
 
       // Position balls based on directionality
       const balls = physicsRef.current.getBalls();
-      const startHeight = config.balls.directionality === 'down' ? 1 : -1;
+      const startHeight = config.balls.directionality === "down" ? 1 : -1;
       rendererRef.current.positionBallsAtHeight(balls, startHeight);
 
       // Show balls during export
@@ -252,16 +270,26 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
       const canvas = rendererRef.current.getCanvas();
       const onFrame = () => {
         // Step physics with falling animation, reinforcements, and directionality
-        physicsRef.current!.step(config.attractors, config.balls.physics, config.reinforcements || [], config.balls.directionality);
+        physicsRef.current!.step(
+          config.attractors,
+          config.balls.physics,
+          config.reinforcements || [],
+          config.balls.directionality
+        );
         const balls = physicsRef.current!.getBalls();
         rendererRef.current!.updateBalls(balls, true);
         rendererRef.current!.render();
       };
 
-      await Exporter.exportWebM(canvas, onFrame, config.export, setExportProgress);
+      await Exporter.exportWebM(
+        canvas,
+        onFrame,
+        config.export,
+        setExportProgress
+      );
     } catch (error) {
-      console.error('Export failed:', error);
-      alert('Export failed: ' + (error as Error).message);
+      console.error("Export failed:", error);
+      alert("Export failed: " + (error as Error).message);
     } finally {
       setExportProgress(null);
 
@@ -275,245 +303,74 @@ export const Scene: React.FC<SceneProps> = ({ darkMode = false, onToggleDarkMode
     }
   };
 
-  const currentStyles = darkMode ? styles : lightStyles;
-
   return (
-    <div style={currentStyles.container}>
-      <div style={currentStyles.canvasWrapper}>
-        <canvas ref={canvasRef} style={currentStyles.canvas} />
-        <div style={currentStyles.overlay}>
-          <h1 style={currentStyles.title}>{config.labels.title}</h1>
+    <div className="w-full h-screen flex flex-col bg-moss-950">
+      <div className="flex-1 relative overflow-hidden">
+        <canvas ref={canvasRef} className="w-full h-full block" />
+        <div className="absolute top-0 left-0 right-0 p-5 pointer-events-none">
+          <h1 className="m-0 text-[28px] font-bold text-moss-100">
+            {config.labels.title}
+          </h1>
         </div>
       </div>
-      <div style={currentStyles.controls}>
-        <div style={currentStyles.controlGroup}>
-          <label style={currentStyles.controlLabel}>No. of Balls</label>
-          <input
-            type="number"
-            value={config.balls.count}
-            onChange={(e) => {
-              const count = parseInt(e.target.value, 10);
-              if (!isNaN(count) && count >= 0) {
-                useStore.getState().setConfig({ balls: { ...config.balls, count } });
-              }
-            }}
-            min="0"
-            max="100"
-            style={currentStyles.numberInput}
-          />
+      <div className="flex gap-2.5 p-[15px] items-center border-t bg-moss-900 border-moss-900/20 justify-between">
+        <div className="flex gap-2.5 p-[15px] items-center  bg-moss-900">
+          <div className="flex flex-col gap-1.5 min-w-[120px]">
+            <label className="text-xs font-medium text-moss-100">
+              No. of Balls
+            </label>
+            <input
+              type="number"
+              value={config.balls.count}
+              onChange={(e) => {
+                const count = parseInt(e.target.value, 10);
+                if (!isNaN(count) && count >= 0) {
+                  useStore
+                    .getState()
+                    .setConfig({ balls: { ...config.balls, count } });
+                }
+              }}
+              min="0"
+              max="100"
+              className="px-3 py-2 rounded border text-sm w-full bg-moss-500 text-moss-100"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5 min-w-[120px]">
+            <label className="text-xs font-medium text-moss-100">
+              Direction
+            </label>
+            <select
+              value={config.balls.directionality}
+              onChange={(e) => {
+                useStore.getState().setConfig({
+                  balls: {
+                    ...config.balls,
+                    directionality: e.target.value as "up" | "down",
+                  },
+                });
+              }}
+              className="px-3 py-2 rounded border text-sm w-full cursor-pointer bg-moss-500 text-moss-100"
+            >
+              <option value="down">Down</option>
+              <option value="up">Up</option>
+            </select>
+          </div>
         </div>
-        <div style={currentStyles.controlGroup}>
-          <label style={currentStyles.controlLabel}>Direction</label>
-          <select
-            value={config.balls.directionality}
-            onChange={(e) => {
-              useStore.getState().setConfig({
-                balls: { ...config.balls, directionality: e.target.value as 'up' | 'down' }
-              });
-            }}
-            style={currentStyles.selectInput}
-          >
-            <option value="down">Down</option>
-            <option value="up">Up</option>
-          </select>
+        <div className="flex gap-2.5 p-[15px] items-center  bg-moss-900  mt-4">
+          <Button onClick={handlePlayPause}>
+            {isPlaying ? "Pause" : "Play"}
+          </Button>
+          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleExportPNG} disabled={exportProgress !== null}>
+            Export PNG
+          </Button>
+          <Button onClick={handleExportWebM} disabled={exportProgress !== null}>
+            {exportProgress !== null
+              ? `Exporting ${Math.round(exportProgress * 100)}%`
+              : "Export Movie"}
+          </Button>
         </div>
-        <button onClick={handlePlayPause} style={currentStyles.button}>
-          {isPlaying ? 'Pause' : 'Play'}
-        </button>
-        <button onClick={handleReset} style={currentStyles.button}>
-          Reset
-        </button>
-        <button onClick={handleExportPNG} style={currentStyles.button} disabled={exportProgress !== null}>
-          Export PNG
-        </button>
-        <button onClick={handleExportWebM} style={currentStyles.button} disabled={exportProgress !== null}>
-          {exportProgress !== null ? `Exporting ${Math.round(exportProgress * 100)}%` : 'Export Movie'}
-        </button>
-        <div style={currentStyles.spacer}></div>
-        {onToggleDarkMode && (
-          <button
-            onClick={onToggleDarkMode}
-            style={{ ...currentStyles.button, backgroundColor: darkMode ? '#ffa500' : '#333' }}
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
-        )}
       </div>
     </div>
   );
-};
-
-const styles: Record<string, React.CSSProperties> = {
-  container: {
-    width: '100%',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#0a0c10'
-  },
-  canvasWrapper: {
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden'
-  },
-  canvas: {
-    width: '100%',
-    height: '100%',
-    display: 'block'
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    padding: '20px',
-    pointerEvents: 'none'
-  },
-  title: {
-    margin: 0,
-    fontSize: '28px',
-    fontWeight: 700,
-    color: 'white',
-    textShadow: 'none'
-  },
-  controls: {
-    display: 'flex',
-    gap: '10px',
-    padding: '15px',
-    backgroundColor: '#1a1d23',
-    borderTop: '1px solid #3a3d45',
-    alignItems: 'center'
-  },
-  controlGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-    minWidth: '120px'
-  },
-  controlLabel: {
-    fontSize: '12px',
-    color: '#a0a3ab',
-    fontWeight: 500
-  },
-  numberInput: {
-    padding: '8px 12px',
-    backgroundColor: '#2a2d35',
-    border: '1px solid #3a3d45',
-    borderRadius: '4px',
-    color: '#e0e0e0',
-    fontSize: '14px',
-    width: '100%'
-  },
-  selectInput: {
-    padding: '8px 12px',
-    backgroundColor: '#2a2d35',
-    border: '1px solid #3a3d45',
-    borderRadius: '4px',
-    color: '#e0e0e0',
-    fontSize: '14px',
-    width: '100%',
-    cursor: 'pointer'
-  },
-  button: {
-    padding: '12px 24px',
-    backgroundColor: '#4a7dff',
-    border: 'none',
-    borderRadius: '6px',
-    color: 'white',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s'
-  },
-  spacer: {
-    flex: 1
-  }
-};
-
-const lightStyles: Record<string, React.CSSProperties> = {
-  container: {
-    width: '100%',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    backgroundColor: '#ffffff'
-  },
-  canvasWrapper: {
-    flex: 1,
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundColor: '#ffffff'
-  },
-  canvas: {
-    width: '100%',
-    height: '100%',
-    display: 'block'
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    padding: '20px',
-    pointerEvents: 'none'
-  },
-  title: {
-    margin: 0,
-    fontSize: '28px',
-    fontWeight: 700,
-    color: 'black',
-    textShadow: 'none'
-  },
-  controls: {
-    display: 'flex',
-    gap: '10px',
-    padding: '15px',
-    backgroundColor: '#f5f5f5',
-    borderTop: '1px solid #ddd',
-    alignItems: 'center'
-  },
-  controlGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-    minWidth: '120px'
-  },
-  controlLabel: {
-    fontSize: '12px',
-    color: '#666',
-    fontWeight: 500
-  },
-  numberInput: {
-    padding: '8px 12px',
-    backgroundColor: '#ffffff',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    color: '#333',
-    fontSize: '14px',
-    width: '100%'
-  },
-  selectInput: {
-    padding: '8px 12px',
-    backgroundColor: '#ffffff',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    color: '#333',
-    fontSize: '14px',
-    width: '100%',
-    cursor: 'pointer'
-  },
-  button: {
-    padding: '12px 24px',
-    backgroundColor: '#4a7dff',
-    border: 'none',
-    borderRadius: '6px',
-    color: 'white',
-    fontSize: '16px',
-    fontWeight: 600,
-    cursor: 'pointer',
-    transition: 'background-color 0.2s'
-  },
-  spacer: {
-    flex: 1
-  }
 };

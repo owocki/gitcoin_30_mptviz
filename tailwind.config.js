@@ -29,6 +29,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Modern Era', 'system-ui', '-apple-system', 'sans-serif'],
+        mori: ['PP Mori', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
         lichen: {
           "100": "#F4FCE9",
@@ -38,6 +42,7 @@ export default {
           "100": "#F2FBF8",
           "500": "#1F504A",
           "900": "#0C2725",
+          "950": "#061514"
         },
         sand: "#FBF9F6",
         
@@ -59,6 +64,9 @@ export default {
           "100": "#FDFBE9",
           "500": "#F9EE8F",
           "900": "#725F00"
+        },
+        red: {
+          "500": "#EF7E5F",
         }
       }
     },

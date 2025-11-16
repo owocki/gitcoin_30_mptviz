@@ -473,11 +473,11 @@ export function HomePage() {
               <p className="text-lg">
                 A Multipolar trap is a particularly important type of alignment
                 issue. It occurs when{" "}
-                <span className="text-nectar-500">
+                <span className="text-nectar-500 font-bold">
                   individual rational actions
                 </span>{" "}
                 lead to{" "}
-                <span className="text-nectar-500">
+                <span className="text-nectar-500 font-bold">
                   collectively worse outcomes
                 </span>{" "}
                 because no single actor can afford to unilaterally cooperate.
