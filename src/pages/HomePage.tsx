@@ -6,6 +6,15 @@ import EarthGraphic from "../components/EarthGraphic";
 import TrapGraphic from "../components/TrapGraphic";
 import { GlobeAnimation } from "../components/GlobeAnimation";
 import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
+import { StickyHeader } from "../components/StickyHeader";
+import galleryData from "../config/gallery.json";
+
+interface GalleryItem {
+  id: string;
+  title: string;
+  previewUrl: string;
+  fullUrl: string;
+}
 
 const traps = [
   {
@@ -206,31 +215,6 @@ const coordination = [
   },
 ];
 
-const CoordinationCard = ({
-  name,
-  description,
-  index,
-}: {
-  name: string;
-  description: string;
-  index: number;
-}) => {
-  return (
-    <div className="pr-4 py-6 pl-8 md:pl-12 bg-lichen-100 border border-moss-500/25 rounded-lg relative">
-      <h4 className="text-moss-500 font-semibold text-xl sm:text-2xl font-mori mb-2">
-        {name}
-      </h4>
-      <p className="text-moon-900">{description}</p>
-
-      <div className="absolute top-1/2 -translate-x-1/2 left-0 -translate-y-1/2">
-        <div className="md:size-16 size-10 flex items-center justify-center text-3xl md:text-4xl bg-lichen-100 border border-moss-500/25 rounded-full">
-          {index + 1}
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const CardWithBorder = ({
   children,
   className,
@@ -287,7 +271,7 @@ const AlignmentIssuesSection = () => {
   );
 
   return (
-    <section className="py-8 md:py-16 px-2 lg:px-20">
+    <section className="py-8 md:py-16 px-2 lg:px-20 min-h-[70vh] sm:min-h-screen">
       <div className="">
         <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl text-center">
           Alignment issues
@@ -366,7 +350,7 @@ const TrapsSection = () => {
           style={{ zIndex: i + 1 }}
         >
           <div
-            className={`${trap.colors.bg} h-full flex flex-col md:flex-row items-center justify-between md:pl-20 py-10 gap-8 sm:px-0 px-2`}
+            className={`${trap.colors.bg} h-full flex flex-col md:flex-row items-center justify-between md:pl-20 py-10 gap-8 sm:px-0 px-3`}
           >
             <div className="w-full flex items-center justify-center flex-col">
               <div className="flex flex-col justify-start">
@@ -430,18 +414,26 @@ const TrapsSection = () => {
 export function HomePage() {
   const navigate = useNavigate();
 
-  // const handleImageClick = (fullUrl: string) => {
-  //   // Check if it's an external URL
-  //   if (fullUrl.startsWith("http://") || fullUrl.startsWith("https://")) {
-  //     window.location.href = fullUrl;
-  //   } else {
-  //     // Use React Router for internal navigation
-  //     navigate(fullUrl);
-  //   }
-  // };
+  const handleImageClick = (fullUrl: string) => {
+    // Check if it's an external URL
+    if (fullUrl.startsWith("http://") || fullUrl.startsWith("https://")) {
+      window.location.href = fullUrl;
+    } else {
+      // Use React Router for internal navigation
+      navigate(fullUrl);
+    }
+  };
+
+  const scrollToAlignmentIssues = () => {
+    document.getElementById("alignment-issues")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <main className="min-h-screen">
+      <StickyHeader />
       {/* hero */}
       <div className="bg-moss-900">
         <section className="relative h-screen">
@@ -463,6 +455,9 @@ export function HomePage() {
                 >
                   <Button>Read the Rainbow Paper</Button>
                 </a>
+                <Button variant="tertiary" onClick={scrollToAlignmentIssues}>
+                  View common alignment issues
+                </Button>
               </div>
             </div>
           </div>
@@ -476,7 +471,8 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-6">
               <p className="text-lg">
-                A Multipolar trap is a particularly important type of alignment issue.  It occurs when{" "}
+                A Multipolar trap is a particularly important type of alignment
+                issue. It occurs when{" "}
                 <span className="text-nectar-500">
                   individual rational actions
                 </span>{" "}
@@ -504,19 +500,23 @@ export function HomePage() {
           </div>
         </section>
 
-        <AlignmentIssuesSection />
+        <div id="alignment-issues">
+          <AlignmentIssuesSection />
+        </div>
       </div>
 
       <div className="bg-moss-100 py-16 md:py-32 flex flex-col gap-8 md:gap-16">
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
-          <div className="md:sticky md:top-20 h-fit">
+          <div className="md:sticky md:top-20 h-fit w-full md:w-auto">
             <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
-            <GlobeAnimation />
+            <div className="overflow-hidden w-full flex justify-center">
+              <GlobeAnimation />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-20 md:gap-40 max-w-full md:max-w-[360px] md:pt-20 w-full">
+          <div className="flex flex-col gap-20 md:gap-40 max-w-full md:max-w-[360px] md:pt-20 w-full ml-1">
             {coordination.map((item, index) => (
               <AnimatedCoordinationCard
                 key={item.name}
@@ -624,34 +624,79 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="bg-moss-900 min-h-screen py-10 md:py-20 px-5 md:px-20">
-        <div className="text-moss-100 flex flex-col justify-center w-fit mx-auto">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-mori font-semibold max-w-[25ch] mb-8 md:mb-12">
+      <section className="bg-moss-900 min-h-screen py-10 md:py-20 px-4 md:px-20">
+        <div className="text-moss-100 flex flex-col justify-center items-center w-fit mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-mori font-semibold max-w-[22ch] text-center mb-12 md:mb-12">
             Explore the Dynamics Behind Multipolar Traps, Visually
           </h2>
-          <div className="max-w-[40rem]">
-            <p>
+          <div className="max-w-[39rem] leading-relaxed border border-moss-100/40 rounded-3xl px-2 sm:px-5 py-8">
+            <p className="mb-2">
               These artifacts help us conceptualize Multipolar Traps visually,
-              making it easier to grok the system dynamics. <br />
+              making it easier to grok the system dynamics.
+            </p>
+            <p>
               Each shows a 3D landscape that represents possible futures within
               a “design space.”
             </p>
-            <ol className="list-decimal mb-6">
+
+            <ul className="mb-8">
               <li>
-                The flat grid is the space of choices or designs humans can
+                1. The flat grid is the space of choices or designs humans can
                 make.
               </li>
               <li>
-                The height (z-axis) represents the overall success of the
+                2. The height (z-axis) represents the overall success of the
                 system.
               </li>
-            </ol>
+            </ul>
             <p>
               These are maps of possibilities. Some design choices lift the
               world toward better outcomes, others sink it into breakdown. The
               goal is to climb the ridge toward the peak rather than slide into
               the valley of collapse.
             </p>
+          </div>
+        </div>
+        <div className="mt-10">
+          <div className="grid [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))] gap-8 sm:p-10 max-w-[1400px] mx-auto">
+            {galleryData.featuredImages.map((item: GalleryItem) => (
+              <div
+                key={item.id}
+                onClick={() => handleImageClick(item.fullUrl)}
+                className="group bg-moss-500 rounded-xl overflow-hidden cursor-pointer border border-moss-100/40
+                  transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+              >
+                <div className="relative w-full pb-[75%] bg-moss-900 overflow-hidden">
+                  <img
+                    src={item.previewUrl}
+                    alt={item.title}
+                    loading="lazy"
+                    className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 ease-out
+                    group-hover:scale-105
+                  "
+                  />
+
+                  {/* Overlay */}
+                  {item.id !== "create-new" && (
+                    <div
+                      className="absolute inset-0 bg-black/70 flex items-center justify-center
+                      opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100
+                    "
+                    >
+                      <span className="text-moss-100 text-lg font-semibold">
+                        View Visualization
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-moss-100 m-0">
+                    {item.title}
+                  </h3>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

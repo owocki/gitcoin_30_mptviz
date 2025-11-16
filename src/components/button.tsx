@@ -7,6 +7,8 @@ const button = tv({
     variant: {
       primary: "bg-sand text-moss-500  hover:bg-moss-300",
       secondary: "bg-transparent text-iris-900 border border-iris-900",
+      tertiary:
+        "bg-moss-900 text-moss-100 border border-moss-100 rounded-2xl hover:bg-moss-300",
       ghost: "bg-transparent ",
     },
     size: {
@@ -32,7 +34,7 @@ export const Button = ({
   children,
   ...props
 }: {
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "tertiary";
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   isLoading?: boolean;
   className?: string;
