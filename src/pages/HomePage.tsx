@@ -18,11 +18,52 @@ interface GalleryItem {
 
 const traps = [
   {
-    title: "Misinformation",
+    title: "Open Source underfunding",
+    problem: "Shared resources depleted by individual use",
+    outcome: "-",
+    steps: [
+      "Open Source underfunding",
+      "Quadratic funding",
+      "Fairer shared contribution",
+    ],
+    colors: {
+      lightBg: "bg-nectar-100",
+      bg: "bg-nectar-300",
+      text: "text-nectar-900",
+      border: "border-nectar-900",
+    },
+    description:
+      "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
+    projects: [
+      {
+        url: "https://grants.gitcoin.co/",
+        logoUrl: "/img/logos/grants-logo.svg",
+        width: 162,
+        height: 38,
+        alt: "Gitcoin Grants",
+      },
+      {
+        url: "https://clr.fund/",
+        logoUrl: "/img/logos/clr-logo.svg",
+        width: 114,
+        height: 38,
+        alt: "clr.fund",
+      },
+      {
+        url: "https://giveth.io/",
+        logoUrl: "/img/logos/giveth-logo.svg",
+        width: 99,
+        height: 38,
+        alt: "Giveth",
+      },
+    ],
+  },
+  {
+    title: "Social Media overuse",
     problem: "Platforms maximize engagement",
     outcome: "Mental health crisis",
     steps: [
-      "Misinformation",
+      "Social Media overuse",
       "Reputation + attestations",
       "Credibility over virality",
     ],
@@ -33,7 +74,7 @@ const traps = [
       border: "border-moss-500",
     },
     description:
-      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Overuse become expensive; more health behaviour becomes profitable.",
     projects: [
       {
         url: "https://passport.gitcoin.co/",
@@ -96,47 +137,6 @@ const traps = [
         width: 122,
         height: 38,
         alt: "Theoriq",
-      },
-    ],
-  },
-  {
-    title: "Public goods underfunding",
-    problem: "Shared resources depleted by individual use",
-    outcome: "-",
-    steps: [
-      "Public goods underfunding",
-      "Quadratic funding",
-      "Fairer shared contribution",
-    ],
-    colors: {
-      lightBg: "bg-nectar-100",
-      bg: "bg-nectar-300",
-      text: "text-nectar-900",
-      border: "border-nectar-900",
-    },
-    description:
-      "Small donors get matched by a larger funding pool, amplifying grassroots support. Projects valued by many people (not just whales) receive proportionally more funding. The community signals what matters through small contributions. This mechanism has already allocated millions to open-source software, research, and local communities.",
-    projects: [
-      {
-        url: "https://grants.gitcoin.co/",
-        logoUrl: "/img/logos/grants-logo.svg",
-        width: 162,
-        height: 38,
-        alt: "Gitcoin Grants",
-      },
-      {
-        url: "https://clr.fund/",
-        logoUrl: "/img/logos/clr-logo.svg",
-        width: 114,
-        height: 38,
-        alt: "clr.fund",
-      },
-      {
-        url: "https://giveth.io/",
-        logoUrl: "/img/logos/giveth-logo.svg",
-        width: 99,
-        height: 38,
-        alt: "Giveth",
       },
     ],
   },
