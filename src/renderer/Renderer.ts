@@ -25,7 +25,7 @@ export class Renderer {
   private config: SceneConfig;
   private animationId: number | null = null;
   private isPlaying: boolean = false;
-  private darkMode: boolean = false;
+  private darkMode: boolean = true;
 
   constructor(canvas: HTMLCanvasElement, config: SceneConfig) {
     this.config = config;
@@ -139,7 +139,7 @@ export class Renderer {
 
     // Sample the field
     const field = this.fieldKernel.sampleField(attractors, resolution, extent);
-    const { min, max } = this.fieldKernel.getFieldRange(field);
+    // const { min, max } = this.fieldKernel.getFieldRange(field);
 
     // Create geometry
     const geometry = new THREE.PlaneGeometry(
