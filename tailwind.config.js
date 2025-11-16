@@ -29,6 +29,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Modern Era', 'system-ui', '-apple-system', 'sans-serif'],
+        mori: ['PP Mori', 'system-ui', '-apple-system', 'sans-serif'],
+      },
       colors: {
         lichen: {
           "100": "#F4FCE9",
