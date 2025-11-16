@@ -238,8 +238,8 @@ export function GlobeAnimation({ width = 400, height = 400 }: GlobeAnimationProp
   return (
     <div
       ref={containerRef}
-      className="flex items-center justify-center w-full max-w-[400px]"
-      style={{ aspectRatio: '1 / 1' }}
+      className="flex items-center justify-center w-full max-w-[280px] mx-auto sm:max-w-[400px]"
+      style={{ aspectRatio: '1 / 1', maxHeight: width }}
     />
   );
 }

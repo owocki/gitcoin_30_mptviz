@@ -1,13 +1,7 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Button } from "./button";
 
-export const StickyHeader = ({
-  scrollToAlignmentIssues,
-}: {
-  scrollToAlignmentIssues: () => void;
-}) => {
+export const StickyHeader = () => {
   const [showHeader, setShowHeader] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -24,6 +18,13 @@ export const StickyHeader = ({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [showHeader]);
+
+  const scrollToAlignmentIssues = () => {
+    document.getElementById("alignment-issues")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <header
@@ -45,7 +46,7 @@ export const StickyHeader = ({
           >
             <Button size="sm">Read the Rainbow Paper</Button>
           </a>
-          <Button size="sm" onClick={scrollToAlignmentIssues}>
+          <Button size="sm" variant="tertiary" onClick={scrollToAlignmentIssues}>
             View Alignment Issues
           </Button>
         </div>

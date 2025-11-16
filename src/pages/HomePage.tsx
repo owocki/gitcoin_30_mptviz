@@ -6,6 +6,7 @@ import EarthGraphic from "../components/EarthGraphic";
 import TrapGraphic from "../components/TrapGraphic";
 import { GlobeAnimation } from "../components/GlobeAnimation";
 import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
+import { StickyHeader } from "../components/StickyHeader";
 import galleryData from "../config/gallery.json";
 
 interface GalleryItem {
@@ -270,7 +271,7 @@ const AlignmentIssuesSection = () => {
   );
 
   return (
-    <section className="py-8 md:py-16 px-2 lg:px-20">
+    <section className="py-8 md:py-16 px-2 lg:px-20 min-h-[70vh] sm:min-h-screen">
       <div className="">
         <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl text-center">
           Alignment issues
@@ -349,7 +350,7 @@ const TrapsSection = () => {
           style={{ zIndex: i + 1 }}
         >
           <div
-            className={`${trap.colors.bg} h-full flex flex-col md:flex-row items-center justify-between md:pl-20 py-10 gap-8 sm:px-0 px-2`}
+            className={`${trap.colors.bg} h-full flex flex-col md:flex-row items-center justify-between md:pl-20 py-10 gap-8 sm:px-0 px-3`}
           >
             <div className="w-full flex items-center justify-center flex-col">
               <div className="flex flex-col justify-start">
@@ -423,8 +424,16 @@ export function HomePage() {
     }
   };
 
+  const scrollToAlignmentIssues = () => {
+    document.getElementById("alignment-issues")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <main className="min-h-screen">
+      <StickyHeader />
       {/* hero */}
       <div className="bg-moss-900">
         <section className="relative h-screen">
@@ -446,6 +455,9 @@ export function HomePage() {
                 >
                   <Button>Read the Rainbow Paper</Button>
                 </a>
+                <Button variant="tertiary" onClick={scrollToAlignmentIssues}>
+                  View common alignment issues
+                </Button>
               </div>
             </div>
           </div>
@@ -459,7 +471,8 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-6">
               <p className="text-lg">
-                A Multipolar trap is a particularly important type of alignment issue.  It occurs when{" "}
+                A Multipolar trap is a particularly important type of alignment
+                issue. It occurs when{" "}
                 <span className="text-nectar-500">
                   individual rational actions
                 </span>{" "}
@@ -487,19 +500,23 @@ export function HomePage() {
           </div>
         </section>
 
-        <AlignmentIssuesSection />
+        <div id="alignment-issues">
+          <AlignmentIssuesSection />
+        </div>
       </div>
 
       <div className="bg-moss-100 py-16 md:py-32 flex flex-col gap-8 md:gap-16">
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
-          <div className="md:sticky md:top-20 h-fit">
+          <div className="md:sticky md:top-20 h-fit w-full md:w-auto">
             <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
-            <GlobeAnimation />
+            <div className="overflow-hidden w-full flex justify-center">
+              <GlobeAnimation />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-20 md:gap-40 max-w-full md:max-w-[360px] md:pt-20 w-full">
+          <div className="flex flex-col gap-20 md:gap-40 max-w-full md:max-w-[360px] md:pt-20 w-full ml-1">
             {coordination.map((item, index) => (
               <AnimatedCoordinationCard
                 key={item.name}
