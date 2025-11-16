@@ -440,13 +440,12 @@ export function HomePage() {
               </h1>
               <div className="flex flex-wrap gap-3 md:gap-5">
                 <a
-                  href="https://www.gitcoin.co/vision"
+                  href="https://www.dropbox.com/scl/fi/2ew20lb31kz62cd87g3dc/Owocki-Scheling-Point_Nov102025-b.pdf?rlkey=pw1jgsemym4tu34hol8egnt0y&e=1&st=636ugx92&dl=0"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button>Gitcoin Vision Paper</Button>
+                  <Button>Read the Rainbow Paper</Button>
                 </a>
-                <Button>Learn more</Button>
               </div>
             </div>
           </div>
@@ -460,7 +459,7 @@ export function HomePage() {
           <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-6">
               <p className="text-lg">
-                A Multipolar trap occurs when{" "}
+                A Multipolar trap is a particularly important type of alignment issue.  It occurs when{" "}
                 <span className="text-nectar-500">
                   individual rational actions
                 </span>{" "}
@@ -598,29 +597,11 @@ export function HomePage() {
           </h1>
           <div className="flex flex-wrap justify-center gap-4 md:gap-8">
             <a
-              href="https://www.gitcoin.co/vision"
+              href="https://www.dropbox.com/scl/fi/2ew20lb31kz62cd87g3dc/Owocki-Scheling-Point_Nov102025-b.pdf?rlkey=pw1jgsemym4tu34hol8egnt0y&e=1&st=636ugx92&dl=0"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button>Gitcoin Vision Paper</Button>
-            </a>
-            <a
-              href="https://www.gitcoin.co/whitepaper"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Button>Gitcoin Whitepaper</Button>
-            </a>
-          </div>
-          <div className="flex flex-wrap items-center justify-center text-center gap-x-10 gap-y-2 font-semibold max-w-lg text-moss-100">
-            <a href="" target="_blank">
-              &gt; Support Ethereum Coordination Tech
-            </a>
-            <a href="" target="_blank">
-              &gt; Get involved locally
-            </a>
-            <a href="" target="_blank">
-              &gt; Learn more about Ethereum Coordination Ecosystem
+              <Button>Read the Rainbow Paper</Button>
             </a>
           </div>
         </div>
