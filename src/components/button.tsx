@@ -9,11 +9,13 @@ const button = tv({
       secondary: "bg-transparent text-iris-900 border border-iris-900",
       tertiary:
         "bg-moss-900 text-moss-100 border border-moss-100 rounded-2xl hover:bg-moss-300",
+      destructive:
+        "bg-moss-900 text-red-500 border border-red-500 rounded-2xl hover:bg-moss-300",
       ghost: "bg-transparent ",
     },
     size: {
       lg: "py-3.5 px-5 rounded-md",
-      sm: "py-2 px-3 rounded-md",
+      sm: "py-1.5 px-2 rounded-md text-sm",
     },
     isLoading: {
       true: "opacity-50",
@@ -34,7 +36,7 @@ export const Button = ({
   children,
   ...props
 }: {
-  variant?: "primary" | "secondary" | "ghost" | "tertiary";
+  variant?: "primary" | "secondary" | "ghost" | "tertiary" | "destructive";
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   isLoading?: boolean;
   className?: string;
