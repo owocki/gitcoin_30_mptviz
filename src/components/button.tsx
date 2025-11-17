@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useRef } from "react";
 import { tv } from "tailwind-variants";
 
 const button = tv({
@@ -15,7 +15,8 @@ const button = tv({
     },
     size: {
       lg: "py-3.5 px-5 rounded-md",
-      sm: "py-1.5 px-2 rounded-md text-sm",
+      m: "py-3 px-3 rounded-md text-sm",
+      s: "py-1.5 px-2 rounded-md text-sm",
     },
     isLoading: {
       true: "opacity-50",
@@ -26,6 +27,8 @@ const button = tv({
   },
 });
 
+const CHARACTERS = "abcdefghijklnpqrstuvxyz";
+
 export const Button = ({
   variant = "primary",
   size = "lg",
@@ -34,6 +37,7 @@ export const Button = ({
   className,
   disabled,
   children,
+  hoverAnimation = false,
   ...props
 }: {
   variant?: "primary" | "secondary" | "ghost" | "tertiary" | "destructive";
@@ -42,21 +46,99 @@ export const Button = ({
   className?: string;
   children: ReactNode;
   disabled?: boolean;
-  size?: "lg" | "sm";
+  size?: "lg" | "m" | "s";
+  hoverAnimation?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) => {
+  const [displayText, setDisplayText] = useState("");
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const originalText = typeof children === "string" ? children : "";
+
+  const handleMouseEnter = () => {
+    if (!hoverAnimation || !originalText) return;
+
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+
+    let iteration = 0;
+    let lastTime = 0;
+    const frameDelay = 30; // ms between updates
+
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animate = (currentTime: number) => {
+      if (currentTime - lastTime >= frameDelay) {
+        setDisplayText(
+          originalText
+            .split("")
+            .map((char, index) => {
+              if (char === " ") return " ";
+              if (index < iteration) {
+                return originalText[index];
+              }
+              return CHARACTERS[Math.floor(Math.random() * CHARACTERS.length)];
+            })
+            .join("")
+        );
+
+        // Calculate progress and apply easing
+        const progress = iteration / originalText.length;
+        const easedProgress = easeOut(progress);
+        // Start with more characters (5), end with fewer (1)
+        const increment = Math.max(1, Math.floor(5 * (1 - easedProgress)));
+
+        iteration += increment;
+        lastTime = currentTime;
+
+        if (iteration >= originalText.length) {
+          setDisplayText(originalText);
+          return;
+        }
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+  };
+
+  const handleMouseLeave = () => {
+    if (!hoverAnimation) return;
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    setDisplayText(originalText);
+  };
+
   return (
     <button
+      ref={buttonRef}
       disabled={!!isLoading || !!disabled}
       onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className={`${button({
         variant,
         size,
         isLoading: !!isLoading,
         disabled: !!disabled,
       })} ${className}`}
+      style={{
+        ...props.style,
+      }}
       {...props}
     >
-      {children}
+      {hoverAnimation && originalText ? (
+        <span
+          style={{
+            display: "inline-block",
+            minWidth: className?.includes("uppercase")
+              ? `${originalText.length * 1.1}ch`
+              : `${originalText.length}ch`,
+          }}
+        >
+          {displayText || children}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 };
