@@ -24,10 +24,13 @@
 
   input:focus,
   button:focus {
-    @apply outline-2 outline-blue-500 outline-offset-2;
+    @apply outline-2 outline-[#739490] outline-offset-0;
   }
 
   input[type="range"] {
+    accent-color: #F2FBF8;
+  }
+  input[type="checkbox"] {
     accent-color: #F2FBF8;
   }
 }
