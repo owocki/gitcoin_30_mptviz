@@ -20,52 +20,11 @@ interface GalleryItem {
 
 const traps = [
   {
-    title: "Climate inaction",
-    problem: "Everyone pollutes",
-    outcome: "Earth suffers",
-    steps: [
-      "Climate inaction",
-      "Tokenized carbon credits",
-      "Verified action, shared cost",
-    ],
-    colors: {
-      lightBg: "bg-iris-100",
-      bg: "bg-iris-500",
-      text: "text-iris-900",
-      border: "border-iris-900",
-    },
-    description:
-      "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
-    projects: [
-      {
-        url: "https://toucan.earth/",
-        logoUrl: "/img/logos/toucan-logo.svg",
-        width: 175,
-        height: 38,
-        alt: "Toucan Protocol",
-      },
-      {
-        url: "https://www.regen.network/",
-        logoUrl: "/img/logos/regen-logo.svg",
-        width: 165,
-        height: 38,
-        alt: "Regen Network",
-      },
-      {
-        url: "https://www.klimadao.finance/",
-        logoUrl: "/img/logos/klima-logo.svg",
-        width: 131,
-        height: 38,
-        alt: "Klima DAO",
-      },
-    ],
-  },
-  {
-    title: "Public goods underfunding",
+    title: "Open Source underfunding",
     problem: "Shared resources depleted by individual use",
     outcome: "-",
     steps: [
-      "Public goods underfunding",
+      "Open Source underfunding",
       "Quadratic funding",
       "Fairer shared contribution",
     ],
@@ -98,6 +57,47 @@ const traps = [
         width: 99,
         height: 38,
         alt: "Giveth",
+      },
+    ],
+  },
+  {
+    title: "Social Media overuse",
+    problem: "Platforms maximize engagement",
+    outcome: "Mental health crisis",
+    steps: [
+      "Social Media overuse",
+      "Reputation + attestations",
+      "Credibility over virality",
+    ],
+    colors: {
+      lightBg: "bg-lichen-100",
+      bg: "bg-lichen-500",
+      text: "text-moss-500",
+      border: "border-moss-500",
+    },
+    description:
+      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Overuse become expensive; more health behaviour becomes profitable.",
+    projects: [
+      {
+        url: "https://passport.gitcoin.co/",
+        logoUrl: "/img/logos/human-logo.svg",
+        width: 151,
+        height: 38,
+        alt: "Human Passport",
+      },
+      {
+        url: "https://attest.sh/",
+        logoUrl: "/img/logos/eas-logo.svg",
+        width: 77,
+        height: 38,
+        alt: "Ethereum Attestation Service",
+      },
+      {
+        url: "https://www.clique.social/",
+        logoUrl: "/img/logos/clique-logo.svg",
+        width: 98,
+        height: 38,
+        alt: "Clique",
       },
     ],
   },
@@ -142,44 +142,45 @@ const traps = [
       },
     ],
   },
+
   {
-    title: "Misinformation",
-    problem: "Platforms maximize engagement",
-    outcome: "Mental health crisis",
+    title: "Climate inaction",
+    problem: "Everyone pollutes",
+    outcome: "Earth suffers",
     steps: [
-      "Misinformation",
-      "Reputation + attestations",
-      "Credibility over virality",
+      "Climate inaction",
+      "Tokenized carbon credits",
+      "Verified action, shared cost",
     ],
     colors: {
-      lightBg: "bg-lichen-100",
-      bg: "bg-lichen-500",
-      text: "text-moss-500",
-      border: "border-moss-500",
+      lightBg: "bg-iris-100",
+      bg: "bg-iris-500",
+      text: "text-iris-900",
+      border: "border-iris-900",
     },
     description:
-      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+      "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
     projects: [
       {
-        url: "https://passport.gitcoin.co/",
-        logoUrl: "/img/logos/human-logo.svg",
-        width: 151,
+        url: "https://toucan.earth/",
+        logoUrl: "/img/logos/toucan-logo.svg",
+        width: 175,
         height: 38,
-        alt: "Human Passport",
+        alt: "Toucan Protocol",
       },
       {
-        url: "https://attest.sh/",
-        logoUrl: "/img/logos/eas-logo.svg",
-        width: 77,
+        url: "https://www.regen.network/",
+        logoUrl: "/img/logos/regen-logo.svg",
+        width: 165,
         height: 38,
-        alt: "Ethereum Attestation Service",
+        alt: "Regen Network",
       },
       {
-        url: "https://www.clique.social/",
-        logoUrl: "/img/logos/clique-logo.svg",
-        width: 98,
+        url: "https://www.klimadao.finance/",
+        logoUrl: "/img/logos/klima-logo.svg",
+        width: 131,
         height: 38,
-        alt: "Clique",
+        alt: "Klima DAO",
       },
     ],
   },
@@ -746,7 +747,9 @@ export function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button hoverAnimation className="uppercase" size="m">Read the Rainbow Paper</Button>
+              <Button hoverAnimation className="uppercase" size="m">
+                Read the Rainbow Paper
+              </Button>
             </a>
           </div>
         </div>
