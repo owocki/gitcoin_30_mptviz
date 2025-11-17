@@ -90,14 +90,14 @@ export function CreatePage() {
         `}
       >
         <div className="p-4 flex flex-col gap-3">
-          <Button size="sm" onClick={() => navigate("/")} className="w-full">
+          <Button size="s" onClick={() => navigate("/")} className="w-full">
             Back to Homepage
           </Button>
-          <Button size="sm" className="w-full" onClick={handleShare}>
+          <Button size="s" className="w-full" onClick={handleShare}>
             {copySuccess ? "✓ Copied!" : "📋 Copy Share Link"}
           </Button>
           <Button
-            size="sm"
+            size="s"
             className="w-full"
             onClick={() => navigate("/stacked")}
           >

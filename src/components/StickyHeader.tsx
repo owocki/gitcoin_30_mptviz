@@ -44,9 +44,17 @@ export const StickyHeader = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Button size="sm">Read the Rainbow Paper</Button>
+            <Button size="s" className="uppercase" hoverAnimation>
+              Read the Rainbow Paper
+            </Button>
           </a>
-          <Button size="sm" variant="tertiary" onClick={scrollToAlignmentIssues}>
+          <Button
+            size="s"
+            className="uppercase"
+            variant="tertiary"
+            onClick={scrollToAlignmentIssues}
+            hoverAnimation
+          >
             View Alignment Issues
           </Button>
         </div>
@@ -102,12 +110,12 @@ export const StickyHeader = () => {
               rel="noopener noreferrer"
               onClick={() => setMobileMenuOpen(false)}
             >
-              <Button size="sm" className="w-full">
+              <Button size="s" className="w-full">
                 Read the Rainbow Paper
               </Button>
             </a>
             <Button
-              size="sm"
+              size="s"
               className="w-full"
               onClick={() => {
                 scrollToAlignmentIssues();

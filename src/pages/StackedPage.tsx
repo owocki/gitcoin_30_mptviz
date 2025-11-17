@@ -775,7 +775,7 @@ export const StackedPage: React.FC = () => {
       <div className="flex-1 flex overflow-hidden">
         <div className="w-[400px] p-5 bg-moss-900 text-moss-100 overflow-y-auto font-sans border-r border-[#3a3d45]">
           <Button
-            size="sm"
+            size="s"
             onClick={() => navigate("/create")}
             className="w-full mb-6"
           >
@@ -896,16 +896,16 @@ export const StackedPage: React.FC = () => {
                 </label>
                 <div className="flex gap-2">
                   <Button
-                    size="sm"
+                    size="s"
                     onClick={() => setZSpacing(Math.max(0, zSpacing - 0.1))}
                     disabled={zSpacing <= 0}
                   >
                     Compress
                   </Button>
-                  <Button size="sm" onClick={() => setZSpacing(zSpacing + 0.1)}>
+                  <Button size="s" onClick={() => setZSpacing(zSpacing + 0.1)}>
                     Expand
                   </Button>
-                  <Button size="sm" onClick={() => setZSpacing(0)}>
+                  <Button size="s" onClick={() => setZSpacing(0)}>
                     Merge
                   </Button>
                 </div>
@@ -930,7 +930,7 @@ export const StackedPage: React.FC = () => {
                 </div>
                 <div className="flex gap-2 mt-2">
                   <Button
-                    size="sm"
+                    size="s"
                     variant="tertiary"
                     onClick={() => handleAnimatedSpacing(-0.1)}
                     disabled={zSpacing <= 0}
@@ -938,7 +938,7 @@ export const StackedPage: React.FC = () => {
                     Animate ↓
                   </Button>
                   <Button
-                    size="sm"
+                    size="s"
                     variant="tertiary"
                     onClick={() => handleAnimatedSpacing(0.1)}
                   >

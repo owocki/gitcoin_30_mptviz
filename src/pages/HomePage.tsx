@@ -6,7 +6,9 @@ import EarthGraphic from "../components/EarthGraphic";
 import TrapGraphic from "../components/TrapGraphic";
 import { GlobeAnimation } from "../components/GlobeAnimation";
 import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
+import { AnimatedParagraph } from "../components/AnimatedParagraph";
 import { StickyHeader } from "../components/StickyHeader";
+import { ScrollBackground } from "../components/ScrollBackground";
 import galleryData from "../config/gallery.json";
 
 interface GalleryItem {
@@ -18,84 +20,43 @@ interface GalleryItem {
 
 const traps = [
   {
-    title: "Misinformation",
-    problem: "Platforms maximize engagement",
-    outcome: "Mental health crisis",
+    title: "Climate inaction",
+    problem: "Everyone pollutes",
+    outcome: "Earth suffers",
     steps: [
-      "Misinformation",
-      "Reputation + attestations",
-      "Credibility over virality",
+      "Climate inaction",
+      "Tokenized carbon credits",
+      "Verified action, shared cost",
     ],
     colors: {
-      lightBg: "bg-lichen-100",
-      bg: "bg-lichen-500",
-      text: "text-moss-500",
-      border: "border-moss-500",
+      lightBg: "bg-iris-100",
+      bg: "bg-iris-500",
+      text: "text-iris-900",
+      border: "border-iris-900",
     },
     description:
-      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+      "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
     projects: [
       {
-        url: "https://passport.gitcoin.co/",
-        logoUrl: "/img/logos/human-logo.svg",
-        width: 151,
+        url: "https://toucan.earth/",
+        logoUrl: "/img/logos/toucan-logo.svg",
+        width: 175,
         height: 38,
-        alt: "Human Passport",
+        alt: "Toucan Protocol",
       },
       {
-        url: "https://attest.sh/",
-        logoUrl: "/img/logos/eas-logo.svg",
-        width: 77,
+        url: "https://www.regen.network/",
+        logoUrl: "/img/logos/regen-logo.svg",
+        width: 165,
         height: 38,
-        alt: "Ethereum Attestation Service",
+        alt: "Regen Network",
       },
       {
-        url: "https://www.clique.social/",
-        logoUrl: "/img/logos/clique-logo.svg",
-        width: 98,
+        url: "https://www.klimadao.finance/",
+        logoUrl: "/img/logos/klima-logo.svg",
+        width: 131,
         height: 38,
-        alt: "Clique",
-      },
-    ],
-  },
-  {
-    title: "AI arms race",
-    problem: "Every lab rushes ahead",
-    outcome: "Global risk increases",
-    steps: [
-      "AI arms race",
-      "Open models + attestations",
-      "Shared safety incentives",
-    ],
-    colors: {
-      lightBg: "bg-sun-100",
-      bg: "bg-sun-500",
-      text: "text-sun-900",
-      border: "border-sun-900",
-    },
-    description:
-      "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
-    projects: [
-      {
-        url: "https://oceanprotocol.com/",
-        logoUrl: "/img/logos/ocean-logo.svg",
-        width: 168,
-        height: 38,
-        alt: "Ocean Protocol",
-      },
-      {
-        url: "https://bittensor.com/",
-        logoUrl: "/img/logos/bittensor-logo.svg",
-        width: 116,
-        height: 38,
-        alt: "Bittensor",
-      },
-      {
-        url: "https://www.theoriq.ai/",
-        logoUrl: "/img/logos/theoriq-logo.svg",
-        width: 122,
-        height: 38,
-        alt: "Theoriq",
+        alt: "Klima DAO",
       },
     ],
   },
@@ -141,43 +102,84 @@ const traps = [
     ],
   },
   {
-    title: "Climate inaction",
-    problem: "Everyone pollutes",
-    outcome: "Earth suffers",
+    title: "AI arms race",
+    problem: "Every lab rushes ahead",
+    outcome: "Global risk increases",
     steps: [
-      "Climate inaction",
-      "Tokenized carbon credits",
-      "Verified action, shared cost",
+      "AI arms race",
+      "Open models + attestations",
+      "Shared safety incentives",
     ],
     colors: {
-      lightBg: "bg-iris-100",
-      bg: "bg-iris-500",
-      text: "text-iris-900",
-      border: "border-iris-900",
+      lightBg: "bg-sun-100",
+      bg: "bg-sun-500",
+      text: "text-sun-900",
+      border: "border-sun-900",
     },
     description:
-      "Carbon credits are tokenized on-chain, making emissions reduction transparent and tradeable. Communities can pool funds to buy and retire credits. Smart contracts automatically verify and reward climate-positive actions. Everyone can see who's contributing, creating social and economic incentives to participate.",
+      "AI development becomes transparent through on-chain attestations. Teams commit to safety protocols via smart contracts. Open-source models with verified safety checks get funding through quadratic mechanisms. Whistleblowers can anonymously report violations. The race becomes who can build the safest AI, not just the fastest.",
     projects: [
       {
-        url: "https://toucan.earth/",
-        logoUrl: "/img/logos/toucan-logo.svg",
-        width: 175,
+        url: "https://oceanprotocol.com/",
+        logoUrl: "/img/logos/ocean-logo.svg",
+        width: 168,
         height: 38,
-        alt: "Toucan Protocol",
+        alt: "Ocean Protocol",
       },
       {
-        url: "https://www.regen.network/",
-        logoUrl: "/img/logos/regen-logo.svg",
-        width: 165,
+        url: "https://bittensor.com/",
+        logoUrl: "/img/logos/bittensor-logo.svg",
+        width: 116,
         height: 38,
-        alt: "Regen Network",
+        alt: "Bittensor",
       },
       {
-        url: "https://www.klimadao.finance/",
-        logoUrl: "/img/logos/klima-logo.svg",
-        width: 131,
+        url: "https://www.theoriq.ai/",
+        logoUrl: "/img/logos/theoriq-logo.svg",
+        width: 122,
         height: 38,
-        alt: "Klima DAO",
+        alt: "Theoriq",
+      },
+    ],
+  },
+  {
+    title: "Misinformation",
+    problem: "Platforms maximize engagement",
+    outcome: "Mental health crisis",
+    steps: [
+      "Misinformation",
+      "Reputation + attestations",
+      "Credibility over virality",
+    ],
+    colors: {
+      lightBg: "bg-lichen-100",
+      bg: "bg-lichen-500",
+      text: "text-moss-500",
+      border: "border-moss-500",
+    },
+    description:
+      "Reputation systems built on verifiable credentials make trust portable and transparent. Attestations from credible sources are recorded on-chain. Users can verify claims independently without trusting platforms. Networks of trust emerge based on actual behavior, not engagement metrics. Lies become expensive; truth becomes profitable.",
+    projects: [
+      {
+        url: "https://passport.gitcoin.co/",
+        logoUrl: "/img/logos/human-logo.svg",
+        width: 151,
+        height: 38,
+        alt: "Human Passport",
+      },
+      {
+        url: "https://attest.sh/",
+        logoUrl: "/img/logos/eas-logo.svg",
+        width: 77,
+        height: 38,
+        alt: "Ethereum Attestation Service",
+      },
+      {
+        url: "https://www.clique.social/",
+        logoUrl: "/img/logos/clique-logo.svg",
+        width: 98,
+        height: 38,
+        alt: "Clique",
       },
     ],
   },
@@ -383,7 +385,7 @@ const TrapsSection = () => {
                   {trap.projects.map((entry, idx) => (
                     <a key={idx} href={entry.url} className="leading-none">
                       <Button
-                        size="sm"
+                        size="s"
                         variant="secondary"
                         className={`!py-0 !px-0 border ${trap.colors.border} ${trap.colors.text}`}
                       >
@@ -411,6 +413,150 @@ const TrapsSection = () => {
   );
 };
 
+const NetworkedCoordinationSection = () => {
+  const [isCardsVisible, setIsCardsVisible] = React.useState(false);
+  const cardsRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const element = cardsRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          setIsCardsVisible(entry.isIntersecting);
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20% 0px",
+      }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const cards = [
+    {
+      title: "Transparency",
+      description: "to see what's happening",
+      iconSrc: "/img/icon-1.svg",
+    },
+    {
+      title: "Communication channels",
+      description: "to align on goals",
+      iconSrc: "/img/icon-2.svg",
+    },
+    {
+      title: "Incentive alignment",
+      description: "to reward collective action",
+      iconSrc: "/img/icon-3.svg",
+    },
+    {
+      title: "Commitment devices",
+      description: "to lock in cooperation",
+      iconSrc: "/img/icon-4.svg",
+    },
+  ];
+
+  return (
+    <section className="py-10 md:py-20 px-5 md:px-20">
+      <div className="relative z-[15] mb-32 md:mb-60">
+        <div className="relative h-[220px] md:h-[250px] max-w-5xl ml-0 md:ml-[20%]">
+          <CardWithBorder className="absolute top-0 left-[20px] md:left-[50px]">
+            The Power
+          </CardWithBorder>
+          <CardWithBorder className="absolute top-[60px] right-0 md:left-[300px] w-fit">
+            of Networked
+          </CardWithBorder>
+          <CardWithBorder className="absolute top-[120px] left-0">
+            Coordination
+          </CardWithBorder>
+        </div>
+      </div>
+
+      <div className="relative flex flex-col md:flex-row items-start justify-center gap-6 md:gap-10">
+        {/* Scrolling stacked cards on the left */}
+        <div className="relative max-w-full md:max-w-[377px] w-full">
+          {/* Text section */}
+          <div
+            className="sticky top-[calc((100vh+59px)/2)] -translate-y-1/2 h-auto md:h-[498px] transition-opacity duration-700 ease-out"
+            style={{
+              zIndex: 1,
+              opacity: isCardsVisible ? 0 : 1,
+            }}
+          >
+            <div className="bg-moss-500 rounded-lg py-6 md:py-8 px-6 sm:px-10 md:px-8 text-moss-100 flex flex-col gap-6 md:gap-9 h-full">
+              <p>
+                Top-down institutions are slow, captured, or corrupt. But
+                networks of ordinary people—citizens, developers,
+                communities—can coordinate at scale if given the right
+                infrastructure.
+              </p>
+              <p>
+                When these pieces come together, bottom-up coordination becomes
+                possible—and powerful enough to diffuse multipolar traps.
+              </p>
+              <p>
+                Peer-to-peer networks don't need permission. They don't need
+                central authorities.
+              </p>
+            </div>
+          </div>
+
+          <div
+            ref={cardsRef}
+            className="sticky top-[calc((100vh+59px)/2)] -translate-y-1/2 h-auto md:h-[498px]"
+            style={{
+              zIndex: 2,
+            }}
+          >
+            <div className="h-full flex flex-col justify-between bg-moss-100">
+              {cards.map((card, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-4 bg-moss-500 rounded-lg py-3 md:py-6 px-6 sm:px-10 md:px-8 transition-all duration-700 ease-out"
+                  style={{
+                    opacity: isCardsVisible ? 1 : 0,
+                    transform: isCardsVisible
+                      ? "translateY(0)"
+                      : "translateY(20px)",
+                    transitionDelay: `${index * 250}ms`,
+                  }}
+                >
+                  <div className="size-12 flex-shrink-0">
+                    <img src={card.iconSrc} alt="" />
+                  </div>
+                  <div>
+                    <h5 className="font-mori font-semibold text-lg md:text-xl mb-1 text-moss-100">
+                      {card.title}
+                    </h5>
+                    <p className="text-moss-100 text-base">
+                      {card.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-[100vh]"></div>
+        </div>
+
+        {/* Pinned image on the right */}
+        <div
+          className="md:sticky md:top-[calc((100vh+59px)/2)] md:-translate-y-1/2 h-fit w-full md:w-auto"
+          style={{ zIndex: 10 }}
+        >
+          <div className="bg-moss-500 rounded-lg px-12 py-6">
+            <img src="/img/power-graphic.svg" width="450" height="450" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 export function HomePage() {
   const navigate = useNavigate();
 
@@ -432,10 +578,11 @@ export function HomePage() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen relative">
+      <ScrollBackground />
       <StickyHeader />
       {/* hero */}
-      <div className="bg-moss-900">
+      <div>
         <section className="relative h-screen">
           {/* hero p5 animation - background */}
           <div className="absolute inset-0">
@@ -453,9 +600,17 @@ export function HomePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Button>Read the Rainbow Paper</Button>
+                  <Button className="uppercase" hoverAnimation size="m">
+                    Read the Rainbow Paper
+                  </Button>
                 </a>
-                <Button variant="tertiary" onClick={scrollToAlignmentIssues}>
+                <Button
+                  className="uppercase"
+                  hoverAnimation
+                  size="m"
+                  variant="tertiary"
+                  onClick={scrollToAlignmentIssues}
+                >
                   View common alignment issues
                 </Button>
               </div>
@@ -463,14 +618,14 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="py-10 md:py-20 px-5 md:px-20">
+        <section className="relative min-h-[100vh] md:min-h-[120vh] py-10 md:pt-20 px-5 md:px-20">
           <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl">
             What is a Multipolar trap?
           </h2>
 
-          <div className="flex flex-col md:flex-row gap-8 md:gap-12 items-center justify-center text-moon-300">
-            <div className="max-w-sm flex flex-col gap-6">
-              <p className="text-lg">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start justify-center text-moon-300">
+            <div className="max-w-sm flex flex-col gap-12 md:gap-[20vh] md:pb-60">
+              <AnimatedParagraph className="text-lg" delay={0}>
                 A Multipolar trap is a particularly important type of alignment
                 issue. It occurs when{" "}
                 <span className="text-nectar-500 font-bold">
@@ -481,20 +636,23 @@ export function HomePage() {
                   collectively worse outcomes
                 </span>{" "}
                 because no single actor can afford to unilaterally cooperate.
-              </p>
-              <p className="text-lg">
+              </AnimatedParagraph>
+              <AnimatedParagraph className="text-lg" delay={0.1}>
                 Think of it like a race to the bottom: each actor follows the
                 steepest incentive gradient toward local optimization, but these
                 individual "rational" choices compound into a globally
                 suboptimal equilibrium that traps everyone.
-              </p>
-              <p className="text-nectar-500 font-semibold text-2xl md:text-3xl">
+              </AnimatedParagraph>
+              <AnimatedParagraph
+                className="text-nectar-500 font-semibold text-2xl md:text-3xl"
+                delay={0.2}
+              >
                 "A multipolar trap is when no one can unilaterally fix a
                 problem—but together, they could."
-              </p>
+              </AnimatedParagraph>
             </div>
 
-            <div>
+            <div className="md:sticky md:top-1/2 md:-translate-y-1/2 md:mt-12 h-fit w-full md:w-auto">
               <img src="/img/trap.svg" width="914" height="392" />
             </div>
           </div>
@@ -505,14 +663,21 @@ export function HomePage() {
         </div>
       </div>
 
-      <div className="bg-moss-100 py-16 md:py-32 flex flex-col gap-8 md:gap-16">
+      <div
+        className="py-16 md:py-32 flex flex-col gap-8 md:gap-16"
+        id="bg-transition-point"
+      >
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
           <div className="md:sticky md:top-20 h-fit w-full md:w-auto">
             <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
             <div className="overflow-hidden w-full flex justify-center">
-              <GlobeAnimation />
+              <img
+                src="/img/coordination-globe-graphic.svg"
+                width="400"
+                height="396"
+              />
             </div>
           </div>
 
@@ -527,44 +692,7 @@ export function HomePage() {
           </div>
         </section>
 
-        <section className="py-10 md:py-20 px-5 md:px-20">
-          <div>
-            <div className="relative h-[220px] md:h-[250px] max-w-5xl mb-8 ml-0 md:ml-[20%]">
-              <CardWithBorder className="absolute top-0 left-[20px] md:left-[50px]">
-                The Power
-              </CardWithBorder>
-              <CardWithBorder className="absolute top-[60px] right-0 md:left-[300px] w-fit">
-                of Networked
-              </CardWithBorder>
-              <CardWithBorder className="absolute top-[120px] left-0">
-                Coordination
-              </CardWithBorder>
-            </div>
-          </div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10">
-            <div className="h-auto md:h-[450px] bg-moss-500 rounded-lg py-6 md:py-8 px-6 sm:px-10 md:px-14 text-moss-100 flex flex-col gap-6 md:gap-9 max-w-full md:max-w-[377px]">
-              <p>
-                Top-down institutions are slow, captured, or corrupt. But
-                networks of ordinary people—citizens, developers,
-                communities—can coordinate at scale if given the right
-                infrastructure.
-              </p>
-              <p>
-                When these pieces come together, bottom-up coordination becomes
-                possible—and powerful enough to diffuse multipolar traps.
-              </p>
-              <p>
-                Peer-to-peer networks don't need permission. They don't need
-                central authorities.
-              </p>
-            </div>
-
-            <div className="bg-moss-500 rounded-lg px-12">
-              <img src="/img/power-graphic.svg" width="450" height="450" />
-            </div>
-          </div>
-        </section>
+        <NetworkedCoordinationSection />
 
         <section>
           <div className="mx-2 sm:mx-16">
@@ -618,7 +746,7 @@ export function HomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button>Read the Rainbow Paper</Button>
+              <Button hoverAnimation className="uppercase" size="m">Read the Rainbow Paper</Button>
             </a>
           </div>
         </div>

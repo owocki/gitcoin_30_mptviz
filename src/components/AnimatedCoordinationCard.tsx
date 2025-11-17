@@ -1,8 +1,4 @@
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import { useEffect, useRef, useState } from "react";
 
 type CoordinationItem = {
   name: string;
@@ -17,55 +13,52 @@ export const AnimatedCoordinationCard = ({
   index: number;
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const element = cardRef.current;
-    const heading = headingRef.current;
-    if (!element || !heading) return;
+    if (!element) return;
 
-    const ctx = gsap.context(() => {
-      // Animate card sliding in from right
-      gsap.to(element, {
-        x: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: element,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -20% 0px",
+      }
+    );
 
-      // Animate heading sliding up
-      gsap.to(heading, {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        delay: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: element,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-    }, cardRef);
+    observer.observe(element);
 
-    return () => ctx.revert();
+    return () => observer.disconnect();
   }, []);
 
   return (
     <div
       ref={cardRef}
-      style={{ opacity: 0, transform: "translateX(50px)" }}
+      className="transition-all duration-700 ease-out"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible
+          ? "translate3d(0, 0, 0)"
+          : "translate3d(50px, 0, 0)",
+      }}
     >
       <div className="pr-4 py-6 pl-8 md:pl-12 bg-lichen-100 border border-moss-500/25 rounded-lg relative">
         <h4
-          ref={headingRef}
-          className="text-moss-500 font-semibold text-xl sm:text-2xl font-mori mb-2"
-          style={{ opacity: 0, transform: "translateY(30px)" }}
+          className="text-moss-500 font-semibold text-xl sm:text-2xl font-mori mb-2 transition-all duration-700 ease-out"
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible
+              ? "translate3d(0, 0, 0)"
+              : "translate3d(0, 30px, 0)",
+            transitionDelay: "0.1s",
+          }}
         >
           {item.name}
         </h4>
