@@ -203,7 +203,7 @@ export const Controls: React.FC = () => {
       {/* Attractors */}
       <div className="mb-5">
         <h3 className="text-lg font-medium mb-2.5">Attractors</h3>
-        <Button className="mb-4 w-full" size="sm" onClick={handleAddAttractor}>
+        <Button className="mb-4 w-full" size="s" onClick={handleAddAttractor}>
           Add Attractor
         </Button>
 
@@ -218,7 +218,7 @@ export const Controls: React.FC = () => {
               </span>
               <Button
                 variant="destructive"
-                size="sm"
+                size="s"
                 onClick={() => removeAttractor(attractor.id)}
               >
                 Remove
@@ -370,7 +370,7 @@ export const Controls: React.FC = () => {
 
         <Button
           onClick={handleAddReinforcement}
-          size="sm"
+          size="s"
           className="w-full mb-4"
         >
           Add Reinforcement
@@ -388,7 +388,7 @@ export const Controls: React.FC = () => {
               </span>
               <Button
                 variant="destructive"
-                size="sm"
+                size="s"
                 onClick={() => removeReinforcement(reinforcement.id)}
               >
                 Remove
