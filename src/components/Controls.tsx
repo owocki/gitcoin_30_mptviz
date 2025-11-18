@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useStore } from "../store/useStore";
 import { Attractor, Reinforcement } from "../types/config";
 import { Button } from "./button";
+import BinIcon from "./BinIcon";
 
 export const Controls: React.FC = () => {
   const {
@@ -202,8 +203,14 @@ export const Controls: React.FC = () => {
 
       {/* Attractors */}
       <div className="mb-5">
-        <h3 className="text-lg font-medium mb-2.5">Attractors</h3>
-        <Button className="mb-4 w-full" size="s" onClick={handleAddAttractor}>
+        <h3 className="text-xl font-medium mb-4">Attractors</h3>
+       
+        <Button
+          className="mb-4 w-full flex items-center gap-3"
+          size="s"
+          onClick={handleAddAttractor}
+        >
+          <span className="font-medium text-xl">+</span>
           Add Attractor
         </Button>
 
@@ -212,55 +219,59 @@ export const Controls: React.FC = () => {
             key={attractor.id}
             className="bg-moss-900 p-4 rounded-lg mb-4 border border-moss-100/40"
           >
-            <div className="flex justify-between items-center mb-3">
+            {/* <div className="flex justify-between items-center mb-3">
               <span className="text-xs font-semibold text-[#8a8d95]">
                 ID: {attractor.id}
               </span>
-              <Button
-                variant="destructive"
-                size="s"
-                onClick={() => removeAttractor(attractor.id)}
-              >
-                Remove
-              </Button>
-            </div>
+            </div> */}
 
             <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">
-                X Position
-              </label>
+              <label className="block mb-1 text-sm">Attractor label</label>
               <input
-                type="number"
-                value={attractor.pos.x}
+                type="text"
+                value={attractor.label || ""}
                 onChange={(e) =>
-                  updateAttractor(attractor.id, {
-                    pos: { ...attractor.pos, x: parseFloat(e.target.value) },
-                  })
+                  updateAttractor(attractor.id, { label: e.target.value })
                 }
-                step="0.1"
+                placeholder="Type attractor name"
                 className="w-full px-2.5 py-1.5 bg-moss-500 rounded text-moss-100 text-[13px]"
               />
             </div>
 
-            <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">
-                Y Position
-              </label>
-              <input
-                type="number"
-                value={attractor.pos.y}
-                onChange={(e) =>
-                  updateAttractor(attractor.id, {
-                    pos: { ...attractor.pos, y: parseFloat(e.target.value) },
-                  })
-                }
-                step="0.1"
-                className="w-full px-2.5 py-1.5 bg-moss-500 rounded text-moss-100 text-[13px]"
-              />
+            <div className="mb-2.5 flex items-center child:w-full gap-4">
+              <div>
+                <label className="block mb-1 text-sm">X Position</label>
+                <input
+                  type="number"
+                  value={attractor.pos.x}
+                  onChange={(e) =>
+                    updateAttractor(attractor.id, {
+                      pos: { ...attractor.pos, x: parseFloat(e.target.value) },
+                    })
+                  }
+                  step="0.1"
+                  className="w-full px-2.5 py-1.5 bg-moss-500 rounded text-moss-100 text-[13px]"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm">Y Position</label>
+                <input
+                  type="number"
+                  value={attractor.pos.y}
+                  onChange={(e) =>
+                    updateAttractor(attractor.id, {
+                      pos: { ...attractor.pos, y: parseFloat(e.target.value) },
+                    })
+                  }
+                  step="0.1"
+                  className="w-full px-2.5 py-1.5 bg-moss-500 rounded text-moss-100 text-[13px]"
+                />
+              </div>
             </div>
 
             <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">
+              <label className="block mb-1 text-sm">
                 Strength ({attractor.strength.toFixed(1)})
               </label>
               <input
@@ -279,7 +290,7 @@ export const Controls: React.FC = () => {
             </div>
 
             <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">
+              <label className="block mb-1 text-sm">
                 Sigma ({attractor.sigma.toFixed(3)})
               </label>
               <input
@@ -297,8 +308,8 @@ export const Controls: React.FC = () => {
               />
             </div>
 
-            <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">Color</label>
+            <div className="mb-4">
+              <label className="block mb-1 text-sm">Color</label>
               <input
                 type="color"
                 value={attractor.color}
@@ -310,16 +321,15 @@ export const Controls: React.FC = () => {
             </div>
 
             <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">Label</label>
-              <input
-                type="text"
-                value={attractor.label || ""}
-                onChange={(e) =>
-                  updateAttractor(attractor.id, { label: e.target.value })
-                }
-                placeholder="Optional label"
-                className="w-full px-2.5 py-1.5 bg-moss-500 rounded text-moss-100 text-[13px]"
-              />
+              <Button
+                variant="destructive"
+                size="s"
+                onClick={() => removeAttractor(attractor.id)}
+                className="flex items-center gap-2 w-full"
+              >
+                <BinIcon />
+                Remove attractor
+              </Button>
             </div>
           </div>
         ))}
@@ -327,21 +337,19 @@ export const Controls: React.FC = () => {
 
       {/* Reinforcements */}
       <div className="mb-5">
-        <h3 className="text-lg font-medium mb-2.5">Reinforcements</h3>
-        <p className="text-xs text-[#8a8d95] -mt-1 mb-4">
+        <h3 className="text-xl font-medium mb-1">Reinforcements</h3>
+        <p className="text-sm leading-tight mb-4">
           Connect attractors with circular arrows to show reinforcement
         </p>
 
         <div className="mb-2.5">
-          <label className="block mb-1 text-xs text-[#a0a3ab]">
-            From Attractor
-          </label>
+          <label className="block mb-1 text-sm">From Attractor</label>
           <select
             value={newReinforcementFrom}
             onChange={(e) => setNewReinforcementFrom(e.target.value)}
             className="w-full px-3 py-2 bg-moss-500 rounded text-moss-100 text-sm cursor-pointer"
           >
-            <option value="">Select attractor...</option>
+            <option value="">Select attractor</option>
             {config.attractors.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.label || a.id}
@@ -351,15 +359,13 @@ export const Controls: React.FC = () => {
         </div>
 
         <div className="mb-2.5">
-          <label className="block mb-1 text-xs text-[#a0a3ab]">
-            To Attractor
-          </label>
+          <label className="block mb-1 text-sm">To Attractor</label>
           <select
             value={newReinforcementTo}
             onChange={(e) => setNewReinforcementTo(e.target.value)}
             className="w-full px-3 py-2 bg-moss-500 rounded text-moss-100 text-sm cursor-pointer"
           >
-            <option value="">Select attractor...</option>
+            <option value="">Select attractor</option>
             {config.attractors.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.label || a.id}
@@ -369,10 +375,11 @@ export const Controls: React.FC = () => {
         </div>
 
         <Button
-          onClick={handleAddReinforcement}
+          className="mb-4 w-full flex items-center gap-3"
           size="s"
-          className="w-full mb-4"
+          onClick={handleAddReinforcement}
         >
+          <span className="font-medium text-xl">+</span>
           Add Reinforcement
         </Button>
 
@@ -382,22 +389,16 @@ export const Controls: React.FC = () => {
             className="bg-moss-900 p-4 rounded-lg mt-2.5 border border-moss-100/40"
           >
             <div className="flex justify-between items-center mb-3">
-              <span className="text-xs font-semibold text-[#8a8d95]">
+              <span className="text-sm font-semibold text-moss-100">
                 {getAttractorLabel(reinforcement.fromId)} →{" "}
                 {getAttractorLabel(reinforcement.toId)}
               </span>
-              <Button
-                variant="destructive"
-                size="s"
-                onClick={() => removeReinforcement(reinforcement.id)}
-              >
-                Remove
-              </Button>
             </div>
 
             <div className="mb-2.5">
-              <label className="block mb-1 text-xs text-[#a0a3ab]">
-                Strength ({reinforcement.strength.toFixed(2)})
+              <label className="mb-1 text-sm flex items-center justify-between">
+                <span>Strength</span>
+                <span>{reinforcement.strength.toFixed(2)}</span>
               </label>
               <input
                 type="range"
@@ -412,6 +413,18 @@ export const Controls: React.FC = () => {
                 step="0.1"
                 className="w-full cursor-pointer"
               />
+            </div>
+
+            <div>
+              <Button
+                variant="destructive"
+                size="s"
+                onClick={() => removeReinforcement(reinforcement.id)}
+                className="flex items-center gap-2 w-full"
+              >
+                <BinIcon />
+                Remove reinforcement
+              </Button>
             </div>
           </div>
         ))}

@@ -33,6 +33,10 @@
   input[type="checkbox"] {
     accent-color: #F2FBF8;
   }
+
+  label {
+    color: #8CD9BF;
+  }
 }
 
 ::-webkit-scrollbar {
