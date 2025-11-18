@@ -581,10 +581,14 @@ export function HomePage() {
   };
 
   const scrollToAlignmentIssues = () => {
-    document.getElementById("alignment-issues")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    const element = document.getElementById("alignment-issues");
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.scrollY - 20;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
