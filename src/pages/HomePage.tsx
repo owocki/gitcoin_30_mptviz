@@ -9,6 +9,8 @@ import { AnimatedParagraph } from "../components/AnimatedParagraph";
 import { StickyHeader } from "../components/StickyHeader";
 import { ScrollBackground } from "../components/ScrollBackground";
 import { ScrollImageTransition } from "../components/ScrollImageTransition";
+import { GridLayersParallax } from "../components/GridLayersParallax";
+import { ScrambleText } from "../components/ScrambleText";
 import galleryData from "../config/gallery.json";
 
 interface GalleryItem {
@@ -542,7 +544,7 @@ const NetworkedCoordinationSection = () => {
             </div>
           </div>
 
-          <div className="h-[70vh]"></div>
+          <div className="h-[40vh]"></div>
         </div>
 
         {/* Pinned image on the right */}
@@ -601,7 +603,9 @@ export function HomePage() {
           <div className="absolute inset-0 z-10 flex items-end pb-10 md:pb-20 px-5 md:px-20">
             <div>
               <h1 className="text-lichen-500 text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 md:mb-12 font-mori max-w-[15ch]">
-                Solving Alignment with Ethereum
+                <ScrambleText delay={500}>
+                  Solving Alignment with Ethereum
+                </ScrambleText>
               </h1>
               <div className="flex flex-wrap gap-3 md:gap-5">
                 <a
@@ -628,11 +632,11 @@ export function HomePage() {
         </section>
 
         <section className="relative min-h-[100vh] md:min-h-[120vh] py-10 md:pt-20 px-5 md:px-20">
-          <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl">
-            What is a Multipolar trap?
-          </h2>
+          <div className="relative mt-16 w-fit mx-auto flex flex-col md:flex-row gap-8 md:gap-16 items-start justify-center text-moon-300">
+            <h2 className="absolute -top-[80px] left-0 mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl w-full">
+              What is a Multipolar trap?
+            </h2>
 
-          <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-12 md:gap-[20vh] md:pb-60">
               <AnimatedParagraph className="text-lg" delay={0}>
                 A Multipolar trap is a particularly important type of alignment
@@ -673,7 +677,7 @@ export function HomePage() {
       </div>
 
       <div
-        className="py-16 md:py-32 flex flex-col gap-8 md:gap-16"
+        className="py-16 md:py-32 flex flex-col gap-8 md:gap-20"
         id="bg-transition-point"
       >
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
@@ -723,14 +727,7 @@ export function HomePage() {
                 </div>
               </div>
 
-              <div className="absolute bottom-0 translate-y-[68%] md:translate-y-[55%] left-1/2 -translate-x-1/2 sm:w-auto w-[70vw]">
-                <img
-                  src="/img/grid-layers.svg"
-                  width="687"
-                  height="369"
-                />
-                
-              </div>
+              <GridLayersParallax />
             </div>
           </div>
         </section>
