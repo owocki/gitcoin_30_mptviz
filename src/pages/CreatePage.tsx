@@ -3,7 +3,11 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { Scene } from "../components/Scene";
 import { Controls } from "../components/Controls";
 import { useStore } from "../store/useStore";
-import { getConfigFromURL, copyShareableURL } from "../utils/urlParams";
+import {
+  getConfigFromURL,
+  copyShareableURL,
+  encodeConfigToURL,
+} from "../utils/urlParams";
 import { Button } from "../components/button";
 
 // Mobile detection utility
@@ -29,12 +33,7 @@ const MobileWarning = () => {
           This visualization tool requires a desktop browser for the best
           experience. Please visit this page on a desktop computer.
         </p>
-        <button
-          onClick={() => navigate("/")}
-          className="px-8 py-3 bg-green-600 hover:bg-green-700 border-none rounded-md text-white text-base font-semibold cursor-pointer transition-colors"
-        >
-          Back to Homepage
-        </button>
+        <Button onClick={() => navigate("/")}>Back to Homepage</Button>
       </div>
     </div>
   );
@@ -75,6 +74,12 @@ export function CreatePage() {
     }
   };
 
+  const getStackedPageURL = () => {
+    const encoded = encodeConfigToURL(config);
+    const shareUrl = `${window.location.origin}/create?cfg=${encoded}`;
+    return `/stacked?urls=${encodeURIComponent(shareUrl)}`;
+  };
+
   if (isMobile) {
     return <MobileWarning />;
   }
@@ -90,16 +95,17 @@ export function CreatePage() {
         `}
       >
         <div className="p-4 flex flex-col gap-3">
-          <Button size="s" onClick={() => navigate("/")} className="w-full">
-            Back to Homepage
+          <Button size="s" onClick={() => navigate("/")} variant="ghost">
+            ← Back to Homepage
           </Button>
           <Button size="s" className="w-full" onClick={handleShare}>
-            {copySuccess ? "✓ Copied!" : "📋 Copy Share Link"}
+            {copySuccess ? "✓ Copied!" : "Copy Share Link"}
           </Button>
           <Button
             size="s"
             className="w-full"
-            onClick={() => navigate("/stacked")}
+            onClick={() => navigate(getStackedPageURL())}
+            variant="tertiary"
           >
             Stack Multiple Fields
           </Button>

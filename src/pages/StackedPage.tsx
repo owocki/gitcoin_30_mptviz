@@ -715,7 +715,7 @@ export const StackedPage: React.FC = () => {
     const queryString = params.toString();
     console.log("[StackedScene] Generated query string:", queryString);
 
-    const shareUrl = `${window.location.origin}/#stacked?${queryString}`;
+    const shareUrl = `${window.location.origin}/stacked?${queryString}`;
     console.log("[StackedScene] Final share URL:", shareUrl);
 
     // Copy to clipboard
@@ -773,21 +773,26 @@ export const StackedPage: React.FC = () => {
   return (
     <div className="w-full h-screen flex flex-col bg-moss-950">
       <div className="flex-1 flex overflow-hidden">
-        <div className="w-[400px] p-5 bg-moss-900 text-moss-100 overflow-y-auto font-sans border-r border-[#3a3d45]">
-          <Button
-            size="s"
-            onClick={() => navigate("/create")}
-            className="w-full mb-6"
-          >
-            ← Back to Single View
-          </Button>
+        <div className="w-[400px] p-4 bg-moss-900 text-moss-100 overflow-y-auto font-sans border-r border-[#3a3d45]">
+          <div className="flex flex-col gap-2 mb-8">
+            <Button
+              size="s"
+              onClick={() => navigate("/create")}
+              variant="ghost"
+            >
+              ← Back to Single View
+            </Button>
+            <Button onClick={handleShareLink} className="w-full" size="s">
+              {copySuccess ? "✓ Copied!" : "Copy Share Link"}
+            </Button>
+          </div>
           <h2 className="mt-0 mb-4 text-2xl font-semibold">
             Stack Incentive Fields
           </h2>
 
           {/* Title input */}
-          <div className="mb-4">
-            <label className="block mb-1.5 text-[13px] text-[#a0a3ab] font-medium">
+          <div className="mb-6">
+            <label className="block mb-1.5 text-sm font-medium">
               Stack Title:
             </label>
             <input
@@ -799,15 +804,15 @@ export const StackedPage: React.FC = () => {
             />
           </div>
 
-          <p className="mb-4 text-sm text-[#a0a3ab] leading-relaxed">
+          <p className="mb-2 text-sm text-[#8CD9BF] leading-relaxed">
             Paste URLs (one per line) to stack multiple incentive field
             visualizations. The view updates automatically.
           </p>
           <textarea
             value={urlsText}
             onChange={handleUrlsChange}
-            placeholder="http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=...&#10;http://localhost:5174/?cfg=..."
-            className="w-full p-3 bg-moss-500 rounded text-moss-100 text-[13px] font-mono resize-y mb-4"
+            placeholder="https://www.aligneth.xyz/?cfg=...&#10;https://www.aligneth.xyz/?cfg=...&#10;https://www.aligneth.xyz/?cfg=..."
+            className="w-full p-3 bg-moss-500 rounded text-moss-100 text-xs font-mono resize-y mb-4"
             rows={10}
           />
           {configs.length > 0 && (
@@ -832,7 +837,7 @@ export const StackedPage: React.FC = () => {
                   />
                   <label
                     htmlFor="mesh-titles"
-                    className="text-[13px] text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
+                    className="text-sm text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
                   >
                     Show mesh titles next to each layer
                   </label>
@@ -854,7 +859,7 @@ export const StackedPage: React.FC = () => {
                   />
                   <label
                     htmlFor="axis-titles"
-                    className="text-[13px] text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
+                    className="text-sm text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
                   >
                     Show axis labels (x, y, z)
                   </label>
@@ -879,7 +884,7 @@ export const StackedPage: React.FC = () => {
                       />
                       <label
                         htmlFor={`label-${index}`}
-                        className="text-[13px] text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
+                        className="text-sm text-moss-100 cursor-pointer select-none flex items-center gap-1.5"
                       >
                         Layer {index + 1}:{" "}
                         {fullConfig.labels.title || "Untitled"}
@@ -912,7 +917,7 @@ export const StackedPage: React.FC = () => {
 
                 {/* Animation controls */}
                 <div className="mt-2.5">
-                  <label className="text-[13px] text-moss-100 cursor-pointer select-none flex items-center gap-1.5">
+                  <label className="text-sm text-moss-100 cursor-pointer select-none flex items-center gap-1.5">
                     Repeat:
                     <input
                       type="number"
@@ -924,7 +929,7 @@ export const StackedPage: React.FC = () => {
                       }
                       min="1"
                       max="100"
-                      className="w-[60px] px-2 py-1 bg-moss-500 rounded text-moss-100 text-[13px] ml-1.5"
+                      className="w-[60px] px-2 py-1 bg-moss-500 rounded text-moss-100 text-sm ml-1.5"
                     />
                   </label>
                 </div>
@@ -946,11 +951,6 @@ export const StackedPage: React.FC = () => {
                   </Button>
                 </div>
               </div>
-
-              {/* Share Button */}
-              <Button onClick={handleShareLink} className="w-full mt-4">
-                {copySuccess ? "✓ Copied!" : "Copy Share Link"}
-              </Button>
             </>
           )}
         </div>
@@ -958,7 +958,7 @@ export const StackedPage: React.FC = () => {
           <canvas ref={canvasRef} className="w-full h-full block" />
           {stackTitle && (
             <div className="absolute top-0 left-0 right-0 p-5 pointer-events-none">
-              <h1 className="m-0 text-[28px] font-bold text-black">
+              <h1 className="m-0 text-[28px] font-bold text-moss-100">
                 {stackTitle}
               </h1>
             </div>

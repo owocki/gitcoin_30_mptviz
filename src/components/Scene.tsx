@@ -26,6 +26,8 @@ export const Scene: React.FC = () => {
     const renderer = new Renderer(canvasRef.current, config);
     rendererRef.current = renderer;
 
+    renderer.setDarkMode(true);
+
     const physics = new PhysicsEngine(true);
     physicsRef.current = physics;
 
@@ -316,9 +318,7 @@ export const Scene: React.FC = () => {
       <div className="flex gap-2.5 p-[15px] items-center border-t bg-moss-900 border-moss-900/20 justify-between">
         <div className="flex gap-2.5 p-[15px] items-center  bg-moss-900">
           <div className="flex flex-col gap-1.5 min-w-[120px]">
-            <label className="text-xs font-medium text-moss-100">
-              No. of Balls
-            </label>
+            <label className="text-xs font-medium">No. of Balls</label>
             <input
               type="number"
               value={config.balls.count}
@@ -336,9 +336,7 @@ export const Scene: React.FC = () => {
             />
           </div>
           <div className="flex flex-col gap-1.5 min-w-[120px]">
-            <label className="text-xs font-medium text-moss-100">
-              Direction
-            </label>
+            <label className="text-xs font-medium">Direction</label>
             <select
               value={config.balls.directionality}
               onChange={(e) => {
@@ -355,16 +353,37 @@ export const Scene: React.FC = () => {
               <option value="up">Up</option>
             </select>
           </div>
+
+          <div className="flex gap-2 ml-3 mt-5">
+            <Button
+              onClick={handlePlayPause}
+              className="h-fit px-4 py-2 min-w-[11ch]"
+              size="s"
+            >
+              {isPlaying ? "⏸ Pause" : "	▶ Play"}
+            </Button>
+            <Button
+              onClick={handleReset}
+              className="h-fit px-4 py-2 min-w-[11ch]"
+              size="s"
+            >
+              ↺ Reset
+            </Button>
+          </div>
         </div>
         <div className="flex gap-2.5 p-[15px] items-center  bg-moss-900  mt-4">
-          <Button onClick={handlePlayPause}>
-            {isPlaying ? "Pause" : "Play"}
-          </Button>
-          <Button onClick={handleReset}>Reset</Button>
-          <Button onClick={handleExportPNG} disabled={exportProgress !== null}>
+          <Button
+            onClick={handleExportPNG}
+            disabled={exportProgress !== null}
+            variant="tertiary"
+          >
             Export PNG
           </Button>
-          <Button onClick={handleExportWebM} disabled={exportProgress !== null}>
+          <Button
+            onClick={handleExportWebM}
+            disabled={exportProgress !== null}
+            variant="tertiary"
+          >
             {exportProgress !== null
               ? `Exporting ${Math.round(exportProgress * 100)}%`
               : "Export Movie"}
