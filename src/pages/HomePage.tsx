@@ -4,11 +4,13 @@ import { Button } from "../components/button";
 import { HeroAnimation } from "../components/HeroAnimation";
 import EarthGraphic from "../components/EarthGraphic";
 import TrapGraphic from "../components/TrapGraphic";
-import { GlobeAnimation } from "../components/GlobeAnimation";
 import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
 import { AnimatedParagraph } from "../components/AnimatedParagraph";
 import { StickyHeader } from "../components/StickyHeader";
 import { ScrollBackground } from "../components/ScrollBackground";
+import { ScrollImageTransition } from "../components/ScrollImageTransition";
+import { GridLayersParallax } from "../components/GridLayersParallax";
+import { ScrambleText } from "../components/ScrambleText";
 import galleryData from "../config/gallery.json";
 
 interface GalleryItem {
@@ -462,8 +464,8 @@ const NetworkedCoordinationSection = () => {
   ];
 
   return (
-    <section className="py-10 md:py-20 px-5 md:px-20">
-      <div className="relative z-[15] mb-32 md:mb-60">
+    <section className="pt-10 md:pt-20 px-5 md:px-20">
+      <div className="relative z-[15] mb-44 md:mb-60">
         <div className="relative h-[220px] md:h-[250px] max-w-5xl ml-0 md:ml-[20%]">
           <CardWithBorder className="absolute top-0 left-[20px] md:left-[50px]">
             The Power
@@ -513,7 +515,7 @@ const NetworkedCoordinationSection = () => {
               zIndex: 2,
             }}
           >
-            <div className="h-full flex flex-col justify-between bg-moss-100">
+            <div className="h-full flex flex-col justify-between bg-moss-100 gap-2">
               {cards.map((card, index) => (
                 <div
                   key={index}
@@ -542,7 +544,7 @@ const NetworkedCoordinationSection = () => {
             </div>
           </div>
 
-          <div className="h-[100vh]"></div>
+          <div className="h-[40vh]"></div>
         </div>
 
         {/* Pinned image on the right */}
@@ -550,8 +552,15 @@ const NetworkedCoordinationSection = () => {
           className="md:sticky md:top-[calc((100vh+59px)/2)] md:-translate-y-1/2 h-fit w-full md:w-auto"
           style={{ zIndex: 10 }}
         >
-          <div className="bg-moss-500 rounded-lg px-12 py-6">
-            <img src="/img/power-graphic.svg" width="450" height="450" />
+          <div className="bg-moss-500 rounded-lg px-12 py-12">
+            <div className="overflow-hidden w-full flex justify-center">
+              <img
+                id="position2"
+                src="/img/coordination-globe-graphic.svg"
+                width="400"
+                height="396"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -572,15 +581,20 @@ export function HomePage() {
   };
 
   const scrollToAlignmentIssues = () => {
-    document.getElementById("alignment-issues")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    const element = document.getElementById("alignment-issues");
+    if (element) {
+      const offsetTop = element.getBoundingClientRect().top + window.scrollY - 20;
+      window.scrollTo({
+        top: offsetTop,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
     <main className="min-h-screen relative">
       <ScrollBackground />
+      <ScrollImageTransition />
       <StickyHeader />
       {/* hero */}
       <div>
@@ -593,7 +607,9 @@ export function HomePage() {
           <div className="absolute inset-0 z-10 flex items-end pb-10 md:pb-20 px-5 md:px-20">
             <div>
               <h1 className="text-lichen-500 text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 md:mb-12 font-mori max-w-[15ch]">
-                Solving Alignment with Ethereum
+                <ScrambleText delay={500}>
+                  Solving Alignment with Ethereum
+                </ScrambleText>
               </h1>
               <div className="flex flex-wrap gap-3 md:gap-5">
                 <a
@@ -620,11 +636,11 @@ export function HomePage() {
         </section>
 
         <section className="relative min-h-[100vh] md:min-h-[120vh] py-10 md:pt-20 px-5 md:px-20">
-          <h2 className="mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl">
-            What is a Multipolar trap?
-          </h2>
+          <div className="relative mt-16 w-fit mx-auto flex flex-col md:flex-row gap-8 md:gap-16 items-start justify-center text-moon-300">
+            <h2 className="absolute -top-[80px] left-0 mb-8 md:mb-12 text-moss-100 font-mori font-semibold text-2xl sm:text-4xl md:text-5xl w-full">
+              What is a Multipolar trap?
+            </h2>
 
-          <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start justify-center text-moon-300">
             <div className="max-w-sm flex flex-col gap-12 md:gap-[20vh] md:pb-60">
               <AnimatedParagraph className="text-lg" delay={0}>
                 A Multipolar trap is a particularly important type of alignment
@@ -665,16 +681,17 @@ export function HomePage() {
       </div>
 
       <div
-        className="py-16 md:py-32 flex flex-col gap-8 md:gap-16"
+        className="py-16 md:py-32 flex flex-col gap-8 md:gap-20"
         id="bg-transition-point"
       >
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
           <div className="md:sticky md:top-20 h-fit w-full md:w-auto">
-            <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
+            <h2 className="text-moss-500 font-semibold sm:text-left text-center sm:mx-none mx-auto text-3xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
             <div className="overflow-hidden w-full flex justify-center">
               <img
+                id="position1"
                 src="/img/coordination-globe-graphic.svg"
                 width="400"
                 height="396"
@@ -714,13 +731,7 @@ export function HomePage() {
                 </div>
               </div>
 
-              <div className="absolute bottom-0 translate-y-[68%] md:translate-y-[55%] left-1/2 -translate-x-1/2 sm:w-auto w-[70vw]">
-                <img
-                  src="/img/stacked-layers-graphic.svg"
-                  width="687"
-                  height="367"
-                />
-              </div>
+              <GridLayersParallax />
             </div>
           </div>
         </section>

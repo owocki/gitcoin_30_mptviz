@@ -130,7 +130,7 @@ export const Button = ({
           style={{
             display: "inline-block",
             minWidth: className?.includes("uppercase")
-              ? `${originalText.length * 1.1}ch`
+              ? `${originalText.length * 1.15}ch`
               : `${originalText.length}ch`,
           }}
         >

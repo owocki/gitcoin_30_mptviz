@@ -54,9 +54,9 @@ export const AnimatedParagraph = ({
       // Normalize distance (0 when centered, 1 when far)
       const normalizedDistance = Math.min(distanceFromCenter / maxDistance, 1);
 
-      const calculatedOpacity = 1 - normalizedDistance * 0.8;
+      const calculatedOpacity = 1 - normalizedDistance * 0.9;
 
-      setOpacity(Math.max(calculatedOpacity, 0.2));
+      setOpacity(Math.max(calculatedOpacity, 0.1));
       ticking = false;
     };
 
