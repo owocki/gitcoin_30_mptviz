@@ -4,11 +4,11 @@ import { Button } from "../components/button";
 import { HeroAnimation } from "../components/HeroAnimation";
 import EarthGraphic from "../components/EarthGraphic";
 import TrapGraphic from "../components/TrapGraphic";
-import { GlobeAnimation } from "../components/GlobeAnimation";
 import { AnimatedCoordinationCard } from "../components/AnimatedCoordinationCard";
 import { AnimatedParagraph } from "../components/AnimatedParagraph";
 import { StickyHeader } from "../components/StickyHeader";
 import { ScrollBackground } from "../components/ScrollBackground";
+import { ScrollImageTransition } from "../components/ScrollImageTransition";
 import galleryData from "../config/gallery.json";
 
 interface GalleryItem {
@@ -462,8 +462,8 @@ const NetworkedCoordinationSection = () => {
   ];
 
   return (
-    <section className="py-10 md:py-20 px-5 md:px-20">
-      <div className="relative z-[15] mb-32 md:mb-60">
+    <section className="pt-10 md:pt-20 px-5 md:px-20">
+      <div className="relative z-[15] mb-44 md:mb-60">
         <div className="relative h-[220px] md:h-[250px] max-w-5xl ml-0 md:ml-[20%]">
           <CardWithBorder className="absolute top-0 left-[20px] md:left-[50px]">
             The Power
@@ -513,7 +513,7 @@ const NetworkedCoordinationSection = () => {
               zIndex: 2,
             }}
           >
-            <div className="h-full flex flex-col justify-between bg-moss-100">
+            <div className="h-full flex flex-col justify-between bg-moss-100 gap-2">
               {cards.map((card, index) => (
                 <div
                   key={index}
@@ -542,7 +542,7 @@ const NetworkedCoordinationSection = () => {
             </div>
           </div>
 
-          <div className="h-[100vh]"></div>
+          <div className="h-[70vh]"></div>
         </div>
 
         {/* Pinned image on the right */}
@@ -550,8 +550,15 @@ const NetworkedCoordinationSection = () => {
           className="md:sticky md:top-[calc((100vh+59px)/2)] md:-translate-y-1/2 h-fit w-full md:w-auto"
           style={{ zIndex: 10 }}
         >
-          <div className="bg-moss-500 rounded-lg px-12 py-6">
-            <img src="/img/power-graphic.svg" width="450" height="450" />
+          <div className="bg-moss-500 rounded-lg px-12 py-12">
+            <div className="overflow-hidden w-full flex justify-center">
+              <img
+                id="position2"
+                src="/img/coordination-globe-graphic.svg"
+                width="400"
+                height="396"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -581,6 +588,7 @@ export function HomePage() {
   return (
     <main className="min-h-screen relative">
       <ScrollBackground />
+      <ScrollImageTransition />
       <StickyHeader />
       {/* hero */}
       <div>
@@ -670,11 +678,12 @@ export function HomePage() {
       >
         <section className="relative min-h-[100vh] md:min-h-[200vh] flex flex-col md:flex-row items-start justify-center gap-8 md:gap-16 px-5 md:px-20">
           <div className="md:sticky md:top-20 h-fit w-full md:w-auto">
-            <h2 className="text-moss-500 font-semibold text-2xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
+            <h2 className="text-moss-500 font-semibold sm:text-left text-center sm:mx-none mx-auto text-3xl sm:text-4xl md:text-5xl font-mori max-w-[13ch] mb-8 md:mb-12">
               The Coordination Toolkit We Need
             </h2>
             <div className="overflow-hidden w-full flex justify-center">
               <img
+                id="position1"
                 src="/img/coordination-globe-graphic.svg"
                 width="400"
                 height="396"
@@ -716,10 +725,11 @@ export function HomePage() {
 
               <div className="absolute bottom-0 translate-y-[68%] md:translate-y-[55%] left-1/2 -translate-x-1/2 sm:w-auto w-[70vw]">
                 <img
-                  src="/img/stacked-layers-graphic.svg"
+                  src="/img/grid-layers.svg"
                   width="687"
-                  height="367"
+                  height="369"
                 />
+                
               </div>
             </div>
           </div>
