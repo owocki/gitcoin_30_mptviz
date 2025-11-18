@@ -10,8 +10,8 @@ const button = tv({
       tertiary:
         "bg-moss-900 text-moss-100 border border-moss-100 rounded-2xl hover:bg-moss-300",
       destructive:
-        "bg-moss-900 text-red-500 border border-red-500 rounded-2xl hover:bg-moss-300",
-      ghost: "bg-transparent ",
+        "bg-moss-900 text-red-500 font-medium border border-red-500 rounded-2xl hover:bg-moss-300",
+      ghost: "bg-transparent text-moss-100",
     },
     size: {
       lg: "py-3.5 px-5 rounded-md",
