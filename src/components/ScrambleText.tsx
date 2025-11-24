@@ -15,8 +15,9 @@ export const ScrambleText = ({
 }: ScrambleTextProps) => {
   const [displayText, setDisplayText] = useState(children);
   const animationRef = useRef<number | null>(null);
+  const initialAnimationDoneRef = useRef(false);
 
-  const startAnimation = () => {
+  const startAnimation = (isInitial = false) => {
     const originalText = children;
 
     // Cancel any ongoing animation
@@ -56,6 +57,10 @@ export const ScrambleText = ({
 
         if (iteration >= originalText.length) {
           setDisplayText(originalText);
+          animationRef.current = null; 
+          if (isInitial) {
+            initialAnimationDoneRef.current = true;
+          }
           return;
         }
       }
@@ -68,8 +73,10 @@ export const ScrambleText = ({
 
   // Play animation on mount
   useEffect(() => {
+    initialAnimationDoneRef.current = false;
+
     const timeoutId = setTimeout(() => {
-      startAnimation();
+      startAnimation(true); 
     }, delay);
 
     return () => {
@@ -79,7 +86,9 @@ export const ScrambleText = ({
   }, [children, delay]);
 
   const handleMouseEnter = () => {
-    startAnimation();
+    if (initialAnimationDoneRef.current && !animationRef.current) {
+      startAnimation();
+    }
   };
 
   return (
