@@ -607,7 +607,7 @@ export function HomePage() {
           <div className="absolute inset-0 z-10 flex items-end pb-10 md:pb-20 px-5 md:px-20">
             <div>
               <h1 className="text-lichen-500 text-3xl sm:text-5xl md:text-6xl lg:text-7xl mb-8 md:mb-12 font-mori max-w-[15ch]">
-                <ScrambleText delay={500}>
+                <ScrambleText delay={500} className="w-full inline-block">
                   Solving Alignment with Ethereum
                 </ScrambleText>
               </h1>

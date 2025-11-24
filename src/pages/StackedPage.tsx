@@ -238,7 +238,7 @@ export const StackedPage: React.FC = () => {
     });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(new THREE.Color("#0a0c10"), 1);
+    renderer.setClearColor(new THREE.Color("#061514"), 1); // moss-950
     rendererRef.current = renderer;
 
     // Setup scene

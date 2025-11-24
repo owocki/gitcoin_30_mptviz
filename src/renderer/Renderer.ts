@@ -715,7 +715,7 @@ export class Renderer {
     this.darkMode = darkMode;
 
     // Update background color
-    const backgroundColor = darkMode ? '#0a0c10' : '#ffffff';
+    const backgroundColor = darkMode ? '#061514' : '#ffffff';
     this.renderer.setClearColor(new THREE.Color(backgroundColor), 1);
 
     // Update ball colors
