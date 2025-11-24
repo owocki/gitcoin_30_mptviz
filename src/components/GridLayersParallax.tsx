@@ -19,7 +19,15 @@ export const GridLayersParallax = () => {
     const container = containerRef.current;
     if (!container || !svgContent) return;
 
-    setTimeout(() => {
+    let trigger: ScrollTrigger | null = null;
+    let layerRefs: {
+      layer1: Element | null;
+      layer2: Element | null;
+      layer3: Element | null;
+      layer4: Element | null;
+    } = { layer1: null, layer2: null, layer3: null, layer4: null };
+
+    const timeoutId = setTimeout(() => {
       const svg = container.querySelector("svg");
       if (!svg) {
         console.log("SVG not found");
@@ -38,17 +46,23 @@ export const GridLayersParallax = () => {
         return;
       }
 
-      gsap.set(layer1, { transform: "translate3d(0, -30px, 0)" });
-      gsap.set(layer2, { transform: "translate3d(0, -15px, 0)" });
-      gsap.set(layer3, { transform: "translate3d(0, 15px, 0)" });
-      gsap.set(layer4, { transform: "translate3d(0, 30px, 0)" });
+      layerRefs = { layer1, layer2, layer3, layer4 };
 
-      const trigger = ScrollTrigger.create({
+      gsap.set(layer1, { y: -30 });
+      gsap.set(layer2, { y: -15 });
+      gsap.set(layer3, { y: 15 });
+      gsap.set(layer4, { y: 30 });
+
+      trigger = ScrollTrigger.create({
         trigger: container,
         start: "top 80%",
         end: "bottom top",
         scrub: 1,
         onUpdate: (self) => {
+          if (!layerRefs.layer1 || !layerRefs.layer2 || !layerRefs.layer3 || !layerRefs.layer4) {
+            return;
+          }
+
           const progress = self.progress;
 
           const layer1Y = progress * 90 - 30; // Starts at -30px, ends at +60px
@@ -56,28 +70,21 @@ export const GridLayersParallax = () => {
           const layer3Y = -progress * 45 + 15; // Starts at +15px, ends at -30px
           const layer4Y = -progress * 90 + 30; // Starts at +30px, ends at -60px
 
-          gsap.set(layer1, {
-            transform: `translate3d(0, ${layer1Y}px, 0)`,
-          });
-
-          gsap.set(layer2, {
-            transform: `translate3d(0, ${layer2Y}px, 0)`,
-          });
-
-          gsap.set(layer3, {
-            transform: `translate3d(0, ${layer3Y}px, 0)`,
-          });
-
-          gsap.set(layer4, {
-            transform: `translate3d(0, ${layer4Y}px, 0)`,
-          });
+          gsap.set(layerRefs.layer1, { y: layer1Y });
+          gsap.set(layerRefs.layer2, { y: layer2Y });
+          gsap.set(layerRefs.layer3, { y: layer3Y });
+          gsap.set(layerRefs.layer4, { y: layer4Y });
         },
       });
-
-      return () => {
-        trigger.kill();
-      };
     }, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (trigger) {
+        trigger.kill();
+      }
+      layerRefs = { layer1: null, layer2: null, layer3: null, layer4: null };
+    };
   }, [svgContent]);
 
   return (
